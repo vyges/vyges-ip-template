@@ -1,4 +1,6 @@
-
+# OpenLane
+runs/
+results/
 
 # Python (cocotb)
 __pycache__/

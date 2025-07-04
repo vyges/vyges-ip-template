@@ -1,0 +1,28 @@
+{
+    "DESIGN_NAME": "top_wrapper",
+    "VERILOG_FILES": [
+      "dir::../../rtl/your_ip_block.sv",
+      "dir::../../rtl/top_wrapper.sv"
+    ],  
+    "SDC_FILE": "dir::constraints.sdc",
+    "PLATFORM": "sky130hd",
+    "CLOCK_PORT": "clk",
+    "CLOCK_PERIOD": 10.0,
+    "RESET_PORT": "rst_n",
+    "RESET_ACTIVE_LOW": 1,
+    "IO_PINS": "dir::pinmux/io_pins.tcl",
+    "SYNTH_STRATEGY": 0,
+    "PL_TARGET_DENSITY": 0.45,
+    "FP_CORE_UTIL": 50,
+    "DIE_AREA": "0 0 1000 1000",
+    "FP_PIN_ORDER_CFG": "dir::pin_order.cfg",
+    "GDS_OUTPUT": "gds/top_wrapper.gds",
+    "RUN_LINTER": 1,
+    "RUN_HEURISTIC_DRC": 1,
+    "RUN_MAGIC_DRC": 1,
+    "RUN_KLAYOUT_DRC": 1,
+    "RUN_KLAYOUT_XOR": 1,
+    "SAVE_FINAL_VERILOG": 1,
+    "SAVE_FINAL_DEF": 1,
+    "VERBOSE": 1
+  }

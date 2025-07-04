@@ -1,8 +1,6 @@
-# config.json
+# Flow Configuration
 
-## How to use this file?
-
-Copy the JSON content below as `config.json` and modify the same for your configuration. Comments are retained in the below JSON to help you understand the configuration. Remove comments from JSON file and save the file.
+Update `config.json` and modify the same for your flow configuration. For ease of use, a commented version is provided below to help you understand the configuration.
 
 ### 📝 Key Notes:
 

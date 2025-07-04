@@ -3,7 +3,7 @@ This repository is a starter template creating open-source and reusable Vyges-co
 ## 📛 Naming Convention
 
 > We recommend naming your IP repo with the format:  
-> `your-orgname-ipname` (e.g., `acme-pwm8`, `vyges-spi`, `johnsmith-fifo`)
+> `your-orgname-ipname` (e.g., `exampleOrg-pwm8`, `vyges-spi`, `acme-fifo`)
 
 This helps disambiguate across the open-source silicon ecosystem, similar to reverse DNS or namespacing in package managers.
 
@@ -13,7 +13,7 @@ This helps disambiguate across the open-source silicon ecosystem, similar to rev
 
 1. Click the "Use this template" button on [GitHub](https://github.com/vyges/vyges-ip-template)
 2. Choose "Create a new repository"
-3. Name your repository (e.g., `my-ip-block`)
+3. Name your repository following the naming convention (e.g., `exampleOrg-ip-block`, `exampleOrg-pwm8`, `vyges-spi`)
 4. Clone your new repository locally
 
 ### Option 2: Command Line Setup
@@ -22,8 +22,8 @@ You can also create a new local repository using this template via the command l
 
 ```bash
 # Clone the template repository
-git clone https://github.com/vyges/vyges-ip-template.git my-ip-block
-cd my-ip-block
+git clone https://github.com/vyges/vyges-ip-template.git exampleOrg-ip-block
+cd exampleOrg-ip-block
 
 # Remove the template's git history and start fresh
 rm -rf .git
@@ -34,7 +34,7 @@ git add .
 git commit -m "Initial commit: IP block template setup"
 
 # Add your remote repository (replace with your repo URL)
-git remote add origin https://github.com/your-username/my-ip-block.git
+git remote add origin https://github.com/exampleOrg/exampleOrg-ip-block.git
 git branch -M main
 git push -u origin main
 ```

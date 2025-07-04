@@ -81,6 +81,18 @@ make -C tb sim
 
 ---
 
+## 🚀 Build & Test
+
+(Replace with your own commands…)
+
+```bash
+make SIM=iverilog run
+make SIM=verilator run
+cd flow/openlane && make run
+```
+
+---
+
 ## 🛠 Toolchain & Flow Support
 
 | Toolchain | Supported      | Location          |

@@ -1,3 +1,5 @@
+[![Vyges IP Template](https://img.shields.io/badge/template-vyges--ip--template-blue)](https://github.com/vyges/vyges-ip-template)
+
 This repository is a starter template creating open-source and reusable Vyges-compatible SystemVerilog IP blocks — with built-in support for simulation, documentation, waveforms, and OpenLane-based GDS generation.
 
 ## 📛 Naming Convention

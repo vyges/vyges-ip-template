@@ -19,6 +19,8 @@ README.template.md for Vyges IP Template
 
 -->
 
+[![Vyges IP Template](https://img.shields.io/badge/template-vyges--ip--template-blue)](https://github.com/vyges/vyges-ip-template)
+
 # 📦 {{IP Block Name}}
 
 > {{Short one-line description of what this IP block does}}

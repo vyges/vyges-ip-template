@@ -1,0 +1,2 @@
+# This file ensures the flow/vivado directory is tracked by git
+# Remove this file once you add actual Vivado configuration files to this directory 

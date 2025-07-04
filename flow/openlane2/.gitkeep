@@ -1,0 +1,2 @@
+# This file ensures the flow/openlane2 directory is tracked by git
+# Remove this file once you add actual OpenLane2 configuration files to this directory 

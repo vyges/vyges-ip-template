@@ -1,0 +1,2 @@
+# This file ensures the flow/verilator directory is tracked by git
+# Remove this file once you add actual Verilator configuration files to this directory 

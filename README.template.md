@@ -23,6 +23,16 @@ README.template.md for Vyges IP Template
 
 > {{Short one-line description of what this IP block does}}
 
+> 📝 This repository was initialized using [vyges-ip-template](https://github.com/vyges/vyges-ip-template) under the Apache 2.0 License. Please retain the `NOTICE` file to acknowledge the original source.
+
+
+### 📛 Naming Convention
+
+> We recommend naming your IP repo with the format:  
+> `your-orgname-ipname` (e.g., `acme-pwm8`, `vyges-spi`, `johnsmith-fifo`)
+
+This helps disambiguate across the open-source silicon ecosystem, similar to reverse DNS or namespacing in package managers.
+
 ---
 
 ## 🧠 Overview

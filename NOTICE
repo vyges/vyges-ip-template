@@ -12,8 +12,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 ---
 
+This repository was created using the vyges-ip-template:
+https://github.com/vyges/vyges-ip-template
+
+Copyright (c) 2025 Vyges
+
 This IP block was created as part of the Vyges open silicon ecosystem:
-https://vyges.dev
+https://vyges.com
 
 Includes design concepts or testbench inspiration adapted from:
 - [cocotb](https://github.com/cocotb/cocotb) - BSD License

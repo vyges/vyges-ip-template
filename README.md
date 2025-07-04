@@ -1,7 +1,7 @@
 
 This repository is a starter template creating open-source and reusable Vyges-compatible SystemVerilog IP blocks — with built-in support for simulation, documentation, waveforms, and OpenLane-based GDS generation.
 
-### 🚀 Getting started
+## 🚀 Getting started
 
 1. Rename the repo to your IP’s name.
 2. Replace the contents of this `README.md` with your own.
@@ -15,3 +15,13 @@ This repository is a starter template creating open-source and reusable Vyges-co
 5. Update module names, parameters and ports
 6. Update documentation files in `docs/` (like `architecture.md`, `waveforms.md`)
 7. Run your first simulation and flow.
+
+## 📦 Example IPs Built from This Template
+
+Here are some real-world IP blocks built using this template:
+
+- [`vyges-pwm16`](https://github.com/vyges/vyges-pwm16): 16-bit PWM generator with APB interface and waveform testbenches
+- [`vyges-timer`](https://github.com/vyges/vyges-timer): Countdown timer with one-shot mode
+- [Your-IP-Here]()
+
+These serve as working references for structure, documentation, simulation, and OpenLane integration.

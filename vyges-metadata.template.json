@@ -4,6 +4,12 @@
     "version": "1.0.0",
     "description": "A 16-bit countdown timer with APB interface and interrupt support.",
     "license": "Apache-2.0",
+    "template": "vyges-ip-template@v1.0.0",
+    "source": {
+        "type": "git",
+        "url": "https://github.com/vyges/vyges-ip-template",
+        "commit": "main"
+    },
     "language": "SystemVerilog",
     "provider": "Example Company",
     "repository": "https://github.com/example-company/timer-16bit",

@@ -23,8 +23,8 @@ This helps disambiguate across the open-source silicon ecosystem, similar to rev
 You can also create a new local repository using this template via the command line:
 
 ```bash
-# Clone the template repository
-git clone https://github.com/vyges/vyges-ip-template.git exampleOrg-ip-block
+# Clone the template repository (shallow clone for faster download)
+git clone --depth=1 https://github.com/vyges/vyges-ip-template.git exampleOrg-ip-block
 cd exampleOrg-ip-block
 
 # Remove the template's git history and start fresh

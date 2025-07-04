@@ -1,0 +1,67 @@
+{
+    "$schema": "https://vyges.com/schema/v0.1/vyges-metadata.schema.json",
+    "name": "timer-16bit",
+    "version": "1.0.0",
+    "description": "A 16-bit countdown timer with APB interface and interrupt support.",
+    "license": "Apache-2.0",
+    "language": "SystemVerilog",
+    "provider": "Example Company",
+    "repository": "https://github.com/example-company/timer-16bit",
+    "website": "https://example.com/ip/timer-16bit",
+    "target": ["simulation", "fpga", "asic"],
+    "interfaces": [
+      {
+        "name": "apb_if",
+        "type": "apb",
+        "direction": "slave",
+        "signals": [
+          { "name": "paddr", "width": 16 },
+          { "name": "pwdata", "width": 32 },
+          { "name": "prdata", "width": 32 },
+          { "name": "penable", "width": 1 },
+          { "name": "pwrite", "width": 1 },
+          { "name": "psel", "width": 1 },
+          { "name": "pready", "width": 1 }
+        ]
+      },
+      {
+        "name": "irq",
+        "type": "interrupt",
+        "direction": "output",
+        "signals": [
+          { "name": "irq", "width": 1 }
+        ]
+      }
+    ],
+    "test": {
+      "coverage": false,
+      "testbenches": ["cocotb", "verilator"],
+      "simulators": ["verilator"],
+      "status": "passing"
+    },
+    "flows": {
+      "verilator": {
+        "status": "verified"
+      },
+      "openlane": {
+        "pdks": ["sky130"],
+        "status": "tested"
+      },
+      "vivado": {
+        "status": "partial"
+      }
+    },
+    "integration": {
+      "known_good": [
+        "opentitan",
+        "rocket-chip"
+      ]
+    },
+    "branding": {
+      "provider": "Example Company",
+      "logo": "https://example.com/assets/logo.svg",
+      "website": "https://example.com/ip/timer-16bit",
+      "usage": "Use of the logo is permitted for attribution or compatibility references only."
+    }
+  }
+  

@@ -18,6 +18,58 @@
       "check_catalog_readiness": "Validate the IP block for Vyges Catalog readiness: metadata coverage, testability, and discoverability."
     }
   },
+
+  "catalog_context": {
+    "purpose": "Support Vyges IP Catalog operations and discoverability",
+    "fields": {
+      "name": "IP package name with org/user prefix",
+      "version": "IP version following semantic versioning",
+      "interfaces": "Signals and protocols exposed by the IP",
+      "target": "asic/fpga target platforms",
+      "design_type": "digital|analog|mixed-signal design type",
+      "toolchain_support": "validated tools and flows",
+      "tags": "discovery tags for catalog search",
+      "trust_profile": "security indicators and maturity level",
+      "maturity": "alpha|beta|stable|deprecated maturity status",
+      "license": "SPDX license identifier",
+      "maintainers": "contact information for IP maintainers"
+    },
+    "ai_prompts": {
+      "generate_catalog_entry": "Generate a catalog-ready summary with name, version, description, interfaces, targets, tags, and trust indicators for the Vyges IP Catalog.",
+      "catalog_search_query": "Given IP metadata, suggest effective search keywords and tags to improve discoverability in the Vyges IP Catalog.",
+      "improve_catalog_presentation": "Enhance IP metadata for better catalog presentation: improve description, add relevant tags, optimize discoverability.",
+      "validate_catalog_compliance": "Check IP metadata for Vyges Catalog compliance: required fields, format validation, and completeness."
+    },
+    "discoverability_features": {
+      "tags": "Generate relevant tags for IP discovery (e.g., uart, communication, apb, asic, fpga)",
+      "keywords": "Extract search keywords from IP description and interfaces",
+      "categories": "Suggest appropriate catalog categories based on IP type and interfaces",
+      "related_ips": "Identify related IPs in the catalog based on interfaces and functionality"
+    }
+  },
+
+  "template_integration": {
+    "mode": "hybrid",
+    "description": "Use codegen + AI to scaffold IP repos: template + AI phase optimize for maximum developer productivity",
+    "ai_prompts": {
+      "bootstrap_project": "Generate directory structure and basic RTL/test files based on metadata using the vyges-ip-template as base.",
+      "customize_template": "Customize the vyges-ip-template structure for specific IP requirements and target platforms.",
+      "expand_template": "Expand the minimal template structure with additional directories and files based on IP complexity.",
+      "optimize_structure": "Optimize project structure for the specific IP type, interfaces, and target platforms."
+    },
+    "workflow": {
+      "start_with_template": "Begin with vyges-ip-template as the foundation",
+      "ai_customization": "Use AI to customize structure and generate initial files",
+      "progressive_expansion": "Expand complexity using vyges expand commands",
+      "metadata_driven": "Use vyges-metadata.json to guide all customizations"
+    },
+    "benefits": [
+      "Reduces cognitive load and setup time",
+      "Ensures consistency with Vyges conventions",
+      "Enables rapid prototyping and iteration",
+      "Supports both simple and complex IP development"
+    ]
+  },
   
   "metadata_driven_generation": {
     "description": "Use vyges-metadata.json as canonical source of truth for generating specifications and code",
@@ -188,6 +240,33 @@
         "toolchain_isolation": "Provide cocotb-style testbench adapters for non-cocotb-compatible simulators",
         "python_harness": "Offer Python-based verification harness even with proprietary Chinese tools",
         "abstraction_layer": "Abstract cocotb under Vyges CI runner for tool-agnostic verification"
+      },
+      "ai_prompts": {
+        "generate_cocotb_test": "Create a Python cocotb testbench for module {module_name}, covering {interfaces}, with clock/reset and basic stimulus, using metadata parameters.",
+        "add_test_vectors": "Generate example input vectors for functional cocotb simulation based on interface definitions.",
+        "create_advanced_tests": "Generate comprehensive cocotb tests with coverage, assertions, and edge case testing.",
+        "setup_cocotb_ci": "Configure CI/CD pipeline for cocotb testing with multiple simulators and coverage reporting."
+      },
+      "code_generation_rules": {
+        "directory": "tb/cocotb/",
+        "filename_pattern": "test_<module_name>.py",
+        "imports": ["cocotb", "cocotb.triggers", "cocotb.clock", "cocotb.assertions"],
+        "structure": [
+          "Define top-level cocotb test coroutine with @cocotb.test()",
+          "Clock generation using cocotb.clock.Clock",
+          "Reset handling with proper timing",
+          "Stimulus sequence with cocotb.triggers",
+          "Assertions using cocotb.assertions for verification",
+          "Coverage collection and reporting",
+          "Waveform generation and analysis"
+        ],
+        "best_practices": [
+          "Use async/await for test coroutines",
+          "Include proper error handling and timeouts",
+          "Add comprehensive assertions for all outputs",
+          "Generate meaningful test names and descriptions",
+          "Include parameterized tests for different configurations"
+        ]
       }
     },
     

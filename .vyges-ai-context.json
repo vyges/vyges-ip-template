@@ -1,0 +1,568 @@
+{
+  "vyges_version": "1.0.0",
+  "ai_context_version": "1.0.0",
+  "description": "Defines structural, naming, and workflow conventions to guide AI-assisted hardware IP development within the Vyges platform. Enables consistent code generation, validation, and integration.",
+  
+  "catalog_objectives": {
+    "description": "Ensure generated IP meets requirements for inclusion in the Vyges IP Catalog",
+    "requirements": [
+      "vyges-metadata.json is complete and conforms to schema",
+      "Includes license, maturity, and interface metadata",
+      "Includes testbench with pass/fail assertion",
+      "Includes minimum documentation in docs/overview.md",
+      "Must include basic functional verification (simulation or cocotb)",
+      "Supports versioning and reproducibility via source tracking"
+    ],
+    "ai_assist_prompts": {
+      "generate_catalog_ready_ip": "Create a SystemVerilog IP block that is ready for the Vyges Catalog. Include complete metadata, documentation, and testbench.",
+      "check_catalog_readiness": "Validate the IP block for Vyges Catalog readiness: metadata coverage, testability, and discoverability."
+    }
+  },
+  
+  "metadata_driven_generation": {
+    "description": "Use vyges-metadata.json as canonical source of truth for generating specifications and code",
+    "capabilities": {
+      "specification_generation": {
+        "input": "vyges-metadata.json fields (name, description, parameters, interfaces, target, design_type, toolRequirements, flows, test, performance)",
+        "output": "docs/specification.md - Human-readable requirements document",
+        "template_sections": [
+          "Overview",
+          "Target (ASIC/FPGA)",
+          "Interfaces",
+          "Parameters",
+          "Tool Requirements",
+          "Testing"
+        ]
+      },
+      "code_generation": {
+        "rtl_scaffolding": "Generate RTL modules in rtl/*.sv based on interfaces and parameters",
+        "testbench_generation": "Create testbenches in SystemVerilog or Python (cocotb) based on test specifications",
+        "flow_configuration": "Generate tool configurations in flow/ based on toolRequirements",
+        "documentation": "Generate README, LICENSE, and integration scripts",
+        "metadata_annotation": "Annotate RTL with metadata comments based on vyges-metadata.json",
+        "verification_targets": "Embed assertions and coverage based on test block specifications"
+      }
+    },
+    "ai_assist_prompts": {
+      "generate_from_metadata": "Generate complete IP specification and code scaffolding from vyges-metadata.json",
+      "update_metadata_from_code": "Update vyges-metadata.json based on changes in RTL code and interfaces",
+      "synchronize_metadata_code": "Ensure vyges-metadata.json and generated code are in sync"
+    },
+    "notes": "The pinout table in documentation and README should be auto-generated from the interfaces section of vyges-metadata.json for consistency."
+  },
+  
+  "project_structure": {
+    "conventions": {
+      "naming": {
+        "repository": "{orgname}-{ip-name} or {username}-{ip-name} (e.g., exampleOrg-uart-controller, janedoe-pwm-controller)",
+        "ip_name": "lowercase with hyphens/underscores, 3-50 chars, start with letter, no consecutive hyphens/underscores",
+        "modules": "snake_case (e.g., pwm_controller, uart_transmitter)",
+        "files": "snake_case.sv (e.g., pwm_controller.sv, uart_transmitter.sv)",
+        "testbenches": "tb_<module_name>.sv (e.g., tb_pwm_controller.sv)",
+        "parameters": "UPPER_SNAKE_CASE (e.g., CLOCK_FREQUENCY, DATA_WIDTH)",
+        "signals": "snake_case (e.g., clock_i, data_o, enable_n)"
+      },
+      "organization": {
+        "rtl_files": "Place all RTL modules in rtl/ directory",
+        "testbench_files": "Place all testbenches in tb/ directory",
+        "test_files": "Place test vectors and coverage in test/ directory",
+        "documentation": "Place all docs in docs/ directory",
+        "flow_configs": "Place tool configurations in flow/ directory",
+        "simulation_files": "Place simulation scripts and Makefiles under sim/",
+        "constraints": "Place synthesis/implementation constraints (e.g., SDC, XDC) in constraints/"
+      },
+      "advanced_patterns": {
+        "multi_platform": "For projects targeting both ASIC and FPGA, or including analog/mixed-signal, create subdirectories under rtl/, flow/, and constraints/ for asic/, fpga/, digital/, analog/, etc. The CLI should offer to expand the structure as needed.",
+        "directory_expansion": {
+          "rtl": {
+            "asic": "ASIC-specific RTL (digital and analog)",
+            "fpga": "FPGA-specific RTL (digital only)",
+            "digital": "Digital RTL (platform-agnostic)",
+            "analog": "Analog/mixed-signal RTL (ASIC only)"
+          },
+          "constraints": {
+            "asic": "ASIC synthesis and timing constraints",
+            "fpga": "FPGA implementation constraints"
+          },
+          "flow": {
+            "asic": "ASIC tool flows (OpenLane, Synopsys, etc.)",
+            "fpga": "FPGA tool flows (Vivado, Quartus, etc.)"
+          }
+        }
+      }
+    },
+    
+    "required_patterns": {
+      "module_header": {
+        "description": "Every RTL module must have a standardized header",
+        "template": [
+          "//=============================================================================",
+          "// Module Name: {module_name}",
+          "//=============================================================================",
+          "// Description: {description}",
+          "//",
+          "// Features:",
+          "// - {feature1}",
+          "// - {feature2}",
+          "//",
+          "// Author: {author}",
+          "// License: {license}",
+          "//============================================================================="
+        ]
+      },
+      
+      "interface_patterns": {
+        "clock_reset": "All modules must have clock_i and reset_n_i signals",
+        "apb_slave": "APB slave interface must follow standard APB protocol signals: pclk, presetn, psel, penable, pwrite, paddr, pwdata, prdata, pready, pslverr",
+        "axi_master": "AXI master interface must follow standard AXI protocol signals",
+        "axi_lite_slave": "AXI-Lite slave interface must include: aclk, aresetn, awaddr, awvalid, awready, wdata, wstrb, wvalid, wready, bresp, bvalid, bready, araddr, arvalid, arready, rdata, rresp, rvalid, rready",
+        "wishbone": "Wishbone interface must include: wb_clk_i, wb_rst_i, wb_cyc_i, wb_stb_i, wb_ack_o, wb_adr_i, wb_dat_i, wb_dat_o, wb_we_i",
+        "interrupts": "Interrupt signals should be named irq_<description>_o",
+        "power_management": "Power signals: power_on, power_good, pwr_gate_en, pwr_retention",
+        "mailbox": "Mailbox interface: mbx_req, mbx_ack, mbx_addr, mbx_data, mbx_we, mbx_valid, mbx_ready",
+        "debug": "Debug interface: jtag_tck, jtag_tdi, jtag_tdo, jtag_tms, trace_data",
+        "security": "Security interface: fuse_data, fuse_addr, fuse_prog, fuse_done, trng_valid, trng_data"
+      },
+      
+      "testbench_patterns": {
+        "structure": "Testbenches must include clock generation, reset sequence, and test stimulus",
+        "naming": "Testbench files must be named tb_<module_name>.sv",
+        "coverage": "Include basic functional coverage for critical paths"
+      }
+    }
+  },
+  
+  "code_generation_rules": {
+    "rtl": {
+      "language": "SystemVerilog",
+      "style": "Use always_ff for sequential logic, always_comb for combinational logic",
+      "assertions": "Include basic assertions for critical functionality",
+      "parameters": "Use parameters for configurable features",
+      "comments": "Include detailed comments for complex logic",
+      "naming_comment_convention": "Use // <type>: <description> for inline comments (e.g., // signal: rising edge detector)",
+      "port_direction_comment": "Use comments above ports for direction and purpose"
+    },
+    
+    "testbench": {
+      "language": "SystemVerilog",
+      "structure": [
+        "Clock and reset generation",
+        "DUT instantiation",
+        "Test stimulus generation",
+        "Response checking",
+        "Coverage collection"
+      ],
+      "verification": "Include basic functional verification and coverage"
+    },
+    
+    "cocotb": {
+      "language": "Python",
+      "framework": "cocotb",
+      "structure": [
+        "Import cocotb and required triggers",
+        "Create coroutine with `@cocotb.test()`",
+        "Drive inputs and check outputs",
+        "Include test cases for edge conditions",
+        "Add coverage collection and assertions",
+        "Include waveform generation and analysis"
+      ],
+      "file_structure": {
+        "location": "tb/cocotb/",
+        "file_naming": "test_<module_name>.py"
+      },
+      "integration_notes": "Ensure Makefile or sim/ run script supports cocotb test execution",
+      "supported_simulators": {
+        "open_source": ["verilator", "icarus", "ghdl"],
+        "commercial": ["vcs", "xcelium", "questa", "riviera-pro"],
+        "ci_integration": "Use verilator for CI/CD pipelines, commercial tools for development"
+      },
+      "advanced_features": {
+        "auto_generation": "Generate cocotb testbenches from vyges-metadata.json test specifications",
+        "verification_harness": "Bundle cocotb-based verification harnesses into packaging metadata",
+        "ci_hooks": "CI hooks that run testbenches with cocotb + verilator/vcs, returning waveform artifacts and coverage",
+        "python_ecosystem": "Integrate with pytest, numpy, pandas for advanced test analysis",
+        "mixed_signal": "Support mixed-signal testing with Python's scientific computing capabilities",
+        "ai_driven_testing": "Enable AI-driven test generation and analysis using Python ML libraries"
+      },
+      "chinese_eda_adaptation": {
+        "toolchain_isolation": "Provide cocotb-style testbench adapters for non-cocotb-compatible simulators",
+        "python_harness": "Offer Python-based verification harness even with proprietary Chinese tools",
+        "abstraction_layer": "Abstract cocotb under Vyges CI runner for tool-agnostic verification"
+      }
+    },
+    
+    "documentation": {
+      "format": "Markdown",
+      "required_sections": [
+        "Overview",
+        "Interfaces",
+        "Parameters",
+        "Usage Examples",
+        "Testing",
+        "Limitations"
+      ],
+      "pinout_table": {
+        "description": "Every IP documentation and README should include a Markdown table listing all external signals.",
+        "columns": ["Name", "Function", "Direction", "Description"],
+        "source": "Derived from vyges-metadata.json interfaces/signals",
+        "ai_prompt": "Generate a Markdown pinout table for this IP block, listing all external signals with their function, direction, and description."
+      },
+      "readme_structure": {
+        "required_sections": [
+          "Overview with purpose and features",
+          "Interfaces table with signal names, directions, and descriptions",
+          "Integration info with bus protocols and target usage",
+          "Testing & verification table with tool status",
+          "Build & test commands",
+          "Toolchain & flow support table",
+          "File structure documentation",
+          "Maintainers table",
+          "Related projects links"
+        ],
+        "optional_sections": [
+          "Branding & attribution",
+          "Advanced usage examples",
+          "Performance characteristics",
+          "Known limitations"
+        ],
+        "badges": [
+          "Vyges IP Template badge",
+          "Use this template badge",
+          "License badge",
+          "Build status badge"
+        ],
+        "tables": {
+          "interfaces": "Signal Name | Function | Direction | Description",
+          "testing": "Method | Tool | Status",
+          "toolchain": "Toolchain | Supported | Location",
+          "maintainers": "Name | Role | Contact"
+        }
+      }
+    }
+  },
+  
+  "validation_rules": {
+    "structure": {
+      "required_files": {
+        "vyges-metadata.json": "Required metadata file with v1.0.0 schema compliance",
+        "rtl/": "Required directory for RTL sources",
+        "tb/": "Required directory for testbenches",
+        "flow/": "Required directory for tool configurations",
+        "test/": "Required directory for test files",
+        "docs/": "Required directory for documentation"
+      },
+      "optional_files": {
+        "constraints/": "Optional directory for physical/synthesis constraints",
+        "sim/": "Optional directory for simulation scripts and Makefiles"
+      },
+      "metadata_validation": "vyges-metadata.json must contain all required fields from v1.0.0 schema",
+      "ip_name_validation": "IP name must follow GitHub repository naming conventions and Vyges format rules"
+    },
+    
+    "code_quality": {
+      "linting": "All RTL must pass basic linting checks",
+      "synthesis": "RTL must be synthesizable",
+      "simulation": "Testbenches must run without errors",
+      "coverage": "Basic functional coverage must be implemented",
+      "cocotb_compatibility": "If cocotb is used, test must run with ghdl/iverilog/verilator"
+    }
+  },
+  
+  "ai_prompts": {
+    "create_module": "Create a SystemVerilog module following Vyges conventions. Include proper header, interface signals, and basic functionality.",
+    "create_testbench": "Create a SystemVerilog testbench for the given module. Include clock generation, reset sequence, and basic test stimulus.",
+    "expand_structure": "Suggest when to use 'vyges expand' commands to add complexity to the project structure.",
+    "validate_structure": "Check if the current project structure follows Vyges conventions and suggest improvements.",
+    "generate_documentation": "Generate documentation for the IP block based on the RTL code and metadata.",
+    "refactor_module": "Refactor a SystemVerilog module to improve readability, modularity, and testability. Follow Vyges naming and structure conventions.",
+    "add_interface": "Extend the IP module by adding a new interface using Vyges Standardized Interface Catalog (e.g., AXI4-Lite, APB, Wishbone). Include port declarations and update documentation.",
+    "generate_catalog_ready_ip": "Create a SystemVerilog IP block that is ready for the Vyges Catalog. Include complete metadata, documentation, and testbench.",
+    "check_catalog_readiness": "Validate the IP block for Vyges Catalog readiness: metadata coverage, testability, and discoverability.",
+    "improve_catalog_score": "Improve this IP block to raise its catalog quality score by enhancing metadata, documentation, and test coverage.",
+    "generate_from_metadata": "Generate complete IP specification and code scaffolding from vyges-metadata.json",
+    "update_metadata_from_code": "Update vyges-metadata.json based on changes in RTL code and interfaces",
+    "synchronize_metadata_code": "Ensure vyges-metadata.json and generated code are in sync",
+    "validate_ip_name": "Validate IP name format for GitHub compatibility and Vyges ecosystem usage",
+    "setup_project": "Guide developer through initial project setup using vyges init --interactive workflow",
+    "use_standard_interfaces": "Use Vyges Standardized Interface Catalog signals and naming conventions for IP integration",
+    "validate_interface_compliance": "Validate that interface signals follow Vyges Standardized Interface Catalog conventions",
+    "generate_interface_wrapper": "Generate interface wrapper using standardized signal names from Vyges catalog",
+    "generate_ascii_diagram": "Generate ASCII block diagram showing IP block with all pins, grouped by interface type (clock, reset, data, control, etc.) with signal descriptions",
+    "generate_connection_diagram": "Generate ASCII diagram showing connections between multiple IP blocks, highlighting pin-to-pin connections and interface compatibility",
+    "validate_pin_connections": "Validate pin connections between IP blocks for signal compatibility, timing, and protocol compliance",
+    "generate_cocotb_testbench": "Generate comprehensive cocotb testbench with coverage, assertions, and waveform generation from vyges-metadata.json test specifications",
+    "create_cocotb_harness": "Create cocotb verification harness that can be bundled into packaging metadata for automated testing",
+    "setup_cocotb_ci": "Set up CI hooks for cocotb testbenches with verilator/vcs, returning waveform artifacts and coverage reports",
+    "adapt_cocotb_chinese_tools": "Create cocotb-style testbench adapters for non-cocotb-compatible Chinese EDA tools",
+    "generate_readme": "Generate comprehensive README.md following Vyges conventions with all required sections, tables, and badges",
+    "update_readme_sections": "Update specific sections of README.md based on IP metadata and current project state",
+    "generate_pinout_table": "Generate a Markdown pinout table for the IP block, listing all external signals with columns: Name, Function, Direction, Description, based on vyges-metadata.json."
+  },
+  
+  "cli_integration": {
+    "commands": {
+      "init": {
+        "description": "Initialize a new IP project with interactive setup",
+        "examples": [
+          "vyges init --interactive",
+          "vyges init my-ip --type digital --pdk sky130",
+          "vyges setup --from-template uart-controller"
+        ],
+        "features": [
+          "Git integration for auto-detecting author",
+          "Interactive license selection",
+          "Platform and design type selection",
+          "Tool auto-configuration",
+          "IP name validation"
+        ]
+      },
+      "validate": {
+        "description": "Validates IP metadata, project structure, and lint/simulation readiness",
+        "example": "vyges validate --strict"
+      },
+      "expand": {
+        "description": "Adds complexity to project structure based on specified features",
+        "example": "vyges expand --analog"
+      },
+      "test": {
+        "description": "Runs basic tests and validation for the IP block",
+        "example": "vyges test --simulation"
+      },
+      "publish": {
+        "description": "Publishes IP to Vyges catalog",
+        "example": "vyges publish --dry-run"
+      },
+      "generate": {
+        "description": "Generate specifications and code from vyges-metadata.json",
+        "examples": [
+          "vyges generate spec",
+          "vyges generate code",
+          "vyges generate rtl",
+          "vyges generate testbench --lang cocotb",
+          "vyges generate flow --tool openlane",
+          "vyges generate readme",
+          "vyges generate readme --update-sections"
+        ]
+      },
+      "cocotb": {
+        "description": "Manage cocotb testbenches and verification harnesses",
+        "examples": [
+          "vyges cocotb generate --ip uart-controller",
+          "vyges cocotb setup-ci --simulator verilator",
+          "vyges cocotb run --simulator vcs --coverage",
+          "vyges cocotb create-harness --bundle-metadata"
+        ]
+      },
+      "diagram": {
+        "description": "Generate ASCII block diagrams for IP blocks and connections",
+        "examples": [
+          "vyges diagram block --ip uart-controller",
+          "vyges diagram connections --ip1 cpu --ip2 uart-controller",
+          "vyges diagram validate --ip1 cpu --ip2 uart-controller"
+        ]
+      }
+    },
+    "suggestions": {
+      "when_to_expand": [
+        "When adding analog components: vyges expand --analog",
+        "When adding commercial tools: vyges expand --commercial-tools",
+        "When creating multi-IP project: vyges expand --multi-ip",
+        "When targeting multiple platforms or analog/mixed-signal: vyges expand --platform asic,fpga --add-analog",
+        "When adding platform-specific constraints: vyges expand --constraints asic,fpga",
+        "When creating multi-IP project with different targets: vyges expand --multi-ip --platform asic,fpga"
+      ],
+      "metadata_driven_workflow": [
+        "Start with vyges-metadata.json as source of truth",
+        "Use vyges generate spec to create requirements document",
+        "Use vyges generate code to create RTL scaffolding",
+        "Use vyges generate testbench to create verification code"
+      ],
+      "project_setup_workflow": [
+        "Use vyges init --interactive for guided setup",
+        "Validate IP name format for GitHub compatibility",
+        "Select appropriate license and target platforms",
+        "Let CLI auto-configure tools based on choices"
+      ]
+    }
+  },
+  
+  "catalog_score_guidance": {
+    "weighting": {
+      "metadata_completeness": 40,
+      "test_coverage": 25,
+      "code_quality": 15,
+      "documentation": 10,
+      "discoverability_tags": 10
+    },
+    "ai_prompt": "Improve this IP block to raise its catalog quality score"
+  },
+  
+  "standardized_interfaces": {
+    "description": "Use Vyges Standardized Interface Catalog for consistent IP integration",
+    "canonical_bus_types": [
+      "AXI4",
+      "AXI4-Lite", 
+      "APB",
+      "Wishbone",
+      "SPI",
+      "I2C"
+    ],
+    "interface_categories": [
+      "bus",
+      "clock", 
+      "reset",
+      "mailbox",
+      "interrupt",
+      "debug",
+      "power",
+      "security",
+      "memory",
+      "misc"
+    ],
+    "signal_naming_conventions": {
+      "clock": "clk, clk_en",
+      "reset": "rst_n, init_done",
+      "power": "power_on, power_good, pwr_gate_en, pwr_retention",
+      "interrupts": "irq, error_irq, timer_irq",
+      "debug": "jtag_tck, jtag_tdi, jtag_tdo, jtag_tms, trace_data",
+      "security": "fuse_data, fuse_addr, fuse_prog, fuse_done, trng_valid, trng_data"
+    },
+    "ai_assist_prompts": {
+      "use_standard_interfaces": "Use Vyges Standardized Interface Catalog signals and naming conventions for IP integration",
+      "validate_interface_compliance": "Validate that interface signals follow Vyges Standardized Interface Catalog conventions",
+      "generate_interface_wrapper": "Generate interface wrapper using standardized signal names from Vyges catalog"
+    }
+  },
+  
+  "ascii_diagram_conventions": {
+    "description": "Conventions for generating ASCII block diagrams of IP blocks and their connections",
+    "block_representation": {
+      "single_block": {
+        "format": "Box with rounded corners using ASCII characters",
+        "example": [
+          "┌─────────────────────────────────────┐",
+          "│           IP_BLOCK_NAME             │",
+          "│                                     │",
+          "│  ┌─────────┐    ┌─────────┐        │",
+          "│  │ Clock   │    │ Reset   │        │",
+          "│  │ clk_i   │    │ rst_n_i │        │",
+          "│  └─────────┘    └─────────┘        │",
+          "│                                     │",
+          "│  ┌─────────────────────────┐        │",
+          "│  │      Data Interface     │        │",
+          "│  │ data_i[7:0]             │        │",
+          "│  │ data_o[7:0]             │        │",
+          "│  └─────────────────────────┘        │",
+          "└─────────────────────────────────────┘"
+        ]
+      },
+      "pin_grouping": {
+        "clock_reset": "Group clock and reset signals together",
+        "data_bus": "Group data bus signals (address, data, control)",
+        "control": "Group control signals (enable, valid, ready)",
+        "interrupts": "Group interrupt signals",
+        "power": "Group power management signals",
+        "debug": "Group debug and test signals"
+      },
+      "signal_annotations": {
+        "direction": "Use _i for input, _o for output, _io for bidirectional",
+        "width": "Show bus width in brackets [7:0]",
+        "active_level": "Use _n suffix for active-low signals",
+        "description": "Add brief description after signal name"
+      }
+    },
+    "connection_diagrams": {
+      "multi_block": {
+        "format": "Show multiple blocks with connecting lines",
+        "example": [
+          "┌─────────────┐         ┌─────────────┐",
+          "│   CPU       │         │   UART      │",
+          "│             │         │ Controller  │",
+          "│ clk_i       │─────────│ clk_i       │",
+          "│ rst_n_i     │─────────│ rst_n_i     │",
+          "│             │         │             │",
+          "│ paddr[7:0]  │─────────│ paddr[7:0]  │",
+          "│ pwdata[31:0]│─────────│ pwdata[31:0]│",
+          "│ prdata[31:0]│◄────────│ prdata[31:0]│",
+          "│ psel        │─────────│ psel        │",
+          "│ penable     │─────────│ penable     │",
+          "│ pwrite      │─────────│ pwrite      │",
+          "│ pready      │◄────────│ pready      │",
+          "│ pslverr     │◄────────│ pslverr     │",
+          "│             │         │             │",
+          "│             │         │ tx_o        │───► UART_TX",
+          "│             │         │ rx_i        │◄─── UART_RX",
+          "└─────────────┘         └─────────────┘"
+        ]
+      },
+      "connection_annotations": {
+        "bus_connections": "Use ──── for multi-bit connections",
+        "single_signals": "Use ─── for single-bit connections",
+        "bidirectional": "Use ◄──► for bidirectional signals",
+        "interface_labels": "Add interface type labels (APB, AXI, etc.)"
+      }
+    },
+    "interface_specific": {
+      "apb": {
+        "signals": ["pclk", "presetn", "psel", "penable", "pwrite", "paddr", "pwdata", "prdata", "pready", "pslverr"],
+        "grouping": "Clock/Reset | Control | Address/Data | Response"
+      },
+      "axi_lite": {
+        "signals": ["aclk", "aresetn", "awaddr", "awvalid", "awready", "wdata", "wstrb", "wvalid", "wready", "bresp", "bvalid", "bready", "araddr", "arvalid", "arready", "rdata", "rresp", "rvalid", "rready"],
+        "grouping": "Clock/Reset | Write Address | Write Data | Write Response | Read Address | Read Data"
+      },
+      "uart": {
+        "signals": ["tx", "rx", "cts", "rts"],
+        "grouping": "Transmit | Receive | Flow Control"
+      },
+      "spi": {
+        "signals": ["sclk", "mosi", "miso", "ss_n"],
+        "grouping": "Clock | Data | Chip Select"
+      }
+    },
+    "generation_rules": {
+      "readability": "Use clear spacing and alignment for readability",
+      "consistency": "Use consistent symbols and formatting throughout",
+      "completeness": "Include all interface signals with proper grouping",
+      "annotations": "Add signal descriptions and interface labels",
+      "scalability": "Design diagrams to accommodate different IP sizes"
+    }
+  },
+  
+  "reference_projects": {
+    "simple_digital_ip": {
+      "description": "Basic digital IP with APB interface",
+      "files": [
+        "rtl/pwm_controller.sv",
+        "tb/tb_pwm_controller.sv",
+        "tb/cocotb/test_pwm_controller.py",
+        "flow/openlane/config.json",
+        "test/vectors/basic_test.json",
+        "docs/architecture.md"
+      ]
+    },
+    "complex_digital_ip": {
+      "description": "Complex digital IP with multiple interfaces",
+      "files": [
+        "rtl/uart_controller.sv",
+        "rtl/uart_transmitter.sv",
+        "rtl/uart_receiver.sv",
+        "tb/tb_uart_controller.sv",
+        "tb/cocotb/test_uart_controller.py",
+        "flow/openlane/config.json",
+        "test/vectors/uart_tests.json",
+        "docs/architecture.md"
+      ]
+    },
+    "hybrid_ip": {
+      "description": "IP block with analog and digital domains (e.g., SAR ADC)",
+      "files": [
+        "rtl/digital_core.sv",
+        "rtl/analog_interface.vams",
+        "tb/tb_digital_core.sv",
+        "tb/cocotb/test_digital_core.py",
+        "docs/mixed_signal_notes.md"
+      ]
+    }
+  }
+} 

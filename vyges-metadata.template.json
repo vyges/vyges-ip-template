@@ -1,73 +1,127 @@
 {
-    "$schema": "https://vyges.com/schema/v0.1/vyges-metadata.schema.json",
-    "name": "timer-16bit",
-    "version": "1.0.0",
-    "description": "A 16-bit countdown timer with APB interface and interrupt support.",
-    "license": "Apache-2.0",
-    "template": "vyges-ip-template@v1.0.0",
-    "source": {
-        "type": "git",
-        "url": "https://github.com/vyges/vyges-ip-template",
-        "commit": "main"
-    },
-    "language": "SystemVerilog",
+  "$schema": "https://vyges.com/schema/v1/vyges-metadata.schema.json",
+  "x-version": "1.0.0",
+  "name": "example/timer-16bit",
+  "version": "1.0.0",
+  "description": "A 16-bit countdown timer with APB interface and interrupt support for embedded systems.",
+  "license": "Apache-2.0",
+  "template": "vyges-ip-template@1.0.0",
+  "target": ["asic", "fpga"],
+  "design_type": ["digital"],
+  "maturity": "prototype",
+  "created": "2024-01-15T10:30:00Z",
+  "updated": "2024-01-15T10:30:00Z",
+  "source": {
+    "type": "git",
+    "url": "https://github.com/example/timer-16bit",
+    "commit": "main",
+    "private": false,
+    "containsEncryptedPayload": false,
+    "indexing": true
+  },
+  "maintainers": [
+    {
+      "name": "Example Developer",
+      "email": "developer@example.com",
+      "github": "example-dev"
+    }
+  ],
+  "branding": {
     "provider": "Example Company",
-    "repository": "https://github.com/example-company/timer-16bit",
+    "logo": "https://example.com/assets/logo.svg",
     "website": "https://example.com/ip/timer-16bit",
-    "target": ["simulation", "fpga", "asic"],
-    "interfaces": [
-      {
-        "name": "apb_if",
-        "type": "apb",
-        "direction": "slave",
-        "signals": [
-          { "name": "paddr", "width": 16 },
-          { "name": "pwdata", "width": 32 },
-          { "name": "prdata", "width": 32 },
-          { "name": "penable", "width": 1 },
-          { "name": "pwrite", "width": 1 },
-          { "name": "psel", "width": 1 },
-          { "name": "pready", "width": 1 }
-        ]
-      },
-      {
-        "name": "irq",
-        "type": "interrupt",
-        "direction": "output",
-        "signals": [
-          { "name": "irq", "width": 1 }
-        ]
-      }
-    ],
-    "test": {
-      "coverage": false,
-      "testbenches": ["cocotb", "verilator"],
-      "simulators": ["verilator"],
-      "status": "passing"
-    },
-    "flows": {
-      "verilator": {
-        "status": "verified"
-      },
-      "openlane": {
-        "pdks": ["sky130"],
-        "status": "tested"
-      },
-      "vivado": {
-        "status": "partial"
-      }
-    },
-    "integration": {
-      "known_good": [
-        "opentitan",
-        "rocket-chip"
+    "usage": "Use of the logo is permitted for attribution or compatibility references only."
+  },
+  "interfaces": [
+    {
+      "type": "bus",
+      "name": "apb_slave",
+      "protocol": "apb",
+      "direction": "slave",
+      "description": "APB slave interface for register access",
+      "signals": [
+        { "name": "pclk", "direction": "input", "width": 1, "description": "APB clock" },
+        { "name": "preset_n", "direction": "input", "width": 1, "description": "APB reset, active low" },
+        { "name": "paddr", "direction": "input", "width": 16, "description": "APB address" },
+        { "name": "pwdata", "direction": "input", "width": 32, "description": "APB write data" },
+        { "name": "prdata", "direction": "output", "width": 32, "description": "APB read data" },
+        { "name": "penable", "direction": "input", "width": 1, "description": "APB enable" },
+        { "name": "pwrite", "direction": "input", "width": 1, "description": "APB write enable" },
+        { "name": "psel", "direction": "input", "width": 1, "description": "APB select" },
+        { "name": "pready", "direction": "output", "width": 1, "description": "APB ready" }
       ]
     },
-    "branding": {
-      "provider": "Example Company",
-      "logo": "https://example.com/assets/logo.svg",
-      "website": "https://example.com/ip/timer-16bit",
-      "usage": "Use of the logo is permitted for attribution or compatibility references only."
+    {
+      "type": "interrupt",
+      "name": "timer_irq",
+      "direction": "output",
+      "description": "Timer interrupt output",
+      "signals": [
+        { "name": "irq", "direction": "output", "width": 1, "description": "Timer interrupt" }
+      ]
+    }
+  ],
+  "parameters": [
+    {
+      "name": "TIMER_WIDTH",
+      "type": "integer",
+      "default": 16,
+      "description": "Width of the timer counter",
+      "range": [8, 32]
+    },
+    {
+      "name": "APB_ADDR_WIDTH",
+      "type": "integer", 
+      "default": 16,
+      "description": "Width of APB address bus",
+      "range": [8, 32]
+    }
+  ],
+  "test": {
+    "coverage": true,
+    "testbenches": ["cocotb", "systemverilog"],
+    "simulators": ["verilator", "iverilog"],
+    "status": "passing",
+    "test_vectors": ["test/vectors/basic_timer.json", "test/vectors/interrupt_test.json"]
+  },
+  "flows": {
+    "verilator": {
+      "status": "verified",
+      "config": "flow/verilator/config.json"
+    },
+    "openlane": {
+      "pdks": ["sky130"],
+      "status": "tested",
+      "config": "flow/openlane/config.json"
+    },
+    "vivado": {
+      "status": "partial",
+      "config": "flow/vivado/config.json"
+    }
+  },
+  "integration": {
+    "known_good": ["opentitan", "rocket-chip"],
+    "examples": ["integration/opentitan/", "integration/rocket-chip/"]
+  },
+  "automation": {
+    "automation_level": "enhanced",
+    "minimal_required": ["name", "version", "license", "interfaces", "template", "target", "design_type", "maturity", "description", "source"],
+    "recommended_for_automation": ["parameters", "dependencies", "toolRequirements", "performance", "reliability", "packaging", "community"],
+    "blocking_issues": []
+  },
+  "meta": {
+    "template": {
+      "generator": "vyges-cli",
+      "init_tool": "vyges-cli", 
+      "template_version": "1.0.0",
+      "generated_at": "2024-01-15T10:30:00Z"
+    },
+    "generated_by": "vyges-cli",
+    "schema": {
+      "version": "1.0.0",
+      "compatible_versions": ["1.0.0", "1.1.0"],
+      "generated_with": "vyges-cli"
     }
   }
+}
   

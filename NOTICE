@@ -1,5 +1,5 @@
-Vyges IP Package: {{timer-16bit}}  
-Copyright (c) {{2025}} {{Your Name or Org}}
+Vyges IP Package
+Copyright (c) 2025 Vyges
 
 Licensed under the Apache License, Version 2.0 (the "License").
 You may obtain a copy of the License at:
@@ -14,8 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 This repository was created using the vyges-ip-template:
 https://github.com/vyges/vyges-ip-template
-
-Copyright (c) 2025 Vyges
 
 This IP block was created as part of the Vyges open silicon ecosystem:
 https://vyges.com
@@ -33,7 +31,10 @@ All trademarks mentioned belong to their respective owners.
 
 ---
 
+# IP Developer/Project Attribution
+# (Add your own copyright, maintainer, and project info below)
+
 Maintainers:
-{{Your Name}} <{{email@example.com}}>
-{{Optionally GitHub handle, website, or affiliation}}
+<Your Name> <your.email@example.com>
+<GitHub handle, website, or affiliation>
 

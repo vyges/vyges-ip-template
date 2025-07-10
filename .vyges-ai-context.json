@@ -108,7 +108,7 @@
   "project_structure": {
     "conventions": {
       "naming": {
-        "repository": "{orgname}-{ip-name} or {username}-{ip-name} (e.g., exampleOrg-uart-controller, janedoe-pwm-controller)",
+        "repository": "{orgname}/{repo-name} or {username}/{repo-name} (e.g., vyges/uart-controller, janedoe/pwm-generator)",
         "ip_name": "lowercase with hyphens/underscores, 3-50 chars, start with letter, no consecutive hyphens/underscores",
         "modules": "snake_case (e.g., pwm_controller, uart_transmitter)",
         "files": "snake_case.sv (e.g., pwm_controller.sv, uart_transmitter.sv)",

@@ -28,31 +28,31 @@ Whether you are a new user looking for a quickstart or an advanced developer see
 1. Navigate to [https://github.com/vyges/vyges-ip-template/generate](https://github.com/vyges/vyges-ip-template/generate)
 2. Click "Use this template"
 3. Fill in repository details:
-   - Repository name: `{orgname}-uart-controller` (e.g., `exampleOrg-uart-controller` or `janedoe-uart-controller`)
+   - Repository name: `uart-controller` (e.g., `uart-controller` or `pwm-generator`)
    - Description: `UART Controller IP block with configurable baud rate and FIFO support`
    - Make it Public or Private as preferred
 4. Click "Create repository from template"
 
 **Note:** The repository name follows the reverse DNS naming philosophy to avoid clashes:
 
-- Organization: `{orgname}-{ip-name}` (e.g., `exampleOrg-uart-controller`)
-- Personal account: `{username}-{ip-name}` (e.g., `janedoe-uart-controller`)
+- Organization: `{orgname}/{ip-name}` (e.g., `vyges/uart-controller`)
+- Personal account: `{username}/{ip-name}` (e.g., `janedoe/uart-controller`)
 - Developers have freedom to choose their preferred naming convention
 
 ### 1.2 Clone Locally
 ```bash
 # For organization repositories
-git clone --depth=1  https://github.com/exampleOrg/exampleOrg-uart-controller.git
-cd exampleOrg-uart-controller
+git clone --depth=1  https://github.com/vyges/uart-controller.git
+cd uart-controller
 
 # For personal repositories
 git clone --depth=1  https://github.com/janedoe/janedoe-uart-controller.git
-cd janedoe-uart-controller
+cd uart-controller
 
-# Alternative naming examples (all with required org/user prefixes)
-git clone --depth=1  https://github.com/exampleOrg/exampleOrg-uart-controller.git
-git clone --depth=1  https://github.com/janedoe/janedoe-my-uart.git
-git clone --depth=1  https://github.com/exampleOrg/exampleOrg-uart-16550.git
+# Alternative naming examples (standard GitHub format)
+git clone --depth=1  https://github.com/vyges/uart-controller.git
+git clone --depth=1  https://github.com/janedoe/my-uart.git
+git clone --depth=1  https://github.com/vyges/uart-16550.git
 ```
 
 ### 1.3 Initial Repository State
@@ -100,12 +100,12 @@ git clone --depth=1  https://github.com/exampleOrg/exampleOrg-uart-16550.git
 >   fpga/
 > ```
 
-**Naming Examples (all with required org/user prefixes):**
-- `exampleOrg-uart-controller/` (organization with prefix)
-- `janedoe-uart-controller/` (personal with prefix)
-- `exampleOrg-my-uart/` (descriptive name with prefix)
-- `janedoe-uart-16550/` (specific implementation with prefix)
-- `exampleOrg-custom-uart/` (custom name with prefix)
+**Naming Examples (standard GitHub format):**
+- `vyges/uart-controller` (organization repository)
+- `janedoe/uart-controller` (personal repository)
+- `vyges/my-uart` (descriptive name)
+- `janedoe/uart-16550` (specific implementation)
+- `vyges/custom-uart` (custom name)
 
 **✅ DESIGN CHOICE:** The template includes `vyges-metadata.template.json` to prevent developers from accidentally committing generic metadata. The Vyges CLI will generate the correct `vyges-metadata.json` dynamically.
 

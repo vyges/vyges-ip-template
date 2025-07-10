@@ -2,6 +2,8 @@
   "vyges_version": "1.0.0",
   "ai_context_version": "1.0.0",
   "description": "Defines structural, naming, and workflow conventions to guide AI-assisted hardware IP development within the Vyges platform. Enables consistent code generation, validation, and integration.",
+  "copyright": "© 2025 Vyges. All Rights Reserved",
+  "author": "shivaram@vyges.com",
   
   "catalog_objectives": {
     "description": "Ensure generated IP meets requirements for inclusion in the Vyges IP Catalog",

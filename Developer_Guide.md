@@ -2,10 +2,10 @@
 
 ## Overview
 
-The Vyges IP Template is a production-ready, open-source starting point for developing reusable SystemVerilog IP blocks for ASIC and FPGA projects. It is designed to maximize developer productivity by combining a minimal, extensible structure with powerful CLI and AI-driven automation.
+The Vyges IP Template is a production-ready, open-source starting point for developing reusable SystemVerilog functional IP blocks for ASIC and FPGA projects. It is designed to maximize developer productivity by combining a minimal, extensible structure with powerful CLI and AI-driven automation.
 
 This comprehensive guide covers:
-- Repository setup and naming conventions
+- Repository setup and naming conventions (one repository = one functional IP)
 - Step-by-step and fully automated (GOD-mode) development flows
 - Design, pinout, and interface documentation
 - Example metadata, RTL, testbenches, and flow configurations
@@ -33,27 +33,56 @@ Whether you are a new user looking for a quickstart or an advanced developer see
    - Make it Public or Private as preferred
 4. Click "Create repository from template"
 
-**Note:** The repository name follows the reverse DNS naming philosophy to avoid clashes:
+**Note:** The repository name follows the standard GitHub naming format and represents one functional IP:
 
-- Organization: `{orgname}/{ip-name}` (e.g., `vyges/uart-controller`)
-- Personal account: `{username}/{ip-name}` (e.g., `janedoe/uart-controller`)
-- Developers have freedom to choose their preferred naming convention
+- Organization: `{orgname}/{repo-name}` (e.g., `vyges/uart-controller`)
+- Personal account: `{username}/{repo-name}` (e.g., `janedoe/uart-controller`)
+- Each repository represents one functional IP in the catalog (e.g., `uart-controller` contains UART Master, FIFO, and other components as one functional unit)
 
-### 1.2 Clone Locally
+### 1.2 Create New Repository and Clone Template
+
+**Step 1: Create New Repository on GitHub**
+1. Go to [https://github.com/vyges/vyges-ip-template](https://github.com/vyges/vyges-ip-template)
+2. Click "Use this template" button
+3. Fill in repository details:
+   - Repository name: `uart-controller` (e.g., `uart-controller` or `pwm-generator`)
+   - Description: `UART Controller IP block with configurable baud rate and FIFO support`
+   - Make it Public or Private as preferred
+4. Click "Create repository from template"
+
+**Step 2: Clone Your New Repository**
 ```bash
-# For organization repositories
-git clone --depth=1  https://github.com/vyges/uart-controller.git
+# Clone your newly created repository (not the template)
+git clone --depth=1 https://github.com/vyges/uart-controller.git
 cd uart-controller
 
 # For personal repositories
-git clone --depth=1  https://github.com/janedoe/janedoe-uart-controller.git
+git clone --depth=1 https://github.com/janedoe/uart-controller.git
+cd uart-controller
+```
+
+**Alternative: Manual Template Setup (Advanced)**
+If you prefer to clone the template manually and set up the remote:
+
+```bash
+# Clone the template
+git clone --depth=1 https://github.com/vyges/vyges-ip-template.git uart-controller
 cd uart-controller
 
-# Alternative naming examples (standard GitHub format)
-git clone --depth=1  https://github.com/vyges/uart-controller.git
-git clone --depth=1  https://github.com/janedoe/my-uart.git
-git clone --depth=1  https://github.com/vyges/uart-16550.git
+# Option 1: Use Vyges CLI to remove template remote automatically
+vyges init --fix-remote
+
+# Option 2: Manually remove the template remote and add your new repository
+git remote remove origin
+git remote add origin https://github.com/your-username/your-repo.git
+
+# Verify the remote is correct
+git remote -v
+# Should show: origin  https://github.com/your-username/your-repo.git (fetch)
+# Should show: origin  https://github.com/your-username/your-repo.git (push)
 ```
+
+**Important:** You must create the new repository on GitHub before pushing your code. The Vyges CLI will warn you if the remote points to the template repository.
 
 ### 1.3 Initial Repository State
 **Expected Structure:**
@@ -101,11 +130,11 @@ git clone --depth=1  https://github.com/vyges/uart-16550.git
 > ```
 
 **Naming Examples (standard GitHub format):**
-- `vyges/uart-controller` (organization repository)
-- `janedoe/uart-controller` (personal repository)
-- `vyges/my-uart` (descriptive name)
-- `janedoe/uart-16550` (specific implementation)
-- `vyges/custom-uart` (custom name)
+- `vyges/uart-controller` (organization repository - one functional IP)
+- `janedoe/uart-controller` (personal repository - one functional IP)
+- `vyges/my-uart` (descriptive name - one functional IP)
+- `janedoe/uart-16550` (specific implementation - one functional IP)
+- `vyges/custom-uart` (custom name - one functional IP)
 
 **✅ DESIGN CHOICE:** The template includes `vyges-metadata.template.json` to prevent developers from accidentally committing generic metadata. The Vyges CLI will generate the correct `vyges-metadata.json` dynamically.
 
@@ -460,7 +489,7 @@ vyges init --interactive
 # Welcome to Vyges IP Development!
 # Build IP, Not Boilerplate
 # 
-# Let's set up your IP project:
+# Let's set up your functional IP project:
 # IP name: uart-controller (auto-detected from Git Repo name: github.com/janedoe/uart-controller)
 # Author: John Doe (auto-detected from Git: github.com/janedoe)
 # License: [MIT] Apache-2.0 BSD-3-Clause GPL-3.0 CERN-OHL-S Proprietary
@@ -474,7 +503,7 @@ vyges init --interactive
 # 
 # Change tools? [y/N]: n
 # 
-# Creating project structure...
+# Creating project structure in current directory...
 # ✓ Generated vyges-metadata.json
 # ✓ Created basic RTL template
 # ✓ Set up testbench structure
@@ -604,9 +633,9 @@ endmodule
 **For the minimal UART controller, no additional modules are needed.**
 **However, for more complex implementations, you might need:**
 
-- `rtl/uart_transmitter.sv` - UART transmission logic
-- `rtl/uart_receiver.sv` - UART reception logic
-- `rtl/apb_slave.sv` - APB slave interface wrapper
+- `rtl/uart_transmitter.sv` - UART transmission logic (component of the functional IP)
+- `rtl/uart_receiver.sv` - UART reception logic (component of the functional IP)
+- `rtl/apb_slave.sv` - APB slave interface wrapper (component of the functional IP)
 
 **✅ IMPROVED:** AI can generate supporting modules when needed:
 
@@ -615,6 +644,7 @@ endmodule
 # "Create a UART transmitter module following Vyges conventions"
 # "Create an APB slave interface wrapper"
 # "Generate UART receiver with proper timing"
+# "Generate FIFO component for the UART functional IP"
 ```
 
 ## Step 5: Testbench Development

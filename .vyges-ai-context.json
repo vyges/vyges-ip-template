@@ -109,6 +109,15 @@
     "conventions": {
       "naming": {
         "repository": "{orgname}/{repo-name} or {username}/{repo-name} (e.g., vyges/uart-controller, janedoe/pwm-generator)",
+        "repository_workflow": {
+          "step1": "Create new repository using GitHub 'Use this template' button from vyges-ip-template",
+          "step2": "Clone the newly created repository (not the template repository)",
+          "step3": "Use Vyges CLI to initialize the project in current directory",
+          "warning": "Ensure Git remote points to new repository, not template repository",
+          "fix_command": "git remote remove origin && git remote add origin https://github.com/{org}/{repo}.git",
+          "cli_fix": "Use 'vyges init --fix-remote' or 'vyges quickstart --fix-remote' to automatically remove template remote",
+          "functional_ip_principle": "Each repository represents one functional IP in the catalog (e.g., uart-controller contains UART Master, FIFO, and other components as one functional unit)"
+        },
         "ip_name": "lowercase with hyphens/underscores, 3-50 chars, start with letter, no consecutive hyphens/underscores",
         "modules": "snake_case (e.g., pwm_controller, uart_transmitter)",
         "files": "snake_case.sv (e.g., pwm_controller.sv, uart_transmitter.sv)",
@@ -354,36 +363,36 @@
     "create_testbench": "Create a SystemVerilog testbench for the given module. Include clock generation, reset sequence, and basic test stimulus.",
     "expand_structure": "Suggest when to use 'vyges expand' commands to add complexity to the project structure.",
     "validate_structure": "Check if the current project structure follows Vyges conventions and suggest improvements.",
-    "generate_documentation": "Generate documentation for the IP block based on the RTL code and metadata.",
+    "generate_documentation": "Generate documentation for the functional IP block based on the RTL code and metadata.",
     "refactor_module": "Refactor a SystemVerilog module to improve readability, modularity, and testability. Follow Vyges naming and structure conventions.",
-    "add_interface": "Extend the IP module by adding a new interface using Vyges Standardized Interface Catalog (e.g., AXI4-Lite, APB, Wishbone). Include port declarations and update documentation.",
-    "generate_catalog_ready_ip": "Create a SystemVerilog IP block that is ready for the Vyges Catalog. Include complete metadata, documentation, and testbench.",
-    "check_catalog_readiness": "Validate the IP block for Vyges Catalog readiness: metadata coverage, testability, and discoverability.",
-    "improve_catalog_score": "Improve this IP block to raise its catalog quality score by enhancing metadata, documentation, and test coverage.",
-    "generate_from_metadata": "Generate complete IP specification and code scaffolding from vyges-metadata.json",
+    "add_interface": "Extend the functional IP module by adding a new interface using Vyges Standardized Interface Catalog (e.g., AXI4-Lite, APB, Wishbone). Include port declarations and update documentation.",
+    "generate_catalog_ready_ip": "Create a SystemVerilog functional IP block that is ready for the Vyges Catalog. Include complete metadata, documentation, and testbench.",
+    "check_catalog_readiness": "Validate the functional IP block for Vyges Catalog readiness: metadata coverage, testability, and discoverability.",
+    "improve_catalog_score": "Improve this functional IP block to raise its catalog quality score by enhancing metadata, documentation, and test coverage.",
+    "generate_from_metadata": "Generate complete functional IP specification and code scaffolding from vyges-metadata.json",
     "update_metadata_from_code": "Update vyges-metadata.json based on changes in RTL code and interfaces",
     "synchronize_metadata_code": "Ensure vyges-metadata.json and generated code are in sync",
     "validate_ip_name": "Validate IP name format for GitHub compatibility and Vyges ecosystem usage",
-    "setup_project": "Guide developer through initial project setup using vyges init --interactive workflow",
+    "setup_project": "Guide developer through initial functional IP project setup using vyges init --interactive workflow",
     "use_standard_interfaces": "Use Vyges Standardized Interface Catalog signals and naming conventions for IP integration",
     "validate_interface_compliance": "Validate that interface signals follow Vyges Standardized Interface Catalog conventions",
     "generate_interface_wrapper": "Generate interface wrapper using standardized signal names from Vyges catalog",
-    "generate_ascii_diagram": "Generate ASCII block diagram showing IP block with all pins, grouped by interface type (clock, reset, data, control, etc.) with signal descriptions",
-    "generate_connection_diagram": "Generate ASCII diagram showing connections between multiple IP blocks, highlighting pin-to-pin connections and interface compatibility",
-    "validate_pin_connections": "Validate pin connections between IP blocks for signal compatibility, timing, and protocol compliance",
+    "generate_ascii_diagram": "Generate ASCII block diagram showing functional IP block with all pins, grouped by interface type (clock, reset, data, control, etc.) with signal descriptions",
+    "generate_connection_diagram": "Generate ASCII diagram showing connections between multiple functional IP blocks, highlighting pin-to-pin connections and interface compatibility",
+    "validate_pin_connections": "Validate pin connections between functional IP blocks for signal compatibility, timing, and protocol compliance",
     "generate_cocotb_testbench": "Generate comprehensive cocotb testbench with coverage, assertions, and waveform generation from vyges-metadata.json test specifications",
     "create_cocotb_harness": "Create cocotb verification harness that can be bundled into packaging metadata for automated testing",
     "setup_cocotb_ci": "Set up CI hooks for cocotb testbenches with verilator/vcs, returning waveform artifacts and coverage reports",
     "adapt_cocotb_chinese_tools": "Create cocotb-style testbench adapters for non-cocotb-compatible Chinese EDA tools",
     "generate_readme": "Generate comprehensive README.md following Vyges conventions with all required sections, tables, and badges",
     "update_readme_sections": "Update specific sections of README.md based on IP metadata and current project state",
-    "generate_pinout_table": "Generate a Markdown pinout table for the IP block, listing all external signals with columns: Name, Function, Direction, Description, based on vyges-metadata.json."
+    "generate_pinout_table": "Generate a Markdown pinout table for the functional IP block, listing all external signals with columns: Name, Function, Direction, Description, based on vyges-metadata.json."
   },
   
   "cli_integration": {
     "commands": {
       "init": {
-        "description": "Initialize a new IP project with interactive setup",
+        "description": "Initialize a new functional IP project with interactive setup",
         "examples": [
           "vyges init --interactive",
           "vyges init my-ip --type digital --pdk sky130",
@@ -394,11 +403,12 @@
           "Interactive license selection",
           "Platform and design type selection",
           "Tool auto-configuration",
-          "IP name validation"
+          "IP name validation",
+          "Functional IP principle (one repository = one functional IP)"
         ]
       },
       "validate": {
-        "description": "Validates IP metadata, project structure, and lint/simulation readiness",
+        "description": "Validates functional IP metadata, project structure, and lint/simulation readiness",
         "example": "vyges validate --strict"
       },
       "expand": {
@@ -406,15 +416,15 @@
         "example": "vyges expand --analog"
       },
       "test": {
-        "description": "Runs basic tests and validation for the IP block",
+        "description": "Runs basic tests and validation for the functional IP block",
         "example": "vyges test --simulation"
       },
       "publish": {
-        "description": "Publishes IP to Vyges catalog",
+        "description": "Publishes functional IP to Vyges catalog",
         "example": "vyges publish --dry-run"
       },
       "generate": {
-        "description": "Generate specifications and code from vyges-metadata.json",
+        "description": "Generate specifications and code for functional IP from vyges-metadata.json",
         "examples": [
           "vyges generate spec",
           "vyges generate code",
@@ -435,7 +445,7 @@
         ]
       },
       "diagram": {
-        "description": "Generate ASCII block diagrams for IP blocks and connections",
+        "description": "Generate ASCII block diagrams for functional IP blocks and connections",
         "examples": [
           "vyges diagram block --ip uart-controller",
           "vyges diagram connections --ip1 cpu --ip2 uart-controller",
@@ -462,7 +472,8 @@
         "Use vyges init --interactive for guided setup",
         "Validate IP name format for GitHub compatibility",
         "Select appropriate license and target platforms",
-        "Let CLI auto-configure tools based on choices"
+        "Let CLI auto-configure tools based on choices",
+        "Initialize in current directory (one repository = one functional IP)"
       ]
     }
   },

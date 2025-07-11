@@ -35,77 +35,98 @@
   "interfaces": [
     {
       "type": "bus",
-      "name": "apb_slave",
-      "protocol": "apb",
-      "direction": "slave",
-      "description": "APB slave interface for register access",
+      "direction": "input",
+      "protocol": "APB",
+      "width": 32,
       "signals": [
-        { "name": "pclk", "direction": "input", "width": 1, "description": "APB clock" },
-        { "name": "preset_n", "direction": "input", "width": 1, "description": "APB reset, active low" },
-        { "name": "paddr", "direction": "input", "width": 16, "description": "APB address" },
-        { "name": "pwdata", "direction": "input", "width": 32, "description": "APB write data" },
-        { "name": "prdata", "direction": "output", "width": 32, "description": "APB read data" },
-        { "name": "penable", "direction": "input", "width": 1, "description": "APB enable" },
-        { "name": "pwrite", "direction": "input", "width": 1, "description": "APB write enable" },
-        { "name": "psel", "direction": "input", "width": 1, "description": "APB select" },
-        { "name": "pready", "direction": "output", "width": 1, "description": "APB ready" }
+        { "name": "PCLK", "direction": "input", "type": "clock", "description": "APB clock signal" },
+        { "name": "PRESETn", "direction": "input", "type": "reset", "active_level": "low", "description": "APB reset signal" },
+        { "name": "PADDR", "direction": "input", "width": 16, "type": "data", "description": "APB address bus" },
+        { "name": "PWDATA", "direction": "input", "width": 32, "type": "data", "description": "APB write data" },
+        { "name": "PRDATA", "direction": "output", "width": 32, "type": "data", "description": "APB read data" },
+        { "name": "PENABLE", "direction": "input", "type": "control", "description": "APB enable signal" },
+        { "name": "PWRITE", "direction": "input", "type": "control", "description": "APB write enable" },
+        { "name": "PSEL", "direction": "input", "type": "control", "description": "APB select signal" },
+        { "name": "PREADY", "direction": "output", "type": "control", "description": "APB ready signal" }
       ]
     },
     {
       "type": "interrupt",
-      "name": "timer_irq",
       "direction": "output",
-      "description": "Timer interrupt output",
       "signals": [
-        { "name": "irq", "direction": "output", "width": 1, "description": "Timer interrupt" }
+        { "name": "timer_irq", "direction": "output", "type": "interrupt", "description": "Timer interrupt output" }
       ]
     }
   ],
   "parameters": [
     {
       "name": "TIMER_WIDTH",
-      "type": "integer",
+      "type": "int",
       "default": 16,
       "description": "Width of the timer counter",
-      "range": [8, 32]
+      "range": { "min": 8, "max": 32 },
+      "units": "bits",
+      "required": false
     },
     {
       "name": "APB_ADDR_WIDTH",
-      "type": "integer", 
+      "type": "int", 
       "default": 16,
       "description": "Width of APB address bus",
-      "range": [8, 32]
+      "range": { "min": 8, "max": 32 },
+      "units": "bits",
+      "required": false
     }
   ],
   "test": {
     "coverage": true,
     "testbenches": ["cocotb", "systemverilog"],
     "simulators": ["verilator", "iverilog"],
-    "status": "passing",
-    "test_vectors": ["test/vectors/basic_timer.json", "test/vectors/interrupt_test.json"]
+    "status": "passing"
   },
   "flows": {
     "verilator": {
-      "status": "verified",
-      "config": "flow/verilator/config.json"
+      "status": "verified"
     },
     "openlane": {
-      "pdks": ["sky130"],
-      "status": "tested",
-      "config": "flow/openlane/config.json"
+      "pdks": ["sky130B"],
+      "status": "tested"
     },
     "vivado": {
-      "status": "partial",
-      "config": "flow/vivado/config.json"
+      "status": "partial"
     }
   },
+  "asic": {
+    "flavor": "digital",
+    "pdks": ["sky130B"],
+    "synthesis_tool": "openlane",
+    "clock_freq_mhz": 100,
+    "constraints": ["constraints.sdc"],
+    "tools": ["yosys", "openroad"]
+  },
+  "fpga": {
+    "toolchain": "vivado",
+    "board": "arty-a7-35",
+    "cfu_playground_compatible": true,
+    "constraints": ["constraints.xdc"]
+  },
   "integration": {
-    "known_good": ["opentitan", "rocket-chip"],
-    "examples": ["integration/opentitan/", "integration/rocket-chip/"]
+    "examples": [
+      {
+        "target": "simulation",
+        "wrapper": "integration/timer_wrapper.v",
+        "tb": "integration/timer_tb.v"
+      },
+      {
+        "target": "fpga",
+        "wrapper": "integration/fpga_wrapper.v",
+        "tb": "integration/fpga_tb.v"
+      }
+    ]
   },
   "automation": {
     "automation_level": "enhanced",
-    "minimal_required": ["name", "version", "license", "interfaces", "template", "target", "design_type", "maturity", "description", "source"],
+    "minimal_required": ["name", "version", "license", "interfaces", "template", "target", "design_type", "maturity", "description", "source", "asic", "fpga", "test", "flows"],
     "recommended_for_automation": ["parameters", "dependencies", "toolRequirements", "performance", "reliability", "packaging", "community"],
     "blocking_issues": []
   },
@@ -122,6 +143,9 @@
       "compatible_versions": ["1.0.0", "1.1.0"],
       "generated_with": "vyges-cli"
     }
-  }
+  },
+  "categories": ["peripheral", "controller", "timer"],
+  "tags": ["timer", "apb", "interrupt", "16bit"],
+  "keywords": ["timer", "countdown", "interrupt", "apb", "peripheral"]
 }
   

@@ -34,7 +34,18 @@
       "trust_profile": "security indicators and maturity level",
       "maturity": "alpha|beta|stable|deprecated maturity status",
       "license": "SPDX license identifier",
-      "maintainers": "contact information for IP maintainers"
+      "maintainers": "contact information for IP maintainers",
+      "chiplet_ready": "boolean indicating if IP is designed for chiplet integration",
+      "integration_level": "rtl|netlist|hard_ip indicating integration abstraction level",
+      "packaging_considerations": "notes about physical packaging requirements",
+      "die_to_die_interfaces": "list of supported die-to-die interface protocols",
+      "interposer_constraints": "interposer technology, routing layers, pitch, die spacing",
+      "bump_constraints": "bump pitch, size, array configuration, power/signal counts",
+      "thermal_constraints": "power limits, junction temperature, thermal resistance, cooling",
+      "multi_die_testing": "test access methods, coverage requirements, test vectors",
+      "signal_conformance": "protocol compliance, verification tools, test suites",
+      "power_domains": "voltage, isolation, retention, current limits per domain",
+      "lifecycle": "origin, trusted fabricator, certifications, supply chain tracking"
     },
     "ai_prompts": {
       "generate_catalog_entry": "Generate a catalog-ready summary with name, version, description, interfaces, targets, tags, and trust indicators for the Vyges IP Catalog.",
@@ -150,6 +161,11 @@
           "flow": {
             "asic": "ASIC tool flows (OpenLane, Synopsys, etc.)",
             "fpga": "FPGA tool flows (Vivado, Quartus, etc.)"
+          },
+          "packaging": {
+            "interposer": "Interposer design and routing constraints",
+            "bump_map": "Bump map definitions for die-to-die connections",
+            "thermal": "Thermal analysis and constraints for multi-die systems"
           }
         }
       }
@@ -184,7 +200,13 @@
         "power_management": "Power signals: power_on, power_good, pwr_gate_en, pwr_retention",
         "mailbox": "Mailbox interface: mbx_req, mbx_ack, mbx_addr, mbx_data, mbx_we, mbx_valid, mbx_ready",
         "debug": "Debug interface: jtag_tck, jtag_tdi, jtag_tdo, jtag_tms, trace_data",
-        "security": "Security interface: fuse_data, fuse_addr, fuse_prog, fuse_done, trng_valid, trng_data"
+        "security": "Security interface: fuse_data, fuse_addr, fuse_prog, fuse_done, trng_valid, trng_data",
+        "chiplet_interfaces": {
+          "ucie": "UCIe interface signals: ucie_clk, ucie_rst_n, ucie_tx_data, ucie_rx_data, ucie_tx_valid, ucie_rx_valid, ucie_tx_ready, ucie_rx_ready",
+          "bow": "Bunch of Wires (BoW) interface: bow_clk, bow_rst_n, bow_tx_data, bow_rx_data, bow_tx_valid, bow_rx_valid",
+          "aib": "Advanced Interface Bus (AIB): aib_clk, aib_rst_n, aib_tx_data, aib_rx_data, aib_tx_valid, aib_rx_valid",
+          "emib": "Intel EMIB interface: emib_clk, emib_rst_n, emib_tx_data, emib_rx_data, emib_tx_valid, emib_rx_valid"
+        }
       },
       
       "testbench_patterns": {
@@ -386,7 +408,19 @@
     "adapt_cocotb_chinese_tools": "Create cocotb-style testbench adapters for non-cocotb-compatible Chinese EDA tools",
     "generate_readme": "Generate comprehensive README.md following Vyges conventions with all required sections, tables, and badges",
     "update_readme_sections": "Update specific sections of README.md based on IP metadata and current project state",
-    "generate_pinout_table": "Generate a Markdown pinout table for the functional IP block, listing all external signals with columns: Name, Function, Direction, Description, based on vyges-metadata.json."
+    "generate_pinout_table": "Generate a Markdown pinout table for the functional IP block, listing all external signals with columns: Name, Function, Direction, Description, based on vyges-metadata.json.",
+    "create_chiplet_ready_ip": "Create a chiplet-ready IP block with die-to-die interface support, packaging considerations, and multi-die integration capabilities",
+    "validate_chiplet_compatibility": "Validate IP block for chiplet integration readiness: interface compatibility, packaging requirements, and die-to-die connectivity",
+    "generate_chiplet_interface": "Generate die-to-die interface wrapper using UCIe, BoW, AIB, or EMIB protocols for chiplet integration",
+    "create_multi_die_testbench": "Create testbench for multi-die system simulation with chiplet-to-chiplet communication testing",
+    "generate_chiplet_documentation": "Generate chiplet-specific documentation including packaging requirements, die-to-die interface specifications, and integration guidelines",
+    "generate_interposer_constraints": "Generate interposer design constraints including technology, routing layers, pitch, and die spacing requirements",
+    "create_bump_constraints": "Create bump map constraints with pitch, size, array configuration, and power/signal bump counts",
+    "analyze_thermal_constraints": "Analyze and specify thermal constraints including power limits, junction temperature, thermal resistance, and cooling requirements",
+    "design_multi_die_testing": "Design multi-die testing strategy with test access methods, coverage requirements, and test vector specifications",
+    "validate_signal_conformance": "Validate signal conformance against protocol specifications with compliance testing and verification tools",
+    "configure_power_domains": "Configure power domains with voltage levels, isolation requirements, retention capabilities, and current limits",
+    "track_lifecycle_metadata": "Track lifecycle and supply chain metadata including origin, trusted fabricator status, certifications, and version control"
   },
   
   "cli_integration": {
@@ -450,6 +484,23 @@
           "vyges diagram block --ip uart-controller",
           "vyges diagram connections --ip1 cpu --ip2 uart-controller",
           "vyges diagram validate --ip1 cpu --ip2 uart-controller"
+        ]
+      },
+      "chiplet": {
+        "description": "Manage chiplet-specific features and multi-die integration",
+        "examples": [
+          "vyges chiplet validate --ip uart-controller",
+          "vyges chiplet validate --constraints interposer --ip uart-controller",
+          "vyges chiplet validate --constraints thermal --ip uart-controller",
+          "vyges chiplet generate-interface --protocol ucie --ip uart-controller",
+          "vyges chiplet create-testbench --multi-die --ip1 cpu --ip2 uart-controller",
+          "vyges chiplet generate-docs --packaging --ip uart-controller",
+          "vyges chiplet generate-constraints --interposer --ip uart-controller",
+          "vyges chiplet generate-constraints --bump-map --ip uart-controller",
+          "vyges chiplet analyze-thermal --ip uart-controller",
+          "vyges chiplet configure-power-domains --ip uart-controller",
+          "vyges chiplet validate-conformance --protocol ucie --ip uart-controller",
+          "vyges chiplet track-lifecycle --origin vyges/partner-x --ip uart-controller"
         ]
       }
     },
@@ -654,6 +705,26 @@
         "tb/tb_digital_core.sv",
         "tb/cocotb/test_digital_core.py",
         "docs/mixed_signal_notes.md"
+      ]
+    },
+    "chiplet_ready_ip": {
+      "description": "IP block designed for chiplet integration with die-to-die interfaces",
+      "files": [
+        "rtl/uart_controller.sv",
+        "rtl/ucie_interface.sv",
+        "rtl/chiplet_wrapper.sv",
+        "tb/tb_chiplet_integration.sv",
+        "tb/cocotb/test_chiplet_communication.py",
+        "packaging/interposer_constraints.json",
+        "packaging/bump_map.csv",
+        "packaging/thermal_analysis.json",
+        "packaging/power_domains.json",
+        "packaging/signal_conformance.json",
+        "packaging/lifecycle_metadata.json",
+        "docs/chiplet_integration.md",
+        "docs/packaging_requirements.md",
+        "docs/thermal_analysis.md",
+        "docs/power_management.md"
       ]
     }
   }

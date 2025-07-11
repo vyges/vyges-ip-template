@@ -20,6 +20,127 @@ Whether you are a new user looking for a quickstart or an advanced developer see
 - Verilator (for simulation)
 - Vyges CLI tool (for project initialization and metadata generation)
 - Basic knowledge of SystemVerilog
+- AI-enabled editor (Cursor, VSCode with Copilot, or similar)
+
+## AI-Assisted Development Mode
+
+The Vyges IP Template includes comprehensive AI context to accelerate development across multiple AI-enabled environments. This section explains how to leverage AI assistance in your preferred development environment.
+
+### AI Context Structure
+
+The template includes several AI context files designed for different environments:
+
+- **`.vyges-ai-context.json`** — Comprehensive development context with conventions, patterns, and AI prompts
+- **`.cursorrules`** — Cursor-specific development rules and conventions
+- **`.copilot-chat-context.md`** — GitHub Copilot chat context for VSCode
+- **`Developer_Guide.md`** — This comprehensive guide with AI prompts and workflows
+
+### Using AI Mode in Different Environments
+
+#### 1. Cursor Editor
+- Open the repository in Cursor. Cursor will automatically detect `.cursorrules` and load Vyges conventions.
+- The AI context from `.vyges-ai-context.json` is available for reference.
+- Use prompts like:
+  - "Create a SystemVerilog UART transmitter module following Vyges conventions"
+  - "What vyges expand command should I use to add FPGA support to this project?"
+  - "Create a cocotb testbench for the PWM controller following Vyges patterns"
+  - "Check if this module follows Vyges conventions and suggest improvements"
+  - "Generate README.md following Vyges documentation structure"
+- Best practices:
+  - Reference `.vyges-ai-context.json` explicitly in complex prompts
+  - Use the specific AI prompts listed in the context file
+  - Verify generated code follows Vyges naming conventions
+  - Ask for validation and improvement suggestions
+
+#### 2. VSCode with GitHub Copilot
+- Install GitHub Copilot extension in VSCode.
+- Open the repository and reference `.copilot-chat-context.md` for Vyges conventions.
+- Use Copilot Chat for guided development:
+  - "Generate SystemVerilog module following Vyges conventions"
+  - "What CLI commands should I use to initialize this UART controller project?"
+  - "Create README.md following Vyges documentation structure"
+  - "Validate this code for Vyges Catalog readiness"
+- Best practices:
+  - Use Copilot Chat for complex queries
+  - Reference the context file in your prompts
+  - Verify generated code matches Vyges patterns
+  - Ask for explanations of generated code
+
+#### 3. GitHub Copilot (Standalone)
+- Ensure you have GitHub Copilot access.
+- Open the repository in any supported editor.
+- Reference `.vyges-ai-context.json` for conventions.
+- Use comments to guide generation:
+  - `// Create UART controller following Vyges conventions`
+- Best practices:
+  - Use descriptive comments to guide Copilot
+  - Accept suggestions that follow Vyges patterns
+  - Manually verify generated code quality
+
+#### 4. Windsurf (JetBrains AI Assistant)
+- Install Windsurf in your JetBrains IDE.
+- Open the repository and reference `.vyges-ai-context.json` for context.
+- Use prompts like:
+  - "Generate SystemVerilog module following Vyges conventions from .vyges-ai-context.json"
+  - "Analyze this project structure and suggest Vyges compliance improvements"
+  - "Refactor this module to follow Vyges naming and structure conventions"
+- Best practices:
+  - Explicitly reference the AI context file
+  - Use Windsurf's project-aware features
+  - Leverage JetBrains IDE integration for better code generation
+
+#### 5. Custom LLM Integration
+- Copy relevant sections from `.vyges-ai-context.json`.
+- Include Vyges conventions in your LLM system prompt.
+- Use the AI prompts from the context file.
+- Example system prompt:
+  - "You are an AI assistant for Vyges IP development. Follow these conventions: Use SystemVerilog for RTL, snake_case naming, required module headers, place RTL in rtl/, testbenches in tb/, use vyges CLI commands, follow metadata-driven generation from vyges-metadata.json."
+- Best practices:
+  - Include complete context in system prompts
+  - Use specific AI prompts from the context file
+  - Validate generated code against Vyges conventions
+  - Iterate and improve prompts based on results
+
+### AI-Assisted Development Workflow
+
+1. **Project Initialization**
+   - Use CLI for initial setup: `vyges init --interactive`
+   - Use AI to customize and expand: "Customize this project for a UART controller with APB interface"
+2. **RTL Development**
+   - Generate RTL with AI assistance: "Create UART controller RTL following Vyges conventions"
+   - Add features: "Add FIFO support to the UART controller"
+3. **Testbench Development**
+   - Generate testbenches: "Create SystemVerilog testbench for UART controller"
+   - Advanced: "Generate cocotb testbench with coverage and assertions"
+4. **Documentation Generation**
+   - Generate documentation: "Generate README.md following Vyges documentation structure"
+   - Architecture: "Create architecture documentation for UART controller"
+   - Pinout: "Generate pinout table from interface definitions"
+5. **Validation and Quality Assurance**
+   - Use AI for validation: "Check this code for Vyges Catalog readiness"
+   - Improve: "Suggest improvements to raise catalog quality score"
+   - Interface: "Validate interface compliance with Vyges standards"
+
+### AI Context File Details
+
+- `.vyges-ai-context.json` includes:
+  - Code generation rules (RTL, testbench, documentation)
+  - Project structure and naming conventions
+  - CLI integration and workflow suggestions
+  - Validation rules and catalog readiness criteria
+  - Specific AI prompts for common tasks
+
+### Best Practices for AI-Assisted Development
+- Always reference the Vyges context in your prompts
+- Use specific AI prompts from `.vyges-ai-context.json`
+- Verify generated code follows Vyges conventions
+- Start with CLI initialization, then use AI for customization and expansion
+- Use AI for validation and improvement suggestions
+- Test AI-generated components thoroughly
+- Refine AI prompts based on results
+- Adapt prompts for your specific AI environment
+
+This AI-assisted development approach transforms the Vyges IP Template from a structural skeleton into an intelligent development environment that guides developers through every aspect of IP creation while maintaining consistency and quality standards.
 
 ## Step 1: Repository Creation and Setup
 

@@ -99,6 +99,34 @@
           "Testing"
         ]
       },
+      "design_document_generation": {
+        "input": "vyges-metadata.json with comprehensive IP specifications",
+        "output": "docs/{IP_NAME}_design_spec.md - Complete design specification document",
+        "template_sections": [
+          "Project Metadata",
+          "Design Flow",
+          "Functional Requirements",
+          "Interface Design",
+          "Register Map",
+          "Timing Specifications",
+          "Pinout and Package",
+          "Validation Strategy",
+          "RTL and Testbench Development",
+          "Flow Configuration",
+          "Documentation Requirements",
+          "Testing and Verification",
+          "Integration Guidelines",
+          "CI/CD Pipeline",
+          "Catalog Publication"
+        ],
+        "quality_requirements": {
+          "completeness": "All sections must be populated with relevant information",
+          "consistency": "Interface definitions must match vyges-metadata.json",
+          "traceability": "Requirements must be traceable to implementation",
+          "validation": "Include validation criteria and test strategies",
+          "visual_aids": "Include ASCII diagrams for block representation and connections"
+        }
+      },
       "code_generation": {
         "rtl_scaffolding": "Generate RTL modules in rtl/*.sv based on interfaces and parameters",
         "testbench_generation": "Create testbenches in SystemVerilog or Python (cocotb) based on test specifications",
@@ -110,6 +138,7 @@
     },
     "ai_assist_prompts": {
       "generate_from_metadata": "Generate complete IP specification and code scaffolding from vyges-metadata.json",
+      "generate_design_document": "Generate comprehensive design specification document following Vyges conventions with all required sections, quality requirements, and visual aids",
       "update_metadata_from_code": "Update vyges-metadata.json based on changes in RTL code and interfaces",
       "synchronize_metadata_code": "Ensure vyges-metadata.json and generated code are in sync"
     },
@@ -196,6 +225,8 @@
         "axi_master": "AXI master interface must follow standard AXI protocol signals",
         "axi_lite_slave": "AXI-Lite slave interface must include: aclk, aresetn, awaddr, awvalid, awready, wdata, wstrb, wvalid, wready, bresp, bvalid, bready, araddr, arvalid, arready, rdata, rresp, rvalid, rready",
         "wishbone": "Wishbone interface must include: wb_clk_i, wb_rst_i, wb_cyc_i, wb_stb_i, wb_ack_o, wb_adr_i, wb_dat_i, wb_dat_o, wb_we_i",
+        "spi_master": "SPI master interface must include: sclk_o, mosi_o, miso_i, ss_n_o[N-1:0], busy_o, done_o, data_valid_o, data_ready_i",
+        "spi_slave": "SPI slave interface must include: sclk_i, mosi_i, miso_o, ss_n_i, busy_o, done_o, data_valid_o, data_ready_i",
         "interrupts": "Interrupt signals should be named irq_<description>_o",
         "power_management": "Power signals: power_on, power_good, pwr_gate_en, pwr_retention",
         "mailbox": "Mailbox interface: mbx_req, mbx_ack, mbx_addr, mbx_data, mbx_we, mbx_valid, mbx_ready",
@@ -212,7 +243,11 @@
       "testbench_patterns": {
         "structure": "Testbenches must include clock generation, reset sequence, and test stimulus",
         "naming": "Testbench files must be named tb_<module_name>.sv",
-        "coverage": "Include basic functional coverage for critical paths"
+        "coverage": "Include basic functional coverage for critical paths",
+        "test_categories": "Must include functional, performance, corner case, error, and coverage tests",
+        "verification_goals": "Must achieve 95% functional coverage, 90% code coverage, 100% toggle coverage",
+        "assertion_requirements": "Must include protocol compliance, safety, and performance assertions",
+        "regression_testing": "Must support automated regression testing with CI/CD integration"
       }
     }
   },
@@ -237,7 +272,20 @@
         "Response checking",
         "Coverage collection"
       ],
-      "verification": "Include basic functional verification and coverage"
+      "verification": "Include basic functional verification and coverage",
+      "test_categories": {
+        "functional_tests": "Basic functionality, protocol compliance, interface verification",
+        "performance_tests": "Maximum frequency, throughput measurement, latency analysis",
+        "corner_case_tests": "FIFO overflow/underflow, timeout conditions, reset behavior",
+        "error_tests": "Protocol violations, error injection, fault tolerance",
+        "coverage_tests": "Functional coverage, code coverage, toggle coverage, FSM coverage"
+      },
+      "verification_requirements": {
+        "coverage_goals": "95% functional coverage, 90% code coverage, 100% toggle coverage",
+        "assertion_requirements": "Protocol compliance assertions, safety assertions, performance assertions",
+        "waveform_requirements": "Comprehensive waveform generation for debugging and analysis",
+        "regression_requirements": "Automated regression testing with CI/CD integration"
+      }
     },
     
     "cocotb": {
@@ -274,11 +322,26 @@
         "python_harness": "Offer Python-based verification harness even with proprietary Chinese tools",
         "abstraction_layer": "Abstract cocotb under Vyges CI runner for tool-agnostic verification"
       },
+      "test_categories": {
+        "functional_tests": "Basic functionality, protocol compliance, interface verification",
+        "performance_tests": "Maximum frequency, throughput measurement, latency analysis",
+        "corner_case_tests": "FIFO overflow/underflow, timeout conditions, reset behavior",
+        "error_tests": "Protocol violations, error injection, fault tolerance",
+        "coverage_tests": "Functional coverage, code coverage, toggle coverage, FSM coverage"
+      },
+      "verification_requirements": {
+        "coverage_goals": "95% functional coverage, 90% code coverage, 100% toggle coverage",
+        "assertion_requirements": "Protocol compliance assertions, safety assertions, performance assertions",
+        "waveform_requirements": "Comprehensive waveform generation for debugging and analysis",
+        "regression_requirements": "Automated regression testing with CI/CD integration"
+      },
       "ai_prompts": {
         "generate_cocotb_test": "Create a Python cocotb testbench for module {module_name}, covering {interfaces}, with clock/reset and basic stimulus, using metadata parameters.",
         "add_test_vectors": "Generate example input vectors for functional cocotb simulation based on interface definitions.",
         "create_advanced_tests": "Generate comprehensive cocotb tests with coverage, assertions, and edge case testing.",
-        "setup_cocotb_ci": "Configure CI/CD pipeline for cocotb testing with multiple simulators and coverage reporting."
+        "setup_cocotb_ci": "Configure CI/CD pipeline for cocotb testing with multiple simulators and coverage reporting.",
+        "generate_test_categories": "Generate comprehensive test categories including functional, performance, corner case, and error tests",
+        "create_verification_plan": "Create detailed verification plan with coverage goals, assertion requirements, and regression strategy"
       },
       "code_generation_rules": {
         "directory": "tb/cocotb/",
@@ -313,6 +376,13 @@
         "Testing",
         "Limitations"
       ],
+      "style_guidelines": {
+        "language": "Use clear English text instead of JSON code blocks for better readability",
+        "format": "Present technical information in organized bullet points and tables",
+        "accessibility": "Make documentation accessible to both technical and non-technical audiences",
+        "structure": "Use consistent formatting with clear headings and logical organization",
+        "examples": "Provide practical examples and use cases in plain text format"
+      },
       "pinout_table": {
         "description": "Every IP documentation and README should include a Markdown table listing all external signals.",
         "columns": ["Name", "Function", "Direction", "Description"],
@@ -377,6 +447,44 @@
       "simulation": "Testbenches must run without errors",
       "coverage": "Basic functional coverage must be implemented",
       "cocotb_compatibility": "If cocotb is used, test must run with ghdl/iverilog/verilator"
+    },
+    
+    "design_document_quality": {
+      "completeness": {
+        "required_sections": "All template sections must be present and populated",
+        "interface_coverage": "All interfaces must be documented with signal descriptions",
+        "timing_specifications": "Critical timing requirements must be specified",
+        "validation_criteria": "Clear validation and test criteria must be defined"
+      },
+      "consistency": {
+        "metadata_alignment": "Design document must align with vyges-metadata.json",
+        "interface_definitions": "Interface signals must match across all documentation",
+        "naming_conventions": "All names must follow Vyges naming conventions"
+      },
+      "traceability": {
+        "requirements_tracking": "Functional requirements must be traceable to implementation",
+        "test_coverage": "Test cases must cover all specified requirements",
+        "validation_evidence": "Validation results must demonstrate requirement satisfaction"
+      },
+      "visual_documentation": {
+        "block_diagrams": "ASCII block diagrams must be included for IP representation",
+        "connection_diagrams": "Connection diagrams must show interface compatibility",
+        "timing_diagrams": "Critical timing relationships must be visually represented"
+      },
+      "documentation_style": {
+        "language": "Use clear English text instead of JSON code blocks for better readability",
+        "format": "Present technical information in organized bullet points and tables",
+        "accessibility": "Make documentation accessible to both technical and non-technical audiences",
+        "structure": "Use consistent formatting with clear headings and logical organization",
+        "examples": "Provide practical examples and use cases in plain text format"
+      }
+    },
+    
+    "quality_assurance": {
+      "review_process": "Design documents must undergo peer review before publication",
+      "validation_evidence": "All claims must be supported by test results or analysis",
+      "compliance_checking": "Must comply with Vyges standards and industry best practices",
+      "maintainability": "Documentation must be maintainable and version-controlled"
     }
   },
   
@@ -409,6 +517,10 @@
     "generate_readme": "Generate comprehensive README.md following Vyges conventions with all required sections, tables, and badges",
     "update_readme_sections": "Update specific sections of README.md based on IP metadata and current project state",
     "generate_pinout_table": "Generate a Markdown pinout table for the functional IP block, listing all external signals with columns: Name, Function, Direction, Description, based on vyges-metadata.json.",
+    "generate_design_document": "Generate comprehensive design specification document following Vyges conventions with all required sections, quality requirements, and visual aids",
+    "validate_design_document": "Validate design document for completeness, consistency, traceability, and visual documentation quality",
+    "enhance_design_document": "Improve existing design document by adding missing sections, enhancing visual aids, and ensuring quality compliance",
+    "improve_documentation_readability": "Convert JSON code blocks and technical jargon to clear English text for better accessibility and readability",
     "create_chiplet_ready_ip": "Create a chiplet-ready IP block with die-to-die interface support, packaging considerations, and multi-die integration capabilities",
     "validate_chiplet_compatibility": "Validate IP block for chiplet integration readiness: interface compatibility, packaging requirements, and die-to-die connectivity",
     "generate_chiplet_interface": "Generate die-to-die interface wrapper using UCIe, BoW, AIB, or EMIB protocols for chiplet integration",
@@ -420,7 +532,20 @@
     "design_multi_die_testing": "Design multi-die testing strategy with test access methods, coverage requirements, and test vector specifications",
     "validate_signal_conformance": "Validate signal conformance against protocol specifications with compliance testing and verification tools",
     "configure_power_domains": "Configure power domains with voltage levels, isolation requirements, retention capabilities, and current limits",
-    "track_lifecycle_metadata": "Track lifecycle and supply chain metadata including origin, trusted fabricator status, certifications, and version control"
+    "track_lifecycle_metadata": "Track lifecycle and supply chain metadata including origin, trusted fabricator status, certifications, and version control",
+    "setup_fpga_project": "Set up FPGA project structure with appropriate toolchain, constraints, and IP cores",
+    "generate_fpga_flow": "Generate FPGA-specific flow configuration with synthesis, implementation, and bitstream generation",
+    "create_fpga_constraints": "Create FPGA timing and pin constraints for specific board and toolchain",
+    "integrate_fpga_ip": "Integrate vendor IP cores with proper configuration and instantiation",
+    "validate_fpga_timing": "Validate FPGA timing constraints and perform static timing analysis",
+    "generate_fpga_bitstream": "Generate FPGA bitstream with proper synthesis and implementation flow",
+    "setup_fpga_simulation": "Set up FPGA-specific simulation environment with vendor tools",
+    "create_fpga_testbench": "Create FPGA-specific testbench for hardware verification",
+    "analyze_fpga_utilization": "Analyze FPGA resource utilization and optimization opportunities",
+    "generate_comprehensive_testbench": "Generate comprehensive testbench with functional, performance, corner case, error, and coverage tests",
+    "create_verification_plan": "Create detailed verification plan with coverage goals, assertion requirements, and regression strategy",
+    "setup_test_automation": "Set up automated test execution with multiple simulators and coverage reporting",
+    "validate_test_coverage": "Validate test coverage against specified goals and requirements"
   },
   
   "cli_integration": {
@@ -450,8 +575,13 @@
         "example": "vyges expand --analog"
       },
       "test": {
-        "description": "Runs basic tests and validation for the functional IP block",
-        "example": "vyges test --simulation"
+        "description": "Runs comprehensive tests and validation for the functional IP block",
+        "examples": [
+          "vyges test --simulation",
+          "vyges test --coverage --goals 95,90,100",
+          "vyges test --regression --all-simulators",
+          "vyges test --categories functional,performance,corner-case,error"
+        ]
       },
       "publish": {
         "description": "Publishes functional IP to Vyges catalog",
@@ -466,7 +596,28 @@
           "vyges generate testbench --lang cocotb",
           "vyges generate flow --tool openlane",
           "vyges generate readme",
-          "vyges generate readme --update-sections"
+          "vyges generate readme --update-sections",
+          "vyges generate design-doc",
+          "vyges generate design-doc --validate",
+          "vyges generate design-doc --enhance",
+          "vyges generate fpga-flow --toolchain vivado",
+          "vyges generate fpga-constraints --board arty-a7",
+          "vyges generate fpga-project --toolchain quartus"
+        ]
+      },
+      "fpga": {
+        "description": "Manage FPGA-specific flows and toolchains",
+        "examples": [
+          "vyges fpga setup --toolchain vivado --board arty-a7",
+          "vyges fpga generate-constraints --toolchain vivado --board arty-a7",
+          "vyges fpga synthesize --toolchain vivado --project spi_controller",
+          "vyges fpga implement --toolchain vivado --project spi_controller",
+          "vyges fpga generate-bitstream --toolchain vivado --project spi_controller",
+          "vyges fpga simulate --toolchain vivado --testbench tb_spi_controller",
+          "vyges fpga analyze-timing --toolchain vivado --project spi_controller",
+          "vyges fpga integrate-ip --toolchain vivado --ip uart_controller",
+          "vyges fpga program --toolchain vivado --bitstream spi_controller.bit",
+          "vyges fpga validate --toolchain vivado --board arty-a7"
         ]
       },
       "cocotb": {
@@ -475,7 +626,10 @@
           "vyges cocotb generate --ip uart-controller",
           "vyges cocotb setup-ci --simulator verilator",
           "vyges cocotb run --simulator vcs --coverage",
-          "vyges cocotb create-harness --bundle-metadata"
+          "vyges cocotb create-harness --bundle-metadata",
+          "vyges cocotb generate-categories --ip spi-controller",
+          "vyges cocotb create-verification-plan --ip spi-controller",
+          "vyges cocotb validate-coverage --ip spi-controller --goals 95,90,100"
         ]
       },
       "diagram": {
@@ -513,9 +667,28 @@
         "When adding platform-specific constraints: vyges expand --constraints asic,fpga",
         "When creating multi-IP project with different targets: vyges expand --multi-ip --platform asic,fpga"
       ],
+      "fpga_workflow": [
+        "When targeting FPGA: vyges fpga setup --toolchain vivado --board arty-a7",
+        "When generating FPGA constraints: vyges fpga generate-constraints --toolchain vivado --board arty-a7",
+        "When synthesizing for FPGA: vyges fpga synthesize --toolchain vivado --project spi_controller",
+        "When implementing FPGA design: vyges fpga implement --toolchain vivado --project spi_controller",
+        "When generating bitstream: vyges fpga generate-bitstream --toolchain vivado --project spi_controller",
+        "When programming FPGA: vyges fpga program --toolchain vivado --bitstream spi_controller.bit"
+      ],
+      "chiplet_workflow": [
+        "When designing chiplet: vyges chiplet validate --ip spi-controller",
+        "When implementing chiplet wrapper: vyges chiplet generate-interface --protocol ucie --ip spi-controller",
+        "When designing packaging: vyges chiplet generate-constraints --interposer --ip spi-controller",
+        "When analyzing thermal: vyges chiplet analyze-thermal --ip spi-controller",
+        "When configuring power: vyges chiplet configure-power-domains --ip spi-controller",
+        "When testing multi-die: vyges chiplet create-testbench --multi-die --ip1 cpu --ip2 spi-controller",
+        "When validating integration: vyges chiplet validate-conformance --protocol ucie --ip spi-controller",
+        "When tracking lifecycle: vyges chiplet track-lifecycle --origin vyges/partner-x --ip spi-controller"
+      ],
       "metadata_driven_workflow": [
         "Start with vyges-metadata.json as source of truth",
         "Use vyges generate spec to create requirements document",
+        "Use vyges generate design-doc to create comprehensive design specification",
         "Use vyges generate code to create RTL scaffolding",
         "Use vyges generate testbench to create verification code"
       ],
@@ -529,6 +702,263 @@
     }
   },
   
+  "fpga_flow_configuration": {
+    "description": "Comprehensive FPGA tool flow configuration and requirements",
+    "supported_toolchains": {
+      "vivado": {
+        "description": "Xilinx Vivado FPGA flow for Xilinx devices",
+        "tools": ["vivado", "vivado_hls", "vitis"],
+        "supported_families": ["artix7", "kintex7", "virtex7", "zynq", "ultrascale", "versal"],
+        "config_files": {
+          "project": "vivado_project.tcl",
+          "constraints": "constraints.xdc",
+          "synthesis": "synthesis.tcl",
+          "implementation": "implementation.tcl",
+          "bitstream": "bitstream.tcl"
+        },
+        "outputs": ["bitstream.bit", "netlist.v", "timing_report.txt", "utilization_report.txt"],
+        "board_support": ["arty-a7", "nexys4", "zybo", "ultra96", "kcu105"],
+        "ip_catalog": "Xilinx IP Catalog integration",
+        "simulation": "Vivado Simulator support",
+        "version_requirements": "Vivado 2023.1+ recommended"
+      },
+      "quartus": {
+        "description": "Intel Quartus FPGA flow for Intel/Altera devices",
+        "tools": ["quartus", "modelsim", "nios_eds"],
+        "supported_families": ["cyclone", "arria", "stratix", "max", "agilex"],
+        "config_files": {
+          "project": "quartus_project.qpf",
+          "constraints": "constraints.sdc",
+          "synthesis": "synthesis.qsf",
+          "implementation": "implementation.qsf"
+        },
+        "outputs": ["output.sof", "netlist.v", "timing_report.txt", "power_report.txt"],
+        "board_support": ["de10-nano", "de1-soc", "cyclone-v", "arria-10"],
+        "ip_catalog": "Intel IP Catalog integration",
+        "simulation": "ModelSim support",
+        "version_requirements": "Quartus Prime 22.1+ recommended"
+      },
+      "yosys_symbiflow": {
+        "description": "Open-source FPGA flow with Yosys and SymbiFlow",
+        "tools": ["yosys", "nextpnr", "symbiflow"],
+        "supported_families": ["ice40", "ecp5", "artix7"],
+        "config_files": {
+          "synthesis": "yosys_synth.tcl",
+          "constraints": "constraints.pcf",
+          "placement": "nextpnr_config.py"
+        },
+        "outputs": ["output.bin", "netlist.v", "timing_report.txt"],
+        "board_support": ["icebreaker", "ecp5-evn", "arty-a7"],
+        "open_source": "Fully open-source toolchain",
+        "version_requirements": "Latest stable releases"
+      },
+      "openfpga": {
+        "description": "OpenFPGA framework for customizable FPGA architectures",
+        "tools": ["openfpga", "vpr", "odin"],
+        "config_files": {
+          "architecture": "openfpga_config.xml",
+          "placement": "vpr_config.xml",
+          "constraints": "constraints.xml"
+        },
+        "outputs": ["bitstream.bin", "architecture.xml", "routing.txt"],
+        "customizable": "User-defined FPGA architecture support",
+        "research_oriented": "Academic and research applications"
+      }
+    },
+    "fpga_specific_requirements": {
+      "constraints": {
+        "timing": "FPGA-specific timing constraints (XDC, SDC, PCF)",
+        "pin_assignment": "I/O pin assignment and board-specific constraints",
+        "clock_management": "Clock domain crossing and clock constraints",
+        "power": "Power consumption and thermal constraints",
+        "area": "Resource utilization and area constraints",
+        "io_standards": "I/O voltage standards and drive strength"
+      },
+      "verification": {
+        "simulation": "FPGA-specific simulation with vendor tools",
+        "timing_analysis": "Static timing analysis for FPGA",
+        "power_analysis": "Power consumption analysis",
+        "functional_verification": "FPGA-specific functional verification",
+        "post_route_simulation": "Post-placement and routing simulation"
+      },
+      "integration": {
+        "ip_cores": "Vendor IP core integration and configuration",
+        "board_support": "Board-specific integration and testing",
+        "debug": "FPGA debugging and signal analysis tools",
+        "programming": "Bitstream generation and programming tools",
+        "hardware_testing": "On-board hardware verification"
+      }
+    },
+    "fpga_project_structure": {
+      "flow": {
+        "vivado": "flow/vivado/",
+        "quartus": "flow/quartus/",
+        "yosys": "flow/yosys/",
+        "openfpga": "flow/openfpga/"
+      },
+      "constraints": {
+        "vivado": "constraints/vivado/",
+        "quartus": "constraints/quartus/",
+        "yosys": "constraints/yosys/"
+      },
+      "ip_cores": {
+        "vivado": "ip/vivado/",
+        "quartus": "ip/quartus/",
+        "generic": "ip/generic/"
+      },
+      "testbenches": {
+        "simulation": "tb/simulation/",
+        "hardware": "tb/hardware/"
+      }
+    },
+    "ai_prompts": {
+      "generate_fpga_flow": "Generate FPGA-specific flow configuration for {toolchain} with appropriate constraints and project files",
+      "setup_fpga_project": "Set up FPGA project structure with {toolchain} toolchain, including constraints and IP cores",
+      "create_fpga_constraints": "Create FPGA-specific timing and pin constraints for {board} using {toolchain}",
+      "integrate_fpga_ip": "Integrate vendor IP cores for {toolchain} with proper configuration and instantiation",
+      "validate_fpga_timing": "Validate FPGA timing constraints and perform static timing analysis",
+      "generate_fpga_bitstream": "Generate FPGA bitstream with proper synthesis and implementation flow"
+    }
+  },
+  
+  "chiplet_workflow_configuration": {
+    "description": "Comprehensive chiplet development workflow and multi-die integration",
+    "chiplet_development_phases": {
+      "phase1_design": {
+        "description": "Chiplet architecture and interface design",
+        "activities": [
+          "Define chiplet boundaries and interfaces",
+          "Select die-to-die interface protocols",
+          "Design chiplet wrapper and interface logic",
+          "Plan power domain partitioning",
+          "Define thermal and packaging requirements"
+        ],
+        "deliverables": [
+          "Chiplet architecture specification",
+          "Interface protocol definitions",
+          "Power domain specifications",
+          "Thermal analysis requirements"
+        ]
+      },
+      "phase2_implementation": {
+        "description": "RTL implementation and verification",
+        "activities": [
+          "Implement chiplet wrapper modules",
+          "Develop die-to-die interface logic",
+          "Create power management logic",
+          "Implement test access mechanisms",
+          "Develop chiplet-specific testbenches"
+        ],
+        "deliverables": [
+          "Chiplet RTL implementation",
+          "Interface verification testbenches",
+          "Power domain verification",
+          "Multi-die communication tests"
+        ]
+      },
+      "phase3_packaging": {
+        "description": "Packaging design and constraints",
+        "activities": [
+          "Design interposer layout and routing",
+          "Define bump map and connectivity",
+          "Specify thermal management solutions",
+          "Plan power delivery network",
+          "Design test access infrastructure"
+        ],
+        "deliverables": [
+          "Interposer design constraints",
+          "Bump map specifications",
+          "Thermal analysis results",
+          "Power delivery specifications"
+        ]
+      },
+      "phase4_integration": {
+        "description": "Multi-die system integration",
+        "activities": [
+          "Integrate multiple chiplets",
+          "Verify system-level functionality",
+          "Perform thermal and power analysis",
+          "Validate signal integrity",
+          "Execute system-level testing"
+        ],
+        "deliverables": [
+          "Integrated system design",
+          "System-level verification results",
+          "Thermal and power analysis reports",
+          "Signal integrity analysis"
+        ]
+      }
+    },
+    "chiplet_specific_tools": {
+      "design_tools": {
+        "interposer_design": ["Cadence Virtuoso", "Synopsys IC Compiler", "Mentor Calibre"],
+        "thermal_analysis": ["Ansys Icepak", "Cadence Celsius", "Synopsys PrimePower"],
+        "signal_integrity": ["Ansys HFSS", "Cadence Sigrity", "Synopsys HSPICE"],
+        "power_analysis": ["Synopsys PrimePower", "Cadence Voltus", "Mentor PowerPro"]
+      },
+      "verification_tools": {
+        "multi_die_simulation": ["Synopsys VCS", "Cadence Xcelium", "Mentor Questa"],
+        "formal_verification": ["Synopsys VC Formal", "Cadence Jasper", "Mentor Questa Formal"],
+        "emulation": ["Synopsys ZeBu", "Cadence Palladium", "Mentor Veloce"]
+      },
+      "testing_tools": {
+        "die_testing": ["Advantest V93000", "Teradyne UltraFLEX", "Cohu Falcon"],
+        "system_testing": ["Advantest T2000", "Teradyne J750", "Cohu Diamond"],
+        "thermal_testing": ["Thermal imaging cameras", "Thermal test chambers"]
+      }
+    },
+    "chiplet_quality_assurance": {
+      "interface_validation": {
+        "protocol_compliance": "Validate die-to-die interface protocol compliance",
+        "signal_integrity": "Verify signal integrity across interposer",
+        "timing_closure": "Ensure timing closure across multiple dies",
+        "power_integrity": "Validate power delivery and noise margins"
+      },
+      "thermal_validation": {
+        "junction_temperature": "Verify junction temperature within limits",
+        "thermal_resistance": "Validate thermal resistance specifications",
+        "cooling_requirements": "Confirm cooling solution adequacy",
+        "thermal_cycling": "Test thermal cycling reliability"
+      },
+      "reliability_validation": {
+        "mechanical_stress": "Validate mechanical stress handling",
+        "thermal_stress": "Test thermal stress reliability",
+        "electrical_stress": "Verify electrical stress tolerance",
+        "aging_effects": "Analyze long-term aging effects"
+      }
+    },
+    "chiplet_ecosystem_integration": {
+      "standards_compliance": {
+        "ucie": "Universal Chiplet Interconnect Express compliance",
+        "bow": "Bunch of Wires (BoW) standard compliance",
+        "aib": "Advanced Interface Bus (AIB) compliance",
+        "emib": "Embedded Multi-die Interconnect Bridge compliance"
+      },
+      "vendor_integration": {
+        "foundry_partners": "Integration with foundry chiplet ecosystems",
+        "packaging_partners": "Collaboration with packaging service providers",
+        "testing_partners": "Integration with testing service providers",
+        "supply_chain": "End-to-end supply chain management"
+      },
+      "certification": {
+        "reliability_certification": "Industry reliability certification",
+        "quality_certification": "Quality management system certification",
+        "security_certification": "Security and trust certification",
+        "compliance_certification": "Regulatory compliance certification"
+      }
+    },
+    "ai_prompts": {
+      "design_chiplet_architecture": "Design chiplet architecture with optimal die partitioning and interface selection",
+      "implement_chiplet_wrapper": "Implement chiplet wrapper with die-to-die interface and power management",
+      "create_chiplet_testbench": "Create comprehensive testbench for chiplet functionality and interfaces",
+      "design_interposer_layout": "Design interposer layout with optimal routing and bump placement",
+      "analyze_chiplet_thermal": "Perform thermal analysis for chiplet integration and cooling requirements",
+      "validate_chiplet_integration": "Validate chiplet integration with system-level verification and testing",
+      "optimize_chiplet_power": "Optimize power delivery and management for multi-die chiplet system",
+      "certify_chiplet_quality": "Certify chiplet quality and reliability for production deployment"
+    }
+  },
+  
   "catalog_score_guidance": {
     "weighting": {
       "metadata_completeness": 40,
@@ -536,6 +966,14 @@
       "code_quality": 15,
       "documentation": 10,
       "discoverability_tags": 10
+    },
+    "chiplet_specific_weighting": {
+      "interface_compliance": 25,
+      "thermal_analysis": 20,
+      "power_integrity": 20,
+      "signal_integrity": 15,
+      "reliability_validation": 10,
+      "ecosystem_integration": 10
     },
     "ai_prompt": "Improve this IP block to raise its catalog quality score"
   },
@@ -695,6 +1133,58 @@
         "flow/openlane/config.json",
         "test/vectors/uart_tests.json",
         "docs/architecture.md"
+      ]
+    },
+    "spi_controller_ip": {
+      "description": "SPI Controller IP with comprehensive design documentation and validation",
+      "files": [
+        "rtl/spi_controller.sv",
+        "rtl/spi_master.sv",
+        "rtl/spi_slave.sv",
+        "rtl/spi_fifo.sv",
+        "tb/tb_spi_controller.sv",
+        "tb/cocotb/test_spi_controller.py",
+        "flow/openlane/config.json",
+        "flow/vivado/constraints.xdc",
+        "test/vectors/spi_tests.json",
+        "docs/SPI_Controller_design.md",
+        "docs/architecture.md",
+        "docs/waveforms.md"
+      ],
+      "design_features": [
+        "Comprehensive design specification document",
+        "Multiple interface support (APB, SPI Master/Slave)",
+        "Configurable parameters and register map",
+        "Complete validation strategy with test vectors",
+        "Visual documentation with ASCII diagrams",
+        "Quality assurance and compliance checking"
+      ]
+    },
+    "fpga_optimized_ip": {
+      "description": "IP block optimized for FPGA implementation with vendor-specific features",
+      "files": [
+        "rtl/spi_controller.sv",
+        "rtl/spi_fpga_optimized.sv",
+        "flow/vivado/vivado_project.tcl",
+        "flow/vivado/constraints.xdc",
+        "flow/vivado/synthesis.tcl",
+        "flow/vivado/implementation.tcl",
+        "constraints/vivado/pin_assignment.xdc",
+        "constraints/vivado/timing.xdc",
+        "ip/vivado/spi_controller_ip.tcl",
+        "tb/fpga/tb_fpga_spi_controller.sv",
+        "tb/hardware/fpga_test_bench.v",
+        "docs/fpga_integration.md",
+        "docs/fpga_timing_analysis.md",
+        "docs/fpga_utilization_report.md"
+      ],
+      "fpga_features": [
+        "Vendor-specific optimizations (Xilinx/Intel)",
+        "FPGA resource utilization optimization",
+        "Timing closure and constraint management",
+        "IP core integration and configuration",
+        "Hardware verification and testing",
+        "Bitstream generation and programming"
       ]
     },
     "hybrid_ip": {

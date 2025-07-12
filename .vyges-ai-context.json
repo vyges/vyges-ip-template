@@ -142,6 +142,7 @@
       "update_metadata_from_code": "Update vyges-metadata.json based on changes in RTL code and interfaces",
       "synchronize_metadata_code": "Ensure vyges-metadata.json and generated code are in sync"
     },
+    "branding_guidance": "Always include a 'branding' property at the top level of vyges-metadata.json. Example: 'branding': { 'provider': 'Vyges', 'logo': 'https://vyges.com/images/logo.svg', 'website': 'https://vyges.com/catalog', 'usage': 'Use of the logo is permitted for attribution or compatibility references only.' }. This ensures catalog and UI consistency and enables robust provider branding.",
     "notes": "The pinout table in documentation and README should be auto-generated from the interfaces section of vyges-metadata.json for consistency."
   },
   

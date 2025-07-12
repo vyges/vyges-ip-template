@@ -144,6 +144,30 @@ This AI-assisted development approach transforms the Vyges IP Template from a st
 
 ## Step 1: Repository Creation and Setup
 
+### 🚀 Quick Start (Recommended Workflow)
+
+**For most users, follow this simple 3-step process:**
+
+1. **Create Repository from Template**
+   - Go to [https://github.com/vyges/vyges-ip-template/generate](https://github.com/vyges/vyges-ip-template/generate)
+   - Click "Use this template"
+   - Name your repository (e.g., `uart-controller`)
+   - Create repository
+
+2. **Clone and Start Development**
+   ```bash
+   git clone https://github.com/your-username/your-repo.git
+   cd your-repo
+   ```
+
+3. **Begin Development**
+   ```bash
+   # Your repository is ready for development
+   # Start with Step 2: Design Your IP Block
+   ```
+
+**✅ This approach avoids all remote configuration issues!**
+
 ### 1.1 Create Repository from Template
 
 1. Navigate to [https://github.com/vyges/vyges-ip-template/generate](https://github.com/vyges/vyges-ip-template/generate)
@@ -182,28 +206,92 @@ git clone --depth=1 https://github.com/janedoe/uart-controller.git
 cd uart-controller
 ```
 
-**Alternative: Manual Template Setup (Advanced)**
-If you prefer to clone the template manually and set up the remote:
+**✅ That's it! Your repository is ready for development.**
+
+**⚠️ IMPORTANT: Repository Setup Best Practices**
+
+**✅ RECOMMENDED APPROACH: Use GitHub Template Feature**
+- Always use GitHub's "Use this template" feature for new repositories
+- This creates a clean repository with proper history
+- No remote conflicts or template references to clean up
+- Simplest and most reliable approach
+
+**❌ AVOID: Manual Template Cloning**
+- **Do not clone the template repository manually**
+- This leads to remote conflicts and push errors
+- Template references persist in metadata
+- Requires complex cleanup procedures
+- **Use GitHub's template feature instead**
+
+**🔄 If You Encounter Push Issues:**
+If you get errors when pushing to your repository:
 
 ```bash
-# Clone the template
-git clone --depth=1 https://github.com/vyges/vyges-ip-template.git uart-controller
-cd uart-controller
+# Check current remote configuration
+git remote -v
 
-# Option 1: Use Vyges CLI to remove template remote automatically
-vyges init --fix-remote
-
-# Option 2: Manually remove the template remote and add your new repository
+# If remote points to template, fix it:
 git remote remove origin
 git remote add origin https://github.com/your-username/your-repo.git
 
-# Verify the remote is correct
-git remote -v
-# Should show: origin  https://github.com/your-username/your-repo.git (fetch)
-# Should show: origin  https://github.com/your-username/your-repo.git (push)
+# If repository doesn't exist on GitHub, create it first:
+# 1. Go to GitHub.com
+# 2. Click "New repository"
+# 3. Name it (e.g., uart-controller)
+# 4. Don't initialize with README (you already have one)
+# 5. Create repository
+
+# Then push your code:
+git add .
+git commit -m "Initial commit from Vyges template"
+git push -u origin main
+
+# If you get "remote contains work" errors, force push (use with caution):
+git push -u origin main --force
 ```
 
 **Important:** You must create the new repository on GitHub before pushing your code. The Vyges CLI will warn you if the remote points to the template repository.
+
+### 1.4 Troubleshooting Repository Setup
+
+**Common Issues and Solutions:**
+
+**Issue 1: "Remote contains work that you don't have locally"**
+```bash
+# This happens when the remote repository has content (like README.md)
+# Solution: Force push your local content (use with caution)
+git push -u origin main --force
+```
+
+**Issue 2: "Repository not found" or "Authentication failed"**
+```bash
+# Check if repository exists on GitHub
+# Verify your remote URL is correct
+git remote -v
+
+# If URL is wrong, fix it:
+git remote set-url origin https://github.com/your-username/your-repo.git
+```
+
+**Issue 3: "Template references in metadata"**
+```bash
+# If vyges-metadata.json still references template
+# Regenerate metadata with correct repository info:
+vyges init --fix-metadata
+```
+
+**Issue 4: "Branch name conflicts"**
+```bash
+# If your local branch is 'master' but remote expects 'main':
+git branch -M main
+git push -u origin main
+```
+
+**✅ SUCCESS INDICATORS:**
+- `git remote -v` shows your repository URL (not template)
+- `git push` works without errors
+- Repository appears on GitHub with your content
+- No template references in commit history
 
 ### 1.3 Initial Repository State
 **Expected Structure:**

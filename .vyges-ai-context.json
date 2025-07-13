@@ -5,6 +5,8 @@
   "copyright": "© 2025 Vyges. All Rights Reserved",
   "author": "shivaram@vyges.com",
   
+  "date_guidance": "All new or updated metadata should use the actual current UTC date/time (in ISO 8601 format) for 'created', 'updated', and 'generated_at' fields. This includes metadata JSON files if they are updated. Avoid hardcoded dates from the past. Update copyright year annually.",
+  
   "catalog_objectives": {
     "description": "Ensure generated IP meets requirements for inclusion in the Vyges IP Catalog",
     "requirements": [

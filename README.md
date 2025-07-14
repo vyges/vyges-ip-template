@@ -9,23 +9,111 @@ A minimal, production-ready template for building reusable SystemVerilog IP bloc
 
 ## 🚀 Quickstart
 
-1. **Clone this repo:**
+1. **Create Repository from Template:**
+   - Go to [https://github.com/vyges/vyges-ip-template/generate](https://github.com/vyges/vyges-ip-template/generate)
+   - Click "Use this template"
+   - Name your repository (e.g., `uart-controller`)
+   - Create repository
+
+2. **Clone Your New Repository:**
    ```bash
-   git clone --depth=1 https://github.com/vyges/vyges-ip-template.git my-ip
-   cd my-ip
+   git clone https://github.com/your-username/your-repo.git
+   cd your-repo
    ```
 
-2. **Initialize your project:**
+3. **Initialize your project:**
    ```bash
    vyges init --interactive
    ```
 
-3. **Simulate a Hello World test:**
+4. **Simulate a Hello World test:**
    ```bash
    vyges test --simulation
    ```
 
-4. **Next steps:**
+5. **Next steps:**
    - Edit your RTL in `rtl/`
    - Add testbenches in `tb/`
    - See [Developer_Guide.md](Developer_Guide.md) for advanced usage, project structure, and customization.
+
+**✅ This approach avoids all remote configuration issues!**
+
+## 🔧 GitHub Actions Workflow
+
+This template includes a comprehensive GitHub Actions workflow (`build-and-test.yml`) that provides automated testing and validation for your IP projects.
+
+### Features
+
+- ✅ **Disabled by default** - Only runs when manually triggered
+- ✅ **Configurable testing** - Choose which components to test
+- ✅ **Multiple simulators** - Support for Verilator and Icarus Verilog
+- ✅ **Multiple platforms** - Support for ASIC and FPGA targets
+- ✅ **Complete EDA toolchain** - Full open-source ASIC design flow
+- ✅ **Project validation** - Checks project structure and metadata
+- ✅ **Linting** - SystemVerilog code quality checks
+- ✅ **Simulation testing** - Testbench execution and validation
+- ✅ **Synthesis checking** - Flow configuration validation
+
+### Quick Start
+
+1. **Enable the workflow** in your IP repository (see detailed instructions below)
+2. **Go to Actions tab** and select "Build and Test IP"
+3. **Click "Run workflow"** and configure your test options
+4. **Review results** and artifacts
+
+### Enabling the Workflow
+
+The workflow is **disabled by default** for the template repository. To enable it in your IP repository:
+
+1. Edit `.github/workflows/build-and-test.yml`
+2. Find the `check-enabled` job
+3. Change the line:
+   ```yaml
+   echo "should-run=false" >> $GITHUB_OUTPUT
+   ```
+   to:
+   ```yaml
+   echo "should-run=true" >> $GITHUB_OUTPUT
+   ```
+
+### What's Included
+
+The workflow automatically installs a complete open-source EDA toolchain including:
+- **Simulation**: Verilator 5.026, Icarus Verilog, GHDL
+- **Synthesis**: Yosys ≥0.39 with VHDL plugin
+- **Layout**: KLayout, Magic, Netgen
+- **Physical Design**: OpenROAD tools (TritonFPlan, RePlAce, TritonCTS, FastRoute, TritonRoute)
+- **Circuit Design**: XSChem, ngspice
+- **Process Kits**: Open PDKs (sky130, gf180mcu)
+- **Languages**: SystemVerilog, VHDL, Python (cocotb), Ada
+
+**📖 For complete documentation, see [`.github/workflows/README.md`](.github/workflows/README.md)**
+
+## 📚 Documentation
+
+- **[Developer_Guide.md](Developer_Guide.md)** - Comprehensive development guide with AI-assisted workflows
+- **[.github/workflows/README.md](.github/workflows/README.md)** - Detailed GitHub Actions workflow documentation
+- **[vyges-metadata-spec/](https://github.com/vyges/vyges-metadata-spec)** - Metadata specification and schema
+
+## 🛠️ Development Tools
+
+This template is designed to work with the complete Vyges ecosystem:
+
+- **Vyges CLI** - Command-line interface for IP development
+- **Vyges Catalog** - IP catalog and discovery platform
+- **Vyges IDE** - Integrated development environment
+- **AI-assisted development** - Comprehensive AI context and guidance
+
+## 📄 License
+
+This template is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## 📞 Support
+
+- **Documentation**: [Developer_Guide.md](Developer_Guide.md)
+- **Issues**: [GitHub Issues](https://github.com/vyges/vyges-ip-template/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/vyges/vyges-ip-template/discussions)

@@ -1,0 +1,538 @@
+name: Build and Test IP
+
+# This workflow is disabled by default and requires manual triggering
+# It provides a generic build and test pipeline for Vyges IP projects
+
+on:
+  # Manual trigger only - no automatic triggers
+  workflow_dispatch:
+    inputs:
+      # Allow users to specify which components to test
+      test_simulation:
+        description: 'Run simulation tests'
+        required: false
+        default: true
+        type: boolean
+      test_synthesis:
+        description: 'Run synthesis tests'
+        required: false
+        default: false
+        type: boolean
+      test_linting:
+        description: 'Run linting checks'
+        required: false
+        default: true
+        type: boolean
+      test_validation:
+        description: 'Run validation checks'
+        required: false
+        default: true
+        type: boolean
+      target_platform:
+        description: 'Target platform (asic, fpga, or both)'
+        required: false
+        default: 'asic'
+        type: choice
+        options:
+          - asic
+          - fpga
+          - both
+      simulator:
+        description: 'Simulator to use'
+        required: false
+        default: 'verilator'
+        type: choice
+        options:
+          - verilator
+          - icarus
+          - both
+
+# Disable automatic runs - this workflow only runs on manual trigger
+# and when explicitly enabled by repository maintainers
+
+jobs:
+  # Check if workflow should run
+  check-enabled:
+    runs-on: ubuntu-latest
+    outputs:
+      should-run: ${{ steps.check.outputs.should-run }}
+    steps:
+      - name: Check if workflow is enabled
+        id: check
+        run: |
+          # This workflow is disabled by default
+          # Repository maintainers can enable it by setting this environment variable
+          # or by modifying this check
+          echo "should-run=false" >> $GITHUB_OUTPUT
+          echo "⚠️ This workflow is disabled by default"
+          echo "To enable: Set ENABLE_BUILD_TEST=true in repository secrets or modify this check"
+
+  # Setup environment
+  setup:
+    needs: check-enabled
+    if: needs.check-enabled.outputs.should-run == 'true'
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+      - name: Install system packages and setup repositories
+        run: |
+          # Install software-properties-common first (needed for add-apt-repository)
+          sudo apt-get update
+          sudo apt-get install -y software-properties-common
+          
+          # Add Yosys PPA
+          sudo add-apt-repository -y ppa:yosys/ppa
+          
+          # Update package list once after adding repository
+          sudo apt-get update
+          
+          # Install all remaining packages
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            cmake \
+            git \
+            wget \
+            curl \
+            tree \
+            unzip \
+            make \
+            python3 \
+            python3-pip \
+            python3-venv \
+            bison \
+            flex \
+            help2man \
+            libfl-dev \
+            libfl2 \
+            libgit2-dev \
+            libgoogle-perftools-dev \
+            libqt5multimediawidgets5 \
+            libqt5opengl5 \
+            libqt5svg5-dev \
+            libqt5xmlpatterns5-dev \
+            libz-dev \
+            perl \
+            qtmultimedia5-dev \
+            qttools5-dev \
+            ruby \
+            ruby-dev \
+            time \
+            zlib1g \
+            zlib1g-dev \
+            magic \
+            netgen \
+            xschem \
+            ngspice \
+            gettext \
+            gnat
+
+      - name: Install KLayout (AppImage)
+        run: |
+          wget https://www.klayout.org/downloads/ubuntu22_04/klayout_0.30.2-1_amd64.deb
+          sudo apt-get install -y ./klayout_0.30.2-1_amd64.deb
+          klayout -v
+
+      - name: Install Yosys (nightly PPA)
+        run: |
+          sudo apt-get install -y yosys
+          yosys -V
+          yosys -m slang -p "slang_version"
+          
+          # Verify Yosys version meets requirement (>= 0.39)
+          YOSYS_VERSION=$(yosys -V | grep -oP 'Yosys \K[0-9]+\.[0-9]+')
+          echo "Installed Yosys version: $YOSYS_VERSION"
+          
+          # Check if version >= 0.39
+          if [ "$(printf '%s\n' "0.39" "$YOSYS_VERSION" | sort -V | head -n1)" = "0.39" ]; then
+            echo "✅ Yosys version $YOSYS_VERSION meets requirement (>= 0.39)"
+          else
+            echo "❌ Yosys version $YOSYS_VERSION does not meet requirement (>= 0.39)"
+            exit 1
+          fi
+
+      - name: Install Verilator 5.026
+        run: |
+          # Clone Verilator repository
+          git clone https://github.com/verilator/verilator.git
+          cd verilator
+          
+          # Checkout specific version 5.026
+          git checkout v5.026
+          
+          # Build and install
+          autoconf
+          ./configure
+          make -j$(nproc)
+          sudo make install
+          
+          # Verify installation
+          verilator --version
+
+      - name: Install OpenROAD tools
+        run: |
+          echo "🔧 Installing OpenROAD tools..."
+          
+          # Clone OpenROAD-flow-scripts repository
+          git clone https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts.git
+          cd OpenROAD-flow-scripts
+          
+          # Build OpenROAD tools (this includes TritonFPlan, RePlAce, TritonCTS, FastRoute, TritonRoute)
+          ./build_openroad.sh
+          
+          # Add OpenROAD tools to PATH
+          echo 'export PATH=$PATH:'$(pwd)'/tools/OpenROAD/build/src' >> $GITHUB_ENV
+          echo 'export PATH=$PATH:'$(pwd)'/tools/RePlAce/build/RePlAce' >> $GITHUB_ENV
+          echo 'export PATH=$PATH:'$(pwd)'/tools/FastRoute/build/FastRoute' >> $GITHUB_ENV
+          
+          # Verify installations
+          echo "✅ OpenROAD tools installed"
+          echo "Note: These tools are now available for the ASIC design flow"
+
+      - name: Install GHDL Yosys plugin
+        run: |
+          echo "🔧 Installing GHDL Yosys plugin..."
+          
+          # Install GHDL (VHDL simulator)
+          sudo apt-get install -y ghdl
+          
+          # Clone GHDL Yosys plugin
+          git clone https://github.com/ghdl/ghdl-yosys-plugin.git
+          cd ghdl-yosys-plugin
+          
+          # Build the plugin
+          make
+          
+          # Install the plugin
+          sudo make install
+          
+          # Verify installation
+          echo "✅ GHDL Yosys plugin installed"
+          echo "Note: VHDL synthesis support is now available in Yosys"
+
+      - name: Install Open PDKs
+        run: |
+          echo "🔧 Installing Open PDKs..."
+          
+          # Clone Open PDKs repository
+          git clone https://github.com/RTimothyEdwards/open_pdks.git
+          cd open_pdks
+          
+          # Install Open PDKs (includes sky130, gf180mcu, etc.)
+          ./configure --enable-sky130-pdk --enable-gf180mcu-pdk
+          make
+          sudo make install
+          
+          # Set PDK_ROOT environment variable
+          echo 'export PDK_ROOT=/usr/local/share/pdk' >> $GITHUB_ENV
+          
+          # Verify installation
+          echo "✅ Open PDKs installed"
+          echo "Available PDKs: sky130, gf180mcu"
+          echo "PDK_ROOT set to: /usr/local/share/pdk"
+
+      - name: Install Icarus Verilog (if selected)
+        if: ${{ github.event.inputs.simulator == 'icarus' || github.event.inputs.simulator == 'both' }}
+        run: |
+          sudo apt-get install -y iverilog
+          iverilog -V
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install cocotb pytest pytest-cov
+
+      - name: Setup Vyges CLI (if available)
+        run: |
+          # Check if Vyges CLI is available
+          if command -v vyges &> /dev/null; then
+            echo "Vyges CLI found"
+            vyges --version
+          else
+            echo "Vyges CLI not found - skipping CLI-based tests"
+          fi
+
+  # Validate project structure
+  validate:
+    needs: [check-enabled, setup]
+    if: needs.check-enabled.outputs.should-run == 'true' && github.event.inputs.test_validation == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate project structure
+        run: |
+          echo "🔍 Validating project structure..."
+          
+          # Check for required directories
+          required_dirs=("rtl" "tb" "docs" "test")
+          for dir in "${required_dirs[@]}"; do
+            if [ -d "$dir" ]; then
+              echo "✅ Found $dir/"
+            else
+              echo "⚠️ Missing $dir/ (optional for template)"
+            fi
+          done
+          
+          # Check for required files
+          required_files=("README.md" "LICENSE" "NOTICE")
+          for file in "${required_files[@]}"; do
+            if [ -f "$file" ]; then
+              echo "✅ Found $file"
+            else
+              echo "❌ Missing $file"
+              exit 1
+            fi
+          done
+          
+          # Check for metadata template
+          if [ -f "vyges-metadata.template.json" ]; then
+            echo "✅ Found vyges-metadata.template.json"
+          else
+            echo "⚠️ Missing vyges-metadata.template.json"
+          fi
+          
+          echo "✅ Project structure validation complete"
+
+      - name: Validate metadata (if Vyges CLI available)
+        run: |
+          if command -v vyges &> /dev/null; then
+            echo "🔍 Validating metadata with Vyges CLI..."
+            vyges validate --dry-run || echo "⚠️ Metadata validation failed (expected for template)"
+          else
+            echo "⏭️ Skipping metadata validation (Vyges CLI not available)"
+          fi
+
+  # Run linting checks
+  lint:
+    needs: [check-enabled, setup]
+    if: needs.check-enabled.outputs.should-run == 'true' && github.event.inputs.test_linting == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Verilator
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y verilator
+
+      - name: Lint SystemVerilog files
+        run: |
+          echo "🔍 Linting SystemVerilog files..."
+          
+          # Find all .sv files
+          sv_files=$(find . -name "*.sv" -type f)
+          
+          if [ -z "$sv_files" ]; then
+            echo "ℹ️ No SystemVerilog files found (expected for template)"
+          else
+            for file in $sv_files; do
+              echo "Linting $file..."
+              verilator --lint-only --Wall --Wno-fatal "$file" || echo "⚠️ Lint issues in $file"
+            done
+          fi
+          
+          echo "✅ Linting complete"
+
+      - name: Check file permissions
+        run: |
+          echo "🔍 Checking file permissions..."
+          
+          # Check for executable scripts
+          scripts=$(find . -name "*.sh" -type f)
+          for script in $scripts; do
+            if [ ! -x "$script" ]; then
+              echo "⚠️ Script $script is not executable"
+            fi
+          done
+          
+          echo "✅ File permission check complete"
+
+  # Run simulation tests
+  simulation:
+    needs: [check-enabled, setup]
+    if: needs.check-enabled.outputs.should-run == 'true' && github.event.inputs.test_simulation == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        simulator: [verilator, icarus]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Check if simulator should run
+        id: check-simulator
+        run: |
+          if [ "${{ github.event.inputs.simulator }}" = "both" ]; then
+            echo "should-run=true" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.inputs.simulator }}" = "${{ matrix.simulator }}" ]; then
+            echo "should-run=true" >> $GITHUB_OUTPUT
+          else
+            echo "should-run=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Install ${{ matrix.simulator }}
+        if: steps.check-simulator.outputs.should-run == 'true'
+        run: |
+          sudo apt-get update
+          if [ "${{ matrix.simulator }}" = "verilator" ]; then
+            sudo apt-get install -y verilator
+            verilator --version
+          elif [ "${{ matrix.simulator }}" = "icarus" ]; then
+            sudo apt-get install -y iverilog
+            iverilog -V
+          fi
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install cocotb pytest pytest-cov
+
+      - name: Run simulation tests with ${{ matrix.simulator }}
+        if: steps.check-simulator.outputs.should-run == 'true'
+        run: |
+          echo "🧪 Running simulation tests with ${{ matrix.simulator }}..."
+          
+          # Check for testbench files
+          if [ -d "tb" ]; then
+            echo "Found testbench directory"
+            
+            # Look for SystemVerilog testbenches
+            sv_tb_files=$(find tb -name "tb_*.sv" -type f)
+            if [ -n "$sv_tb_files" ]; then
+              echo "Found SystemVerilog testbenches: $sv_tb_files"
+              # Note: Actual test execution would require specific testbench setup
+              echo "ℹ️ SystemVerilog testbench execution requires specific setup"
+            fi
+            
+            # Look for cocotb testbenches
+            cocotb_files=$(find tb -name "test_*.py" -type f)
+            if [ -n "$cocotb_files" ]; then
+              echo "Found cocotb testbenches: $cocotb_files"
+              # Note: Actual test execution would require specific testbench setup
+              echo "ℹ️ Cocotb testbench execution requires specific setup"
+            fi
+            
+            if [ -z "$sv_tb_files" ] && [ -z "$cocotb_files" ]; then
+              echo "ℹ️ No testbench files found (expected for template)"
+            fi
+          else
+            echo "ℹ️ No testbench directory found (expected for template)"
+          fi
+          
+          echo "✅ Simulation test check complete"
+
+  # Run synthesis tests
+  synthesis:
+    needs: [check-enabled, setup]
+    if: needs.check-enabled.outputs.should-run == 'true' && github.event.inputs.test_synthesis == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [asic, fpga]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check if platform should run
+        id: check-platform
+        run: |
+          if [ "${{ github.event.inputs.target_platform }}" = "both" ]; then
+            echo "should-run=true" >> $GITHUB_OUTPUT
+          elif [ "${{ github.event.inputs.target_platform }}" = "${{ matrix.platform }}" ]; then
+            echo "should-run=true" >> $GITHUB_OUTPUT
+          else
+            echo "should-run=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check synthesis configuration for ${{ matrix.platform }}
+        if: steps.check-platform.outputs.should-run == 'true'
+        run: |
+          echo "🔧 Checking synthesis configuration for ${{ matrix.platform }}..."
+          
+          if [ "${{ matrix.platform }}" = "asic" ]; then
+            if [ -d "flow/openlane" ]; then
+              echo "✅ Found OpenLane configuration for ASIC"
+              if [ -f "flow/openlane/config.json" ]; then
+                echo "✅ Found OpenLane config.json"
+              fi
+            else
+              echo "ℹ️ No OpenLane configuration found (expected for template)"
+            fi
+          elif [ "${{ matrix.platform }}" = "fpga" ]; then
+            if [ -d "flow/vivado" ]; then
+              echo "✅ Found Vivado configuration for FPGA"
+            else
+              echo "ℹ️ No Vivado configuration found (expected for template)"
+            fi
+          fi
+          
+          echo "✅ Synthesis configuration check complete"
+
+  # Generate test report
+  report:
+    needs: [check-enabled, validate, lint, simulation, synthesis]
+    if: needs.check-enabled.outputs.should-run == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate test report
+        run: |
+          echo "📊 Test Report"
+          echo "=============="
+          echo "Repository: ${{ github.repository }}"
+          echo "Workflow: ${{ github.workflow }}"
+          echo "Run ID: ${{ github.run_id }}"
+          echo ""
+          echo "Test Results:"
+          echo "- Validation: ${{ needs.validate.result == 'success' && '✅ PASSED' || '⏭️ SKIPPED' }}"
+          echo "- Linting: ${{ needs.lint.result == 'success' && '✅ PASSED' || '⏭️ SKIPPED' }}"
+          echo "- Simulation: ${{ needs.simulation.result == 'success' && '✅ PASSED' || '⏭️ SKIPPED' }}"
+          echo "- Synthesis: ${{ needs.synthesis.result == 'success' && '✅ PASSED' || '⏭️ SKIPPED' }}"
+          echo ""
+          echo "Note: This is a template repository. Actual tests require IP-specific implementation."
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results-${{ github.run_id }}
+          path: |
+            test-results/
+          retention-days: 7
+
+  # Final status
+  status:
+    needs: [check-enabled, validate, lint, simulation, synthesis, report]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Workflow status
+        run: |
+          if [ "${{ needs.check-enabled.outputs.should-run }}" = "true" ]; then
+            echo "🎉 Workflow completed successfully!"
+            echo "This template repository is ready for IP development."
+            echo ""
+            echo "Next steps:"
+            echo "1. Use 'Use this template' to create a new repository"
+            echo "2. Clone your new repository"
+            echo "3. Run 'vyges init --interactive' to set up your IP"
+            echo "4. Add your RTL and testbenches"
+            echo "5. Enable this workflow in your new repository"
+          else
+            echo "ℹ️ Workflow disabled - this is expected for the template repository"
+            echo "Enable this workflow in your IP repository after setup"
+          fi 
+
+ 

@@ -7,6 +7,8 @@
   
   "date_guidance": "All new or updated metadata should use the actual current UTC date/time (in ISO 8601 format) for 'created', 'updated', and 'generated_at' fields. This includes metadata JSON files if they are updated. Avoid hardcoded dates from the past. Update copyright year annually.",
   
+  "git_commit_guidance": "For Git commit messages, don't use double quotes as the command line version will reject the message. Use single quotes or no quotes instead.",
+  
   "catalog_objectives": {
     "description": "Ensure generated IP meets requirements for inclusion in the Vyges IP Catalog",
     "requirements": [

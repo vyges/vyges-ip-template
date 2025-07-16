@@ -181,27 +181,52 @@
       },
       "advanced_patterns": {
         "multi_platform": "For projects targeting both ASIC and FPGA, or including analog/mixed-signal, create subdirectories under rtl/, flow/, and constraints/ for asic/, fpga/, digital/, analog/, etc. The CLI should offer to expand the structure as needed.",
-        "directory_expansion": {
-          "rtl": {
-            "asic": "ASIC-specific RTL (digital and analog)",
-            "fpga": "FPGA-specific RTL (digital only)",
-            "digital": "Digital RTL (platform-agnostic)",
-            "analog": "Analog/mixed-signal RTL (ASIC only)"
-          },
-          "constraints": {
-            "asic": "ASIC synthesis and timing constraints",
-            "fpga": "FPGA implementation constraints"
-          },
-          "flow": {
-            "asic": "ASIC tool flows (OpenLane, Synopsys, etc.)",
-            "fpga": "FPGA tool flows (Vivado, Quartus, etc.)"
-          },
-          "packaging": {
-            "interposer": "Interposer design and routing constraints",
-            "bump_map": "Bump map definitions for die-to-die connections",
-            "thermal": "Thermal analysis and constraints for multi-die systems"
+                  "directory_expansion": {
+            "rtl": {
+              "asic": "ASIC-specific RTL (digital and analog)",
+              "fpga": "FPGA-specific RTL (digital only)",
+              "digital": "Digital RTL (platform-agnostic)",
+              "analog": "Analog/mixed-signal RTL (ASIC only)",
+              "behavioral": "Behavioral models (Verilog-A, SystemVerilog-AMS)",
+              "verilog_a": "Verilog-A behavioral models"
+            },
+            "schematic": {
+              "schematic": "Cadence Virtuoso schematic files",
+              "symbol": "Cadence Virtuoso symbol files",
+              "netlist": "Simulation netlists (SPICE, Spectre)"
+            },
+            "simulation": {
+              "spectre": "Spectre simulation files and results",
+              "configs": "Simulation configuration files",
+              "results": "Simulation results and reports",
+              "waveforms": "Simulation waveform files"
+            },
+            "layout": {
+              "layout": "Cadence Virtuoso layout files",
+              "constraints": "Layout constraints and rules",
+              "lvs": "Layout vs. schematic verification",
+              "drc": "Design rule checking"
+            },
+            "pdks": {
+              "cadence": "Cadence PDK files and models",
+              "models": "Device models and libraries",
+              "techfiles": "Technology files and rules"
+            },
+            "constraints": {
+              "asic": "ASIC synthesis and timing constraints",
+              "fpga": "FPGA implementation constraints"
+            },
+            "flow": {
+              "asic": "ASIC tool flows (OpenLane, Synopsys, etc.)",
+              "fpga": "FPGA tool flows (Vivado, Quartus, etc.)",
+              "analog": "Analog design flows (Virtuoso, Spectre, etc.)"
+            },
+            "packaging": {
+              "interposer": "Interposer design and routing constraints",
+              "bump_map": "Bump map definitions for die-to-die connections",
+              "thermal": "Thermal analysis and constraints for multi-die systems"
+            }
           }
-        }
       }
     },
     
@@ -368,6 +393,265 @@
           "Generate meaningful test names and descriptions",
           "Include parameterized tests for different configurations"
         ]
+      }
+    },
+
+    "uvm": {
+      "language": "SystemVerilog",
+      "framework": "UVM (Universal Verification Methodology)",
+      "description": "Industry-standard verification methodology for complex digital designs",
+      "structure": [
+        "UVM test class extending uvm_test",
+        "UVM environment class extending uvm_env",
+        "UVM agent class extending uvm_agent",
+        "UVM driver class extending uvm_driver",
+        "UVM monitor class extending uvm_monitor",
+        "UVM sequence class extending uvm_sequence",
+        "UVM sequence item class extending uvm_sequence_item",
+        "UVM scoreboard class extending uvm_scoreboard",
+        "UVM coverage class extending uvm_subscriber"
+      ],
+      "file_structure": {
+        "location": "tb/uvm/",
+        "file_naming": {
+          "test": "test_<module_name>.sv",
+          "env": "<module_name>_env.sv",
+          "agent": "<module_name>_agent.sv",
+          "driver": "<module_name>_driver.sv",
+          "monitor": "<module_name>_monitor.sv",
+          "sequence": "<module_name>_sequence.sv",
+          "sequence_item": "<module_name>_item.sv",
+          "scoreboard": "<module_name>_scoreboard.sv",
+          "coverage": "<module_name>_coverage.sv",
+          "top": "<module_name>_testbench.sv"
+        }
+      },
+      "supported_simulators": {
+        "commercial": ["vcs", "xcelium", "questa", "riviera-pro", "modelsim"],
+        "open_source": ["verilator-uvm"],
+        "ci_integration": "Use commercial simulators for development, verilator-uvm for CI/CD"
+      },
+      "advanced_features": {
+        "auto_generation": "Generate complete UVM testbench from vyges-metadata.json interface specifications",
+        "verification_harness": "Bundle UVM-based verification harnesses into packaging metadata",
+        "ci_hooks": "CI hooks that run UVM testbenches with coverage and regression testing",
+        "protocol_support": "Built-in support for standard protocols (APB, AXI, SPI, I2C, UART)",
+        "coverage_driven": "Automatic coverage collection and analysis",
+        "constraint_random": "Constraint-random test generation for comprehensive verification",
+        "assertion_integration": "SVA (SystemVerilog Assertions) integration with UVM",
+        "regression_framework": "Automated regression testing with multiple test scenarios"
+      },
+      "test_categories": {
+        "functional_tests": "Basic functionality, protocol compliance, interface verification",
+        "performance_tests": "Maximum frequency, throughput measurement, latency analysis",
+        "corner_case_tests": "FIFO overflow/underflow, timeout conditions, reset behavior",
+        "error_tests": "Protocol violations, error injection, fault tolerance",
+        "coverage_tests": "Functional coverage, code coverage, toggle coverage, FSM coverage",
+        "stress_tests": "High-load testing, resource exhaustion, boundary conditions",
+        "random_tests": "Constraint-random testing with coverage feedback"
+      },
+      "verification_requirements": {
+        "coverage_goals": "95% functional coverage, 90% code coverage, 100% toggle coverage",
+        "assertion_requirements": "Protocol compliance assertions, safety assertions, performance assertions",
+        "waveform_requirements": "Comprehensive waveform generation for debugging and analysis",
+        "regression_requirements": "Automated regression testing with CI/CD integration",
+        "random_testing": "Constraint-random test generation with coverage feedback"
+      },
+      "uvm_components": {
+        "test": {
+          "description": "Top-level test class that orchestrates the verification",
+          "extends": "uvm_test",
+          "responsibilities": [
+            "Create and configure UVM environment",
+            "Set up test configuration",
+            "Start test sequences",
+            "Monitor test completion"
+          ]
+        },
+        "environment": {
+          "description": "UVM environment that contains all verification components",
+          "extends": "uvm_env",
+          "responsibilities": [
+            "Instantiate and connect UVM agents",
+            "Create and configure scoreboard",
+            "Set up coverage collection",
+            "Manage test configuration"
+          ]
+        },
+        "agent": {
+          "description": "UVM agent that manages driver, monitor, and sequencer",
+          "extends": "uvm_agent",
+          "responsibilities": [
+            "Instantiate driver, monitor, and sequencer",
+            "Connect components based on agent mode (active/passive)",
+            "Handle interface connections"
+          ]
+        },
+        "driver": {
+          "description": "UVM driver that drives signals to DUT",
+          "extends": "uvm_driver",
+          "responsibilities": [
+            "Receive sequence items from sequencer",
+            "Drive signals to DUT interface",
+            "Handle protocol-specific timing",
+            "Report transaction completion"
+          ]
+        },
+        "monitor": {
+          "description": "UVM monitor that observes DUT interface",
+          "extends": "uvm_monitor",
+          "responsibilities": [
+            "Monitor DUT interface signals",
+            "Capture transactions and protocol events",
+            "Send transactions to scoreboard and coverage",
+            "Detect protocol violations"
+          ]
+        },
+        "sequencer": {
+          "description": "UVM sequencer that manages test sequences",
+          "extends": "uvm_sequencer",
+          "responsibilities": [
+            "Manage sequence execution",
+            "Handle sequence arbitration",
+            "Provide sequence items to driver",
+            "Control test flow"
+          ]
+        },
+        "sequence": {
+          "description": "UVM sequence that defines test scenarios",
+          "extends": "uvm_sequence",
+          "responsibilities": [
+            "Define test scenarios and stimulus",
+            "Create and send sequence items",
+            "Handle test constraints and randomization",
+            "Coordinate with other sequences"
+          ]
+        },
+        "sequence_item": {
+          "description": "UVM sequence item that represents transactions",
+          "extends": "uvm_sequence_item",
+          "responsibilities": [
+            "Define transaction data structure",
+            "Include constraints for randomization",
+            "Provide transaction utilities and methods",
+            "Support transaction recording and analysis"
+          ]
+        },
+        "scoreboard": {
+          "description": "UVM scoreboard that verifies DUT behavior",
+          "extends": "uvm_scoreboard",
+          "responsibilities": [
+            "Receive transactions from monitors",
+            "Compare actual vs expected behavior",
+            "Implement reference model or golden model",
+            "Report verification results and errors"
+          ]
+        },
+        "coverage": {
+          "description": "UVM coverage collector that tracks verification progress",
+          "extends": "uvm_subscriber",
+          "responsibilities": [
+            "Collect functional coverage data",
+            "Define coverage groups and bins",
+            "Track coverage progress and goals",
+            "Generate coverage reports"
+          ]
+        }
+      },
+      "protocol_support": {
+        "apb": {
+          "description": "APB (Advanced Peripheral Bus) protocol support",
+          "sequence_item": "apb_transaction with address, data, write, select fields",
+          "driver": "APB protocol timing and handshaking",
+          "monitor": "APB transaction capture and protocol checking",
+          "scoreboard": "APB transaction verification and response checking"
+        },
+        "axi": {
+          "description": "AXI (Advanced eXtensible Interface) protocol support",
+          "sequence_item": "axi_transaction with address, data, burst, cache fields",
+          "driver": "AXI protocol timing and handshaking",
+          "monitor": "AXI transaction capture and protocol checking",
+          "scoreboard": "AXI transaction verification and response checking"
+        },
+        "spi": {
+          "description": "SPI (Serial Peripheral Interface) protocol support",
+          "sequence_item": "spi_transaction with data, chip_select, clock fields",
+          "driver": "SPI protocol timing and data transmission",
+          "monitor": "SPI transaction capture and protocol checking",
+          "scoreboard": "SPI transaction verification and data checking"
+        },
+        "i2c": {
+          "description": "I2C (Inter-Integrated Circuit) protocol support",
+          "sequence_item": "i2c_transaction with address, data, read_write fields",
+          "driver": "I2C protocol timing and handshaking",
+          "monitor": "I2C transaction capture and protocol checking",
+          "scoreboard": "I2C transaction verification and response checking"
+        },
+        "uart": {
+          "description": "UART (Universal Asynchronous Receiver-Transmitter) protocol support",
+          "sequence_item": "uart_transaction with data, baud_rate, parity fields",
+          "driver": "UART protocol timing and data transmission",
+          "monitor": "UART transaction capture and protocol checking",
+          "scoreboard": "UART transaction verification and data checking"
+        }
+      },
+      "ai_prompts": {
+        "generate_uvm_testbench": "Create a complete UVM testbench for module {module_name}, including test, env, agent, driver, monitor, sequence, sequence_item, scoreboard, and coverage classes.",
+        "generate_uvm_test": "Generate UVM test class for {module_name} with proper test configuration and sequence execution.",
+        "generate_uvm_environment": "Create UVM environment class for {module_name} with agent instantiation and component connections.",
+        "generate_uvm_agent": "Generate UVM agent class for {module_name} with driver, monitor, and sequencer management.",
+        "generate_uvm_driver": "Create UVM driver class for {module_name} with protocol-specific signal driving.",
+        "generate_uvm_monitor": "Generate UVM monitor class for {module_name} with transaction capture and protocol checking.",
+        "generate_uvm_sequence": "Create UVM sequence class for {module_name} with test scenario definition and stimulus generation.",
+        "generate_uvm_sequence_item": "Generate UVM sequence item class for {module_name} with transaction data structure and constraints.",
+        "generate_uvm_scoreboard": "Create UVM scoreboard class for {module_name} with reference model and verification logic.",
+        "generate_uvm_coverage": "Generate UVM coverage class for {module_name} with functional coverage groups and bins.",
+        "setup_uvm_ci": "Configure CI/CD pipeline for UVM testing with coverage and regression reporting.",
+        "create_uvm_verification_plan": "Create comprehensive UVM verification plan with test scenarios, coverage goals, and regression strategy.",
+        "generate_protocol_uvm": "Generate UVM testbench for {protocol} protocol with proper transaction types and protocol checking.",
+        "create_constraint_random_tests": "Create constraint-random UVM tests for {module_name} with coverage feedback and randomization.",
+        "generate_uvm_assertions": "Generate SystemVerilog assertions for {module_name} with UVM integration and protocol checking."
+      },
+      "code_generation_rules": {
+        "directory": "tb/uvm/",
+        "imports": ["uvm_pkg", "uvm_macros"],
+        "structure": [
+          "Include UVM package and macros",
+          "Define sequence item class with transaction data and constraints",
+          "Create sequence class with test scenario definition",
+          "Implement driver class with protocol-specific signal driving",
+          "Create monitor class with transaction capture and protocol checking",
+          "Build agent class with driver, monitor, and sequencer management",
+          "Implement scoreboard class with reference model and verification",
+          "Create coverage class with functional coverage groups",
+          "Build environment class with component instantiation and connections",
+          "Define test class with test configuration and sequence execution",
+          "Create top-level testbench with DUT instantiation and UVM setup"
+        ],
+        "best_practices": [
+          "Use UVM factory for component creation and configuration",
+          "Implement proper transaction recording and analysis",
+          "Include comprehensive protocol checking and assertions",
+          "Use constraint-random testing for better coverage",
+          "Implement functional coverage with meaningful bins",
+          "Create reusable sequence library for different test scenarios",
+          "Use UVM configuration for flexible test setup",
+          "Include proper error handling and reporting",
+          "Implement scoreboard with reference model or golden model",
+          "Use UVM callbacks for custom verification hooks"
+        ],
+        "naming_conventions": {
+          "test": "<module_name>_test",
+          "env": "<module_name>_env",
+          "agent": "<module_name>_agent",
+          "driver": "<module_name>_driver",
+          "monitor": "<module_name>_monitor",
+          "sequencer": "<module_name>_sequencer",
+          "sequence": "<module_name>_sequence",
+          "sequence_item": "<module_name>_item",
+          "scoreboard": "<module_name>_scoreboard",
+          "coverage": "<module_name>_coverage"
+        }
       }
     },
     
@@ -550,7 +834,60 @@
     "generate_comprehensive_testbench": "Generate comprehensive testbench with functional, performance, corner case, error, and coverage tests",
     "create_verification_plan": "Create detailed verification plan with coverage goals, assertion requirements, and regression strategy",
     "setup_test_automation": "Set up automated test execution with multiple simulators and coverage reporting",
-    "validate_test_coverage": "Validate test coverage against specified goals and requirements"
+    "validate_test_coverage": "Validate test coverage against specified goals and requirements",
+    "generate_analog_behavioral": "Generate Verilog-A behavioral model for {analog_block} with specifications: {specs}",
+    "design_analog_circuit": "Design transistor-level circuit for {analog_block} targeting {pdk} with performance requirements: {specs}",
+    "create_spectre_simulation": "Create Spectre simulation setup for {analog_block} with corner analysis and Monte Carlo simulation",
+    "generate_analog_layout_constraints": "Generate layout constraints for {analog_block} with matching, symmetry, and routing requirements",
+    "validate_analog_design": "Validate analog design {analog_block} against specifications: {specs}",
+    "optimize_analog_performance": "Optimize {analog_block} for performance metrics: {metrics}",
+    "create_analog_testbench": "Create comprehensive testbench for {analog_block} with corner case analysis",
+    "generate_analog_documentation": "Generate analog design documentation for {analog_block} with performance analysis and layout guidelines",
+    "setup_analog_project": "Set up analog project structure with behavioral, circuit, simulation, and layout directories",
+    "run_analog_corner_analysis": "Run corner analysis for {analog_block} across process, voltage, and temperature variations",
+    "run_analog_monte_carlo": "Run Monte Carlo analysis for {analog_block} with specified iterations and metrics",
+    "export_analog_layout": "Export analog layout for {analog_block} in specified format with LVS-clean verification",
+    "generate_uvm_testbench": "Create a complete UVM testbench for {module_name}, including test, env, agent, driver, monitor, sequence, sequence_item, scoreboard, and coverage classes",
+    "generate_uvm_test": "Generate UVM test class for {module_name} with proper test configuration and sequence execution",
+    "generate_uvm_environment": "Create UVM environment class for {module_name} with agent instantiation and component connections",
+    "generate_uvm_agent": "Generate UVM agent class for {module_name} with driver, monitor, and sequencer management",
+    "generate_uvm_driver": "Create UVM driver class for {module_name} with protocol-specific signal driving",
+    "generate_uvm_monitor": "Generate UVM monitor class for {module_name} with transaction capture and protocol checking",
+    "generate_uvm_sequence": "Create UVM sequence class for {module_name} with test scenario definition and stimulus generation",
+    "generate_uvm_sequence_item": "Generate UVM sequence item class for {module_name} with transaction data structure and constraints",
+    "generate_uvm_scoreboard": "Create UVM scoreboard class for {module_name} with reference model and verification logic",
+    "generate_uvm_coverage": "Generate UVM coverage class for {module_name} with functional coverage groups and bins",
+    "setup_uvm_ci": "Configure CI/CD pipeline for UVM testing with coverage and regression reporting",
+    "create_uvm_verification_plan": "Create comprehensive UVM verification plan with test scenarios, coverage goals, and regression strategy",
+    "generate_protocol_uvm": "Generate UVM testbench for {protocol} protocol with proper transaction types and protocol checking",
+    "create_constraint_random_tests": "Create constraint-random UVM tests for {module_name} with coverage feedback and randomization",
+    "generate_uvm_assertions": "Generate SystemVerilog assertions for {module_name} with UVM integration and protocol checking",
+    "convert_ipxact_to_vyges": "Convert this IP-XACT XML to Vyges metadata JSON format following the conversion mapping and rules",
+    "parse_ipxact_component": "Parse this IP-XACT component and extract basic information (vendor, library, name, version, description)",
+    "map_ipxact_ports": "Map these IP-XACT ports to Vyges pins with proper naming, direction, width, and type inference",
+    "map_ipxact_parameters": "Convert these IP-XACT parameters to Vyges parameters with proper type mapping and validation",
+    "map_ipxact_interfaces": "Map these IP-XACT bus interfaces to Vyges interface definitions with protocol detection",
+    "map_ipxact_files": "Convert these IP-XACT file sets to Vyges file metadata with proper categorization",
+    "generate_vyges_metadata": "Generate complete vyges-metadata.json from the parsed IP-XACT information",
+    "enhance_converted_metadata": "Enhance the converted metadata with Vyges-specific features, tags, and quality improvements",
+    "validate_converted_metadata": "Validate the converted metadata against Vyges schema and suggest improvements",
+    "suggest_vyges_workflow": "Suggest Vyges CLI commands and workflow steps for the converted IP",
+    "compare_ipxact_vyges": "Compare the original IP-XACT structure with the converted Vyges metadata and highlight differences",
+    "migrate_ipxact_project": "Provide a complete migration plan from IP-XACT to Vyges including file structure and workflow changes",
+    "setup_ieee_p1735_encryption": "Set up IEEE P1735 encrypted IP project structure with proper directory layout and metadata",
+    "encrypt_hdl_with_p1735": "Encrypt HDL file using IEEE P1735 standard with specified rights and recipient certificate",
+    "create_p1735_rights_declaration": "Create IEEE P1735 rights declaration XML for specified usage rights and restrictions",
+    "generate_customer_certificate": "Generate test X.509 certificate for customer licensing and encryption",
+    "setup_license_management": "Set up license management system for encrypted IP with customer certificate handling",
+    "create_encrypted_interface": "Create encrypted IP with plaintext interface for integration while protecting core implementation",
+    "validate_p1735_setup": "Validate IEEE P1735 encryption setup including certificate validity and rights declaration",
+    "generate_encryption_metadata": "Generate Vyges metadata extensions for encrypted IP including licensing and distribution information",
+    "create_encryption_workflow": "Create complete encryption workflow for IP distribution including CLI commands and metadata",
+    "setup_multi_recipient_encryption": "Set up multi-recipient encryption for distributing IP to multiple customers with different rights",
+    "create_hybrid_encryption": "Create hybrid encryption setup with plaintext interface and encrypted core implementation",
+    "validate_license_compliance": "Validate license compliance for encrypted IP including rights enforcement and expiration checking",
+    "generate_decryption_instructions": "Generate decryption instructions for authorized users of encrypted IP",
+    "setup_encrypted_catalog_entry": "Set up encrypted IP catalog entry with proper metadata, licensing, and distribution information"
   },
   
   "cli_integration": {
@@ -637,6 +974,23 @@
           "vyges cocotb validate-coverage --ip spi-controller --goals 95,90,100"
         ]
       },
+      "uvm": {
+        "description": "Manage UVM testbenches and verification methodology",
+        "examples": [
+          "vyges uvm generate --ip uart-controller --protocol apb",
+          "vyges uvm setup-project --ip spi-controller --simulator vcs",
+          "vyges uvm create-test --ip uart-controller --test-type functional",
+          "vyges uvm create-sequence --ip spi-controller --protocol spi",
+          "vyges uvm create-scoreboard --ip uart-controller --reference-model",
+          "vyges uvm create-coverage --ip spi-controller --coverage-type functional",
+          "vyges uvm run-simulation --ip uart-controller --simulator xcelium --coverage",
+          "vyges uvm run-regression --ip spi-controller --test-list all --parallel",
+          "vyges uvm generate-protocol --protocol axi --sequence-item --driver --monitor",
+          "vyges uvm create-verification-plan --ip uart-controller --coverage-goals 95,90,100",
+          "vyges uvm setup-ci --ip spi-controller --simulator verilator-uvm --coverage",
+          "vyges uvm validate-testbench --ip uart-controller --check-components --check-protocol"
+        ]
+      },
       "diagram": {
         "description": "Generate ASCII block diagrams for functional IP blocks and connections",
         "examples": [
@@ -661,6 +1015,33 @@
           "vyges chiplet validate-conformance --protocol ucie --ip uart-controller",
           "vyges chiplet track-lifecycle --origin vyges/partner-x --ip uart-controller"
         ]
+      },
+      "analog": {
+        "description": "Manage analog IP design flows and Cadence PDK integration",
+        "examples": [
+          "vyges analog generate-behavioral --block opamp --specs gain:60dB,bandwidth:1MHz",
+          "vyges analog design-circuit --block bandgap --pdk cadence/tsmc65 --topology brokaw",
+          "vyges analog simulate-spectre --block ldo --analysis dc,ac,transient,noise",
+          "vyges analog generate-layout --block opamp --constraints matching,symmetry",
+          "vyges analog validate-design --block opamp --specs gain,bandwidth,psrr,noise",
+          "vyges analog optimize-performance --block bandgap --metrics temp_coeff,psrr",
+          "vyges analog create-testbench --block ldo --corner-analysis tt,ff,ss",
+          "vyges analog generate-documentation --block opamp --include-performance,layout",
+          "vyges analog setup-project --block opamp --pdk cadence/tsmc65 --flow behavioral,circuit,simulation,layout",
+          "vyges analog run-corner-analysis --block bandgap --corners tt,ff,ss,fs,sf",
+          "vyges analog run-monte-carlo --block ldo --iterations 1000 --metrics dropout,psrr",
+          "vyges analog export-layout --block opamp --format gdsii,oa --lvs-clean"
+        ]
+      },
+      "encrypt": {
+        "description": "Manage IEEE P1735 encryption for secure IP distribution (planned for future release)",
+        "examples": [
+          "Future: vyges encrypt --file rtl/my_ip.vhdl --public-key licenses/customer.crt --rights simulate=true,synthesize=false --output encrypted/my_ip.vhdp",
+          "Future: vyges decrypt --file encrypted/my_ip.vhdp --private-key licenses/my_private.key --output decrypted/my_ip.vhdl",
+          "Future: vyges publish --encrypted --license simulation-only --certs licenses/ --rights simulate=true,synthesize=false",
+          "Future: vyges licenses add --cert customer1.crt --name 'Customer A' --rights simulate=true,synthesize=true"
+        ],
+        "status": "Planned for future release - model may change"
       }
     },
     "suggestions": {
@@ -689,6 +1070,39 @@
         "When testing multi-die: vyges chiplet create-testbench --multi-die --ip1 cpu --ip2 spi-controller",
         "When validating integration: vyges chiplet validate-conformance --protocol ucie --ip spi-controller",
         "When tracking lifecycle: vyges chiplet track-lifecycle --origin vyges/partner-x --ip spi-controller"
+      ],
+      "analog_workflow": [
+        "When starting analog design: vyges analog setup-project --block opamp --pdk cadence/tsmc65",
+        "When creating behavioral model: vyges analog generate-behavioral --block opamp --specs gain:60dB,bandwidth:1MHz",
+        "When designing transistor circuit: vyges analog design-circuit --block bandgap --pdk cadence/tsmc65 --topology brokaw",
+        "When running simulations: vyges analog simulate-spectre --block ldo --analysis dc,ac,transient,noise",
+        "When validating design: vyges analog validate-design --block opamp --specs gain,bandwidth,psrr,noise",
+        "When optimizing performance: vyges analog optimize-performance --block bandgap --metrics temp_coeff,psrr",
+        "When creating testbench: vyges analog create-testbench --block ldo --corner-analysis tt,ff,ss",
+        "When generating layout: vyges analog generate-layout --block opamp --constraints matching,symmetry",
+        "When running corner analysis: vyges analog run-corner-analysis --block bandgap --corners tt,ff,ss,fs,sf",
+        "When running Monte Carlo: vyges analog run-monte-carlo --block ldo --iterations 1000 --metrics dropout,psrr",
+        "When exporting layout: vyges analog export-layout --block opamp --format gdsii,oa --lvs-clean"
+      ],
+      "encryption_workflow": [
+        "Future: When setting up encrypted IP: vyges encrypt setup --project my-ip --license commercial",
+        "Future: When encrypting HDL files: vyges encrypt --file rtl/my_ip.vhdl --public-key licenses/customer.crt --rights simulate=true,synthesize=false",
+        "Future: When publishing encrypted IP: vyges publish --encrypted --license simulation-only --certs licenses/",
+        "Status: Planned for future release - model may change"
+      ],
+      "uvm_workflow": [
+        "When starting UVM project: vyges uvm setup-project --ip uart-controller --simulator vcs",
+        "When generating complete testbench: vyges uvm generate --ip uart-controller --protocol apb",
+        "When creating test scenarios: vyges uvm create-test --ip uart-controller --test-type functional",
+        "When defining transactions: vyges uvm create-sequence --ip spi-controller --protocol spi",
+        "When implementing verification: vyges uvm create-scoreboard --ip uart-controller --reference-model",
+        "When tracking coverage: vyges uvm create-coverage --ip spi-controller --coverage-type functional",
+        "When running simulations: vyges uvm run-simulation --ip uart-controller --simulator xcelium --coverage",
+        "When running regression: vyges uvm run-regression --ip spi-controller --test-list all --parallel",
+        "When generating protocol support: vyges uvm generate-protocol --protocol axi --sequence-item --driver --monitor",
+        "When creating verification plan: vyges uvm create-verification-plan --ip uart-controller --coverage-goals 95,90,100",
+        "When setting up CI/CD: vyges uvm setup-ci --ip spi-controller --simulator verilator-uvm --coverage",
+        "When validating testbench: vyges uvm validate-testbench --ip uart-controller --check-components --check-protocol"
       ],
       "metadata_driven_workflow": [
         "Start with vyges-metadata.json as source of truth",
@@ -823,6 +1237,213 @@
       "integrate_fpga_ip": "Integrate vendor IP cores for {toolchain} with proper configuration and instantiation",
       "validate_fpga_timing": "Validate FPGA timing constraints and perform static timing analysis",
       "generate_fpga_bitstream": "Generate FPGA bitstream with proper synthesis and implementation flow"
+    }
+  },
+
+  "analog_flow_configuration": {
+    "description": "Comprehensive analog IP design flow configuration for behavioral modeling, circuit implementation, simulation, and layout targeting Cadence PDKs",
+    "analog_ip_design": {
+      "description": "Design flow for analog IP blocks including behavioral modeling, circuit implementation, simulation, and layout targeting a Cadence PDK",
+      "stages": [
+        {
+          "name": "generate_behavioral_model",
+          "description": "Create Verilog-A or SystemVerilog-AMS behavioral models based on specs in the /docs directory",
+          "inputs": ["specs", "block_name"],
+          "outputs": ["behavioral_model.sv", "testbench.sv"],
+          "task_templates": {
+            "verilog_a": "Generate Verilog-A behavioral model with proper module structure and parameter definitions",
+            "systemverilog_ams": "Generate SystemVerilog-AMS model with mixed-signal capabilities",
+            "testbench": "Create comprehensive testbench with corner case analysis and Monte Carlo simulation"
+          },
+          "verification_criteria": {
+            "functional": "Behavioral model matches specification requirements",
+            "performance": "Model achieves target performance metrics",
+            "corner_cases": "Model handles process, voltage, and temperature variations"
+          }
+        },
+        {
+          "name": "design_transistor_level_circuit",
+          "description": "Develop transistor-level implementation targeting a specified Cadence PDK, using the behavioral model as reference",
+          "inputs": ["behavioral_model.sv", "pdks/cadence/<pdk-name>", "constraints"],
+          "outputs": ["schematic_cellview", "simulation_netlist"],
+          "task_templates": {
+            "schematic": "Create transistor-level schematic with proper device sizing and biasing",
+            "netlist": "Generate simulation-ready netlist with parasitic extraction",
+            "constraints": "Define design constraints for area, power, and performance"
+          },
+          "verification_criteria": {
+            "functionality": "Circuit implements required analog function",
+            "performance": "Meets gain, bandwidth, noise, and power specifications",
+            "robustness": "Design is robust across process corners"
+          }
+        },
+        {
+          "name": "simulate_with_spectre",
+          "description": "Run Spectre simulations to validate the transistor-level design against functional and corner cases",
+          "inputs": ["simulation_netlist", "spectre_config"],
+          "outputs": ["waveforms", "metrics", "monte_carlo_results"],
+          "task_templates": {
+            "dc_analysis": "DC operating point analysis for biasing verification",
+            "ac_analysis": "AC analysis for frequency response and stability",
+            "transient": "Transient analysis for time-domain behavior",
+            "noise": "Noise analysis for SNR and dynamic range",
+            "monte_carlo": "Monte Carlo analysis for process variation impact"
+          },
+          "verification_criteria": {
+            "dc_operation": "Proper DC operating points and biasing",
+            "ac_performance": "Gain, bandwidth, phase margin meet specifications",
+            "transient_response": "Settling time, slew rate, and distortion within limits",
+            "noise_performance": "Noise floor and SNR meet requirements",
+            "corner_analysis": "Performance maintained across process corners"
+          }
+        },
+        {
+          "name": "export_lvs_clean_layout",
+          "description": "Export layout-ready schematic and constraints for LVS-clean layout in Cadence Virtuoso",
+          "inputs": ["schematic_cellview", "layout_constraints"],
+          "outputs": ["virtuoso_cellview", "lvs_report"],
+          "task_templates": {
+            "layout_constraints": "Generate layout constraints for matching, symmetry, and routing",
+            "cellview_export": "Export schematic to Virtuoso cellview format",
+            "lvs_setup": "Configure LVS setup for layout verification"
+          },
+          "verification_criteria": {
+            "lvs_clean": "Layout vs. schematic verification passes",
+            "drc_clean": "Design rule checking passes",
+            "matching": "Critical devices properly matched and placed",
+            "routing": "Signal routing optimized for performance"
+          }
+        }
+      ],
+      "tools": {
+        "schematic_entry": "Cadence Virtuoso",
+        "simulator": "Spectre",
+        "layout_tool": "Virtuoso Layout Suite",
+        "format": "OpenAccess (OA)",
+        "export": "GDSII, OA, DEF"
+      },
+      "metadata_extensions": {
+        "analog": true,
+        "pdks_supported": ["cadence/tsmc65", "cadence/gf22fdx", "cadence/tsmc28", "cadence/tsmc16"],
+        "simulation_types": ["dc", "ac", "transient", "noise", "monte_carlo", "corner"],
+        "layout_requirements": ["matching", "symmetry", "routing", "parasitics"]
+      }
+    },
+    "analog_project_structure": {
+      "rtl": {
+        "behavioral": "rtl/behavioral/",
+        "ams": "rtl/ams/",
+        "verilog_a": "rtl/verilog_a/"
+      },
+      "schematic": {
+        "schematic": "schematic/",
+        "symbol": "symbol/",
+        "netlist": "netlist/"
+      },
+      "simulation": {
+        "spectre": "simulation/spectre/",
+        "configs": "simulation/configs/",
+        "results": "simulation/results/",
+        "waveforms": "simulation/waveforms/"
+      },
+      "layout": {
+        "layout": "layout/",
+        "constraints": "layout/constraints/",
+        "lvs": "layout/lvs/",
+        "drc": "layout/drc/"
+      },
+      "pdks": {
+        "cadence": "pdks/cadence/",
+        "models": "pdks/models/",
+        "techfiles": "pdks/techfiles/"
+      }
+    },
+    "analog_specific_requirements": {
+      "behavioral_modeling": {
+        "language": "Verilog-A or SystemVerilog-AMS",
+        "accuracy": "Model accuracy within 10% of transistor-level simulation",
+        "speed": "Simulation speed 100x faster than transistor-level",
+        "parameterization": "Fully parameterized for reusability"
+      },
+      "circuit_design": {
+        "topology": "Standard analog circuit topologies (OTA, bandgap, LDO, etc.)",
+        "sizing": "Device sizing for target performance specifications",
+        "biasing": "Proper biasing for all operating regions",
+        "matching": "Device matching for differential circuits"
+      },
+      "simulation": {
+        "corner_analysis": "Process, voltage, and temperature corner analysis",
+        "monte_carlo": "Monte Carlo analysis for process variation",
+        "noise_analysis": "Noise analysis for dynamic range requirements",
+        "stability": "Stability analysis for feedback circuits"
+      },
+      "layout": {
+        "matching": "Critical device matching and symmetry",
+        "routing": "Signal routing for minimal parasitics",
+        "shielding": "Signal shielding for noise isolation",
+        "power": "Power distribution and decoupling"
+      }
+    },
+    "analog_ip_examples": {
+      "operational_amplifier": {
+        "description": "Operational amplifier with configurable gain and bandwidth",
+        "specifications": {
+          "gain": "> 60dB",
+          "bandwidth": "> 1MHz",
+          "psrr": "> 60dB",
+          "cmrr": "> 80dB",
+          "noise": "< 10nV/√Hz"
+        },
+        "topology": "Two-stage opamp with Miller compensation",
+        "files": [
+          "rtl/behavioral/opamp_behavioral.sv",
+          "schematic/opamp_schematic.cds",
+          "simulation/spectre/opamp_sim.scs",
+          "layout/opamp_layout.cds"
+        ]
+      },
+      "bandgap_reference": {
+        "description": "Bandgap voltage reference with temperature compensation",
+        "specifications": {
+          "voltage": "1.2V ± 2%",
+          "temp_coeff": "< 50ppm/°C",
+          "psrr": "> 40dB",
+          "noise": "< 100nV/√Hz"
+        },
+        "topology": "Brokaw cell with curvature correction",
+        "files": [
+          "rtl/behavioral/bandgap_behavioral.sv",
+          "schematic/bandgap_schematic.cds",
+          "simulation/spectre/bandgap_sim.scs",
+          "layout/bandgap_layout.cds"
+        ]
+      },
+      "ldo_regulator": {
+        "description": "Low-dropout voltage regulator with high PSRR",
+        "specifications": {
+          "dropout": "< 200mV",
+          "psrr": "> 60dB at 1kHz",
+          "load_regulation": "< 1%",
+          "line_regulation": "< 0.1%"
+        },
+        "topology": "PMOS pass transistor with error amplifier",
+        "files": [
+          "rtl/behavioral/ldo_behavioral.sv",
+          "schematic/ldo_schematic.cds",
+          "simulation/spectre/ldo_sim.scs",
+          "layout/ldo_layout.cds"
+        ]
+      }
+    },
+    "ai_prompts": {
+      "generate_behavioral_model": "Generate Verilog-A behavioral model for {analog_block} with specifications: {specs}",
+      "design_transistor_circuit": "Design transistor-level circuit for {analog_block} targeting {pdk} with performance requirements: {specs}",
+      "create_spectre_simulation": "Create Spectre simulation setup for {analog_block} with corner analysis and Monte Carlo simulation",
+      "generate_layout_constraints": "Generate layout constraints for {analog_block} with matching, symmetry, and routing requirements",
+      "validate_analog_design": "Validate analog design {analog_block} against specifications: {specs}",
+      "optimize_analog_performance": "Optimize {analog_block} for performance metrics: {metrics}",
+      "create_analog_testbench": "Create comprehensive testbench for {analog_block} with corner case analysis",
+      "generate_analog_documentation": "Generate analog design documentation for {analog_block} with performance analysis and layout guidelines"
     }
   },
   
@@ -966,11 +1587,12 @@
   
   "catalog_score_guidance": {
     "weighting": {
-      "metadata_completeness": 40,
-      "test_coverage": 25,
+      "metadata_completeness": 35,
+      "test_coverage": 20,
       "code_quality": 15,
       "documentation": 10,
-      "discoverability_tags": 10
+      "discoverability_tags": 10,
+      "security_validation": 10
     },
     "chiplet_specific_weighting": {
       "interface_compliance": 25,
@@ -982,7 +1604,202 @@
     },
     "ai_prompt": "Improve this IP block to raise its catalog quality score"
   },
+
+  "security_and_trust": {
+    "description": "Security validation, trust indicators, and supply chain security for IP blocks",
+    "security_validation": {
+      "description": "Security assessment and validation guidelines for IP blocks",
+      "security_levels": {
+        "basic": "Standard security practices for general-purpose IP",
+        "enhanced": "Enhanced security for sensitive applications",
+        "critical": "Critical security for high-assurance systems",
+        "certified": "Certified security for regulated environments"
+      },
+      "validation_areas": {
+        "code_security": "Static code analysis for security vulnerabilities",
+        "interface_security": "Interface security and access control validation",
+        "data_security": "Data protection and encryption requirements",
+        "side_channel": "Side-channel attack resistance validation",
+        "tamper_resistance": "Tamper detection and resistance mechanisms"
+      },
+      "tools": {
+        "static_analysis": ["verilator", "spyglass", "leda"],
+        "security_scanners": ["bandit", "semgrep", "codeql"],
+        "formal_verification": ["jkind", "pkind", "kind2"],
+        "penetration_testing": ["custom testbenches", "fuzzing", "adversarial testing"]
+      },
+      "ai_prompts": {
+        "security_assessment": "Perform security assessment for {ip_name} with focus on {security_areas}",
+        "vulnerability_scan": "Scan {ip_name} for security vulnerabilities using {tools}",
+        "security_validation": "Validate security requirements for {ip_name} at {security_level} level",
+        "secure_coding": "Implement secure coding practices for {ip_name} following {standards}"
+      }
+    },
+    "trust_indicators": {
+      "description": "Trust verification and certification support for IP blocks",
+      "trust_levels": {
+        "unverified": "No trust verification performed",
+        "self_assessed": "Self-assessed trust indicators",
+        "third_party": "Third-party trust verification",
+        "certified": "Industry certification achieved"
+      },
+      "trust_metrics": {
+        "code_quality": "Code quality and maintainability metrics",
+        "test_coverage": "Comprehensive test coverage validation",
+        "documentation": "Complete and accurate documentation",
+        "peer_review": "Peer review and validation status",
+        "community_trust": "Community adoption and feedback",
+        "vendor_reputation": "Vendor reputation and track record"
+      },
+      "certification_standards": {
+        "iso_27001": "Information security management",
+        "common_criteria": "IT security evaluation criteria",
+        "fips_140": "Cryptographic module validation",
+        "do_178c": "Software considerations in airborne systems",
+        "iec_61508": "Functional safety of electrical/electronic systems"
+      },
+      "ai_prompts": {
+        "trust_assessment": "Assess trust indicators for {ip_name} and suggest improvements",
+        "certification_guidance": "Provide guidance for {certification} certification for {ip_name}",
+        "trust_metrics": "Calculate trust metrics for {ip_name} based on {criteria}"
+      }
+    },
+    "supply_chain_security": {
+      "description": "Secure supply chain practices and validation for IP development",
+      "supply_chain_phases": {
+        "design": "Secure design practices and validation",
+        "development": "Secure development environment and processes",
+        "verification": "Secure verification and testing practices",
+        "distribution": "Secure distribution and deployment",
+        "maintenance": "Secure maintenance and updates"
+      },
+      "security_practices": {
+        "access_control": "Role-based access control and authentication",
+        "code_signing": "Digital signature and integrity verification",
+        "version_control": "Secure version control and change management",
+        "dependency_management": "Secure dependency and third-party component management",
+        "audit_trail": "Comprehensive audit trail and logging",
+        "incident_response": "Security incident response and recovery"
+      },
+      "validation_requirements": {
+        "provenance": "Component provenance and origin verification",
+        "integrity": "Code integrity and tamper detection",
+        "authenticity": "Authenticity and authorship verification",
+        "compliance": "Regulatory and industry compliance validation"
+      },
+      "ai_prompts": {
+        "supply_chain_assessment": "Assess supply chain security for {ip_name} development process",
+        "security_practices": "Implement secure supply chain practices for {ip_name}",
+        "compliance_validation": "Validate compliance with {standard} for {ip_name}"
+      }
+    }
+  },
   
+  "performance_and_power_analysis": {
+    "description": "Performance benchmarking, power analysis, and thermal management for IP blocks",
+    "performance_benchmarking": {
+      "description": "Standardized performance benchmarking and analysis",
+      "performance_metrics": {
+        "throughput": "Data processing throughput (Mbps, Gbps)",
+        "latency": "Processing latency and response time",
+        "frequency": "Maximum operating frequency",
+        "area": "Silicon area utilization",
+        "efficiency": "Performance per unit area/power",
+        "scalability": "Performance scaling with parameters"
+      },
+      "benchmark_suites": {
+        "synthetic": "Synthetic benchmark tests for basic performance",
+        "real_world": "Real-world workload simulation",
+        "stress": "Stress testing for maximum performance",
+        "corner_case": "Corner case performance analysis",
+        "comparative": "Comparative analysis against similar IP"
+      },
+      "measurement_methods": {
+        "simulation": "Performance measurement through simulation",
+        "emulation": "Performance measurement through emulation",
+        "prototyping": "Performance measurement on prototype hardware",
+        "production": "Performance measurement on production silicon"
+      },
+      "ai_prompts": {
+        "performance_analysis": "Analyze performance of {ip_name} using {metrics} and {methods}",
+        "benchmark_creation": "Create performance benchmarks for {ip_name} with {workloads}",
+        "performance_optimization": "Optimize performance of {ip_name} for {target_metrics}",
+        "comparative_analysis": "Compare performance of {ip_name} against {baseline}"
+      }
+    },
+    "power_analysis": {
+      "description": "Power analysis and optimization for IP blocks",
+      "power_metrics": {
+        "static_power": "Static power consumption (leakage)",
+        "dynamic_power": "Dynamic power consumption (switching)",
+        "peak_power": "Peak power consumption",
+        "average_power": "Average power consumption",
+        "power_efficiency": "Power efficiency (performance per watt)",
+        "power_density": "Power density (watts per mm²)"
+      },
+      "power_analysis_types": {
+        "gate_level": "Gate-level power analysis",
+        "rtl_level": "RTL-level power estimation",
+        "architectural": "Architectural-level power analysis",
+        "system_level": "System-level power analysis"
+      },
+      "power_optimization": {
+        "clock_gating": "Clock gating for dynamic power reduction",
+        "power_gating": "Power gating for static power reduction",
+        "voltage_scaling": "Dynamic voltage scaling",
+        "frequency_scaling": "Dynamic frequency scaling",
+        "logic_optimization": "Logic optimization for power reduction",
+        "memory_optimization": "Memory access optimization"
+      },
+      "tools": {
+        "power_estimation": ["synopsys_power", "cadence_power", "mentor_power"],
+        "power_analysis": ["primetime_px", "voltus", "powerpro"],
+        "power_optimization": ["design_compiler", "ic_compiler", "innovus"]
+      },
+      "ai_prompts": {
+        "power_analysis": "Analyze power consumption of {ip_name} using {analysis_type}",
+        "power_optimization": "Optimize power consumption of {ip_name} using {techniques}",
+        "power_estimation": "Estimate power consumption of {ip_name} at {level}",
+        "power_efficiency": "Improve power efficiency of {ip_name} for {target}"
+      }
+    },
+    "thermal_management": {
+      "description": "Thermal analysis and cooling requirements for IP blocks",
+      "thermal_metrics": {
+        "junction_temperature": "Maximum junction temperature",
+        "thermal_resistance": "Thermal resistance (junction to ambient)",
+        "thermal_impedance": "Thermal impedance for transient analysis",
+        "power_density": "Power density for thermal analysis",
+        "hot_spot_temperature": "Hot spot temperature analysis"
+      },
+      "thermal_analysis": {
+        "steady_state": "Steady-state thermal analysis",
+        "transient": "Transient thermal analysis",
+        "3d_thermal": "3D thermal analysis for complex geometries",
+        "system_level": "System-level thermal analysis"
+      },
+      "cooling_solutions": {
+        "passive": "Passive cooling (natural convection)",
+        "active_air": "Active air cooling (forced convection)",
+        "liquid_cooling": "Liquid cooling solutions",
+        "phase_change": "Phase change cooling (heat pipes, vapor chambers)",
+        "thermoelectric": "Thermoelectric cooling"
+      },
+      "thermal_constraints": {
+        "temperature_limits": "Operating temperature limits",
+        "thermal_budget": "Thermal budget allocation",
+        "cooling_capacity": "Available cooling capacity",
+        "thermal_margins": "Thermal safety margins"
+      },
+      "ai_prompts": {
+        "thermal_analysis": "Perform thermal analysis for {ip_name} with {power_profile}",
+        "cooling_design": "Design cooling solution for {ip_name} with {constraints}",
+        "thermal_optimization": "Optimize thermal performance of {ip_name}",
+        "thermal_constraints": "Define thermal constraints for {ip_name} integration"
+      }
+    }
+  },
+
   "standardized_interfaces": {
     "description": "Use Vyges Standardized Interface Catalog for consistent IP integration",
     "canonical_bus_types": [
@@ -1221,6 +2038,678 @@
         "docs/thermal_analysis.md",
         "docs/power_management.md"
       ]
+    },
+    "analog_ip": {
+      "description": "Analog IP block with behavioral modeling, transistor-level design, and Cadence PDK integration",
+      "files": [
+        "rtl/behavioral/opamp_behavioral.sv",
+        "rtl/verilog_a/opamp_veriloga.va",
+        "schematic/opamp_schematic.cds",
+        "symbol/opamp_symbol.cds",
+        "netlist/opamp_netlist.sp",
+        "simulation/spectre/opamp_sim.scs",
+        "simulation/configs/opamp_corners.scs",
+        "simulation/results/opamp_dc.txt",
+        "simulation/results/opamp_ac.txt",
+        "simulation/waveforms/opamp_transient.tr0",
+        "layout/opamp_layout.cds",
+        "layout/constraints/opamp_constraints.txt",
+        "layout/lvs/opamp_lvs_setup.cal",
+        "layout/drc/opamp_drc_report.txt",
+        "pdks/cadence/tsmc65/models.scs",
+        "pdks/cadence/tsmc65/techfile.tf",
+        "docs/opamp_design_spec.md",
+        "docs/opamp_performance_analysis.md",
+        "docs/opamp_layout_guidelines.md"
+      ],
+      "analog_features": [
+        "Verilog-A behavioral model with parameterized specifications",
+        "Transistor-level schematic with proper device sizing",
+        "Spectre simulation setup with corner analysis",
+        "Monte Carlo analysis for process variation",
+        "Layout-ready design with matching and symmetry",
+        "LVS-clean layout verification",
+        "Performance analysis and optimization",
+        "Comprehensive documentation with specifications"
+      ]
+    },
+    "uvm_ip": {
+      "description": "Digital IP block with comprehensive UVM verification methodology",
+      "files": [
+        "rtl/uart_controller.sv",
+        "rtl/uart_transmitter.sv",
+        "rtl/uart_receiver.sv",
+        "rtl/apb_slave.sv",
+        "tb/uvm/test_uart_controller.sv",
+        "tb/uvm/uart_controller_env.sv",
+        "tb/uvm/uart_controller_agent.sv",
+        "tb/uvm/uart_controller_driver.sv",
+        "tb/uvm/uart_controller_monitor.sv",
+        "tb/uvm/uart_controller_sequence.sv",
+        "tb/uvm/uart_controller_item.sv",
+        "tb/uvm/uart_controller_scoreboard.sv",
+        "tb/uvm/uart_controller_coverage.sv",
+        "tb/uvm/uart_controller_testbench.sv",
+        "tb/uvm/apb_agent.sv",
+        "tb/uvm/apb_driver.sv",
+        "tb/uvm/apb_monitor.sv",
+        "tb/uvm/apb_sequence.sv",
+        "tb/uvm/apb_item.sv",
+        "tb/uvm/uart_agent.sv",
+        "tb/uvm/uart_driver.sv",
+        "tb/uvm/uart_monitor.sv",
+        "tb/uvm/uart_sequence.sv",
+        "tb/uvm/uart_item.sv",
+        "simulation/uvm/run_simulation.tcl",
+        "simulation/uvm/coverage_report.txt",
+        "simulation/uvm/regression_results.txt",
+        "docs/uvm_verification_plan.md",
+        "docs/uvm_coverage_analysis.md",
+        "docs/uvm_test_scenarios.md"
+      ],
+      "uvm_features": [
+        "Complete UVM testbench with all components (test, env, agent, driver, monitor, sequence, scoreboard, coverage)",
+        "Protocol-specific agents for APB and UART interfaces",
+        "Constraint-random test generation with coverage feedback",
+        "Functional coverage collection and analysis",
+        "SystemVerilog assertions for protocol checking",
+        "Regression testing framework with multiple test scenarios",
+        "CI/CD integration with coverage reporting",
+        "Comprehensive verification documentation and test plans"
+      ]
+    }
+  },
+
+  "advanced_verification": {
+    "description": "Advanced verification methodologies including formal verification, emulation, and hardware-in-the-loop testing",
+    "formal_verification": {
+      "description": "Formal verification methodology support for IP blocks",
+      "formal_methods": {
+        "model_checking": "Model checking for temporal logic verification",
+        "theorem_proving": "Theorem proving for mathematical correctness",
+        "equivalence_checking": "Equivalence checking between design representations",
+        "property_checking": "Property checking using formal assertions",
+        "reachability_analysis": "Reachability analysis for state space exploration"
+      },
+      "formal_tools": {
+        "model_checkers": ["jkind", "pkind", "kind2", "nuXmv", "sal"],
+        "theorem_provers": ["coq", "isabelle", "hol", "acl2"],
+        "equivalence_checkers": ["conformal", "formality", "lec"],
+        "property_checkers": ["jasper", "vc_formal", "questa_formal"]
+      },
+      "formal_properties": {
+        "safety": "Safety properties (bad states never reached)",
+        "liveness": "Liveness properties (good states eventually reached)",
+        "invariants": "Invariant properties (always true conditions)",
+        "protocol": "Protocol compliance properties",
+        "timing": "Timing and performance properties"
+      },
+      "verification_goals": {
+        "functional_correctness": "Functional correctness verification",
+        "protocol_compliance": "Protocol compliance verification",
+        "safety_critical": "Safety-critical property verification",
+        "security_properties": "Security property verification",
+        "performance_guarantees": "Performance guarantee verification"
+      },
+      "ai_prompts": {
+        "formal_specification": "Create formal specification for {ip_name} with {properties}",
+        "formal_verification": "Perform formal verification of {ip_name} using {methods}",
+        "property_generation": "Generate formal properties for {ip_name} verification",
+        "formal_analysis": "Analyze formal verification results for {ip_name}"
+      }
+    },
+    "emulation": {
+      "description": "Emulation platform support for IP verification",
+      "emulation_platforms": {
+        "fpga_based": "FPGA-based emulation platforms",
+        "processor_based": "Processor-based emulation platforms",
+        "hybrid": "Hybrid emulation platforms",
+        "cloud_based": "Cloud-based emulation services"
+      },
+      "emulation_tools": {
+        "fpga_platforms": ["palladium", "veloce", "zeBu", "vcs_emulation"],
+        "processor_platforms": ["palladium_z1", "veloce_pro", "zeBu_server"],
+        "cloud_services": ["aws_f1", "azure_hardware", "google_tpu"],
+        "virtual_platforms": ["qemu", "virtualbox", "vmware"]
+      },
+      "emulation_benefits": {
+        "speed": "Faster execution compared to simulation",
+        "capacity": "Larger design capacity",
+        "real_world": "Real-world interface testing",
+        "software": "Software and hardware co-verification",
+        "system_level": "System-level verification"
+      },
+      "emulation_workflows": {
+        "design_compilation": "Design compilation for emulation",
+        "test_development": "Test development for emulation",
+        "debug_infrastructure": "Debug infrastructure setup",
+        "performance_analysis": "Performance analysis on emulation",
+        "system_integration": "System integration testing"
+      },
+      "ai_prompts": {
+        "emulation_setup": "Set up emulation environment for {ip_name} using {platform}",
+        "emulation_compilation": "Compile {ip_name} for emulation on {platform}",
+        "emulation_testing": "Create emulation tests for {ip_name} with {scenarios}",
+        "emulation_analysis": "Analyze emulation results for {ip_name}"
+      }
+    },
+    "hardware_in_the_loop": {
+      "description": "Hardware-in-the-loop testing for IP verification",
+      "hil_testing_types": {
+        "rapid_prototyping": "Rapid prototyping with real hardware",
+        "real_time_testing": "Real-time testing with hardware interfaces",
+        "system_integration": "System integration testing",
+        "performance_validation": "Performance validation on real hardware",
+        "environmental_testing": "Environmental testing (temperature, vibration)"
+      },
+      "hil_platforms": {
+        "fpga_boards": ["arty_a7", "nexys4", "zybo", "ultra96"],
+        "development_boards": ["raspberry_pi", "arduino", "beaglebone"],
+        "custom_boards": "Custom development boards",
+        "evaluation_boards": "Vendor evaluation boards"
+      },
+      "hil_benefits": {
+        "real_hardware": "Testing on real hardware",
+        "real_interfaces": "Real interface testing",
+        "performance": "Real performance measurement",
+        "reliability": "Reliability testing",
+        "environmental": "Environmental factor testing"
+      },
+      "hil_workflows": {
+        "board_setup": "Development board setup and configuration",
+        "interface_connection": "Interface connection and routing",
+        "test_development": "Test development for hardware",
+        "data_collection": "Data collection and analysis",
+        "debugging": "Hardware debugging and troubleshooting"
+      },
+      "ai_prompts": {
+        "hil_setup": "Set up hardware-in-the-loop testing for {ip_name} on {platform}",
+        "hil_testing": "Create HIL tests for {ip_name} with {interfaces}",
+        "hil_analysis": "Analyze HIL test results for {ip_name}",
+        "hil_optimization": "Optimize {ip_name} based on HIL test results"
+      }
+    }
+  },
+
+  "ai_ml_support": {
+    "description": "Support for AI/ML IP blocks, neural network accelerators, and ML-specific verification methodologies",
+    "ai_ip_types": {
+      "neural_network_accelerator": "Hardware accelerator for neural network inference/training",
+      "ml_processor": "Processor optimized for machine learning workloads",
+      "ai_peripheral": "Peripheral IP for AI/ML data movement and preprocessing"
+    },
+    "ai_ml_features": {
+      "quantization": "Support for quantized neural network operations",
+      "sparsity": "Sparsity-aware computation and storage",
+      "reconfigurability": "Reconfigurable datapaths for AI workloads",
+      "on_chip_memory": "On-chip memory for AI model storage",
+      "dma_support": "DMA engines for high-throughput data movement"
+    },
+    "ml_verification": {
+      "dataset_driven": "Verification using real-world datasets",
+      "golden_model": "Golden model comparison for accuracy",
+      "corner_case_generation": "Corner case input generation for ML models",
+      "ai_prompts": {
+        "generate_ai_ip": "Generate hardware accelerator for {model_type} neural network",
+        "verify_ml_ip": "Verify ML IP block using {dataset} and {metrics}",
+        "compare_golden_model": "Compare hardware results to golden model for {model_type}",
+        "generate_corner_cases": "Generate corner case inputs for {model_type} verification"
+      }
+    }
+  },
+
+  "quality_assurance": {
+    "description": "Quality assurance features including code review, static analysis, and security scanning",
+    "code_review": {
+      "automated_review": "Automated code review using AI and static analysis tools",
+      "peer_review": "Peer review workflow for code and documentation",
+      "review_checklists": "Standardized review checklists for IP quality"
+    },
+    "static_analysis": {
+      "tools": ["verilator", "spyglass", "codeql", "semgrep"],
+      "integration": "CI/CD integration for static analysis and linting"
+    },
+    "security_scanning": {
+      "tools": ["bandit", "semgrep", "codeql"],
+      "integration": "Automated security scanning in CI/CD pipeline"
+    },
+    "ai_prompts": {
+      "run_code_review": "Run automated code review for {ip_name} using {tools}",
+      "run_static_analysis": "Run static analysis for {ip_name} using {tools}",
+      "run_security_scan": "Run security scan for {ip_name} using {tools}"
+    }
+  },
+
+  "collaboration": {
+    "description": "Collaboration and team workflow features for multi-developer projects",
+    "team_workflows": {
+      "branching": "Branching strategies for collaborative development",
+      "merging": "Merging and conflict resolution workflows",
+      "review_process": "Code review and approval workflows",
+      "issue_tracking": "Issue tracking and project management integration"
+    },
+    "version_control": {
+      "tools": ["git", "github", "gitlab", "bitbucket"],
+      "best_practices": "Best practices for version control in hardware projects"
+    },
+    "ai_prompts": {
+      "suggest_branching": "Suggest branching strategy for {project_type}",
+      "suggest_review_process": "Suggest code review process for {team_size}",
+      "track_issues": "Track issues and progress for {ip_name}"
+    }
+  },
+
+  "internationalization": {
+    "description": "Internationalization, localization, and regional compliance features",
+    "multi_language_support": {
+      "documentation": "Support for multi-language documentation",
+      "ui": "Multi-language user interface support"
+    },
+    "regional_compliance": {
+      "standards": ["CE", "FCC", "RoHS", "REACH", "CCC"],
+      "compliance_guidance": "Guidance for regional standards and compliance"
+    },
+    "localization": {
+      "translation": "Translation workflows for documentation and UI",
+      "localization_tools": ["poedit", "crowdin", "transifex"]
+    },
+    "ai_prompts": {
+      "translate_docs": "Translate documentation for {ip_name} to {language}",
+      "check_compliance": "Check {ip_name} for compliance with {standard}",
+      "localize_ui": "Localize user interface for {region}"
+    }
+  },
+
+  "advanced_ip_types": {
+    "description": "Support for advanced IP types including memory, security, and network IP blocks",
+    "memory_ip": {
+      "controller": "Memory controller IP (DDR, LPDDR, SRAM, etc.)",
+      "phy": "Memory PHY IP for high-speed interfaces",
+      "ecc": "Error correction and detection features"
+    },
+    "security_ip": {
+      "crypto": "Cryptographic accelerator IP (AES, RSA, ECC, etc.)",
+      "trng": "True random number generator IP",
+      "secure_boot": "Secure boot and root of trust IP"
+    },
+    "network_ip": {
+      "ethernet": "Ethernet MAC/PHY IP",
+      "pcie": "PCI Express controller IP",
+      "usb": "USB controller IP",
+      "can": "CAN bus controller IP"
+    },
+    "ai_prompts": {
+      "generate_memory_ip": "Generate memory controller IP for {memory_type}",
+      "generate_security_ip": "Generate security IP block for {security_feature}",
+      "generate_network_ip": "Generate network IP block for {protocol}"
+    }
+  },
+
+  "ieee_p1735_encryption": {
+    "description": "IEEE P1735 standard support for encrypting HDL IP blocks for secure distribution and licensing",
+    "standard_overview": {
+      "name": "IEEE P1735 - Standard for Encryption of Electronic Design Intellectual Property (IP)",
+      "purpose": "Enable secure distribution of HDL IP without revealing internals",
+      "supported_vendors": ["Synopsys", "Cadence", "Siemens", "Aldec"],
+      "file_extensions": [".vhdp", ".vpe", ".vhdpe", ".vpe"],
+      "encryption_method": "AES encryption with RSA/X.509 PKI for key distribution"
+    },
+    "encryption_components": {
+      "aes_encryption": {
+        "description": "AES-128 or AES-256 encryption for HDL content",
+        "purpose": "Encrypt the actual HDL source code",
+        "key_management": "AES keys wrapped with recipient RSA public keys"
+      },
+      "rsa_key_exchange": {
+        "description": "RSA/X.509 public key infrastructure for key distribution",
+        "purpose": "Securely distribute AES keys to authorized recipients",
+        "certificate_formats": ["PEM", "DER", "X.509"],
+        "key_sizes": ["2048-bit", "4096-bit"]
+      },
+      "digital_signatures": {
+        "description": "Digital signatures for tamper detection",
+        "purpose": "Prevent unauthorized modification of encrypted IP",
+        "algorithms": ["RSA-SHA256", "RSA-SHA512"]
+      },
+      "usage_rights": {
+        "description": "Usage rights encoding for license enforcement",
+        "rights_types": {
+          "simulation": "Allow simulation of the IP",
+          "synthesis": "Allow synthesis of the IP",
+          "modification": "Allow modification of the IP",
+          "redistribution": "Allow redistribution of the IP",
+          "expiration": "Expiration date for license validity"
+        }
+      }
+    },
+    "rights_declaration": {
+      "description": "XML-based rights declaration for usage control",
+      "structure": {
+        "rights_block": "Main rights container with tool and value attributes",
+        "tool_specification": "Target EDA tool or tool category",
+        "value_assignment": "Boolean or string value for the right",
+        "expiration_handling": "Date-based expiration for time-limited licenses"
+      },
+      "example_xml": {
+        "simulation_only": "<rights><right tool='simulation' value='true'/><right tool='synthesis' value='false'/></rights>",
+        "time_limited": "<rights><right tool='simulation' value='true'/><right tool='synthesis' value='true'/><expiration>2025-12-31</expiration></rights>",
+        "vendor_specific": "<rights><right tool='synopsys_vcs' value='true'/><right tool='cadence_xcelium' value='false'/></rights>"
+      }
+    },
+    "project_structure": {
+      "encrypted_ip": {
+        "description": "Project structure for encrypted IP distribution",
+        "directory_layout": {
+          "src": "Source HDL files (unencrypted for development)",
+          "encrypted": "Encrypted HDL files (.vhdp, .vpe)",
+          "licenses": "Customer certificates and public keys",
+          "metadata": "Encryption metadata and rights declarations",
+          "interfaces": "Unencrypted interface definitions for integration"
+        },
+        "file_organization": {
+          "encrypted_core": "Encrypted implementation files",
+          "plaintext_interface": "Unencrypted interface declarations",
+          "license_files": "Customer-specific license files",
+          "metadata_files": "Encryption and rights metadata"
+        }
+      }
+    },
+    "cli_integration": {
+      "description": "Future Vyges CLI commands for IEEE P1735 encryption support (not yet implemented)",
+      "planned_commands": {
+        "encrypt": "Encrypt HDL files using IEEE P1735 standard",
+        "decrypt": "Decrypt HDL files (for authorized users)",
+        "publish_encrypted": "Publish encrypted IP to Vyges catalog",
+        "manage_licenses": "Manage customer licenses and certificates"
+      },
+      "implementation_status": "Planned for future release - model may change"
+    },
+    "metadata_extensions": {
+      "description": "Vyges metadata extensions for encrypted IP support",
+      "encryption_metadata": {
+        "encryption_enabled": "Boolean indicating if IP is encrypted",
+        "encryption_standard": "IEEE P1735",
+        "encryption_algorithm": "AES-128 or AES-256",
+        "key_management": "RSA/X.509 PKI",
+        "digital_signature": "Boolean indicating if file is signed"
+      },
+      "licensing_metadata": {
+        "license_type": "Type of license (commercial, evaluation, academic)",
+        "usage_rights": "Array of usage rights and restrictions",
+        "expiration_date": "License expiration date",
+        "customer_restrictions": "Customer-specific restrictions",
+        "redistribution_policy": "Redistribution permissions"
+      },
+      "distribution_metadata": {
+        "encrypted_files": "List of encrypted file paths",
+        "plaintext_interfaces": "List of unencrypted interface files",
+        "customer_certificates": "List of authorized customer certificates",
+        "decryption_instructions": "Instructions for authorized users"
+      }
+    },
+    "ai_prompts": {
+      "setup_encrypted_ip": "Set up IEEE P1735 encrypted IP project structure with proper directory layout and metadata",
+      "encrypt_hdl_file": "Encrypt HDL file using IEEE P1735 standard with specified rights and recipient certificate",
+      "create_rights_declaration": "Create IEEE P1735 rights declaration XML for specified usage rights and restrictions",
+      "generate_customer_certificate": "Generate test X.509 certificate for customer licensing and encryption",
+      "setup_license_management": "Set up license management system for encrypted IP with customer certificate handling",
+      "create_encrypted_interface": "Create encrypted IP with plaintext interface for integration while protecting core implementation",
+      "validate_encryption_setup": "Validate IEEE P1735 encryption setup including certificate validity and rights declaration",
+      "generate_encryption_metadata": "Generate Vyges metadata extensions for encrypted IP including licensing and distribution information",
+      "create_encryption_workflow": "Create complete encryption workflow for IP distribution including CLI commands and metadata",
+      "setup_multi_recipient_encryption": "Set up multi-recipient encryption for distributing IP to multiple customers with different rights",
+      "create_hybrid_encryption": "Create hybrid encryption setup with plaintext interface and encrypted core implementation",
+      "validate_license_compliance": "Validate license compliance for encrypted IP including rights enforcement and expiration checking",
+      "generate_decryption_instructions": "Generate decryption instructions for authorized users of encrypted IP",
+      "setup_encrypted_catalog_entry": "Set up encrypted IP catalog entry with proper metadata, licensing, and distribution information"
+    },
+    "security_considerations": {
+      "key_management": {
+        "description": "Secure key management practices for IEEE P1735 encryption",
+        "best_practices": [
+          "Store private keys securely with proper access controls",
+          "Use strong RSA key sizes (2048-bit minimum, 4096-bit recommended)",
+          "Regularly rotate encryption keys",
+          "Implement proper certificate validation",
+          "Use secure random number generation for AES keys"
+        ]
+      },
+      "certificate_handling": {
+        "description": "Secure certificate handling and validation",
+        "requirements": [
+          "Validate certificate format and signature",
+          "Check certificate expiration dates",
+          "Verify certificate authority trust chain",
+          "Implement certificate revocation checking",
+          "Secure storage of customer certificates"
+        ]
+      },
+      "rights_enforcement": {
+        "description": "Usage rights enforcement and compliance",
+        "mechanisms": [
+          "Embed rights declarations in encrypted files",
+          "Validate rights during decryption",
+          "Check expiration dates and usage restrictions",
+          "Implement audit logging for license usage",
+          "Provide clear usage terms and restrictions"
+        ]
+      }
+    },
+    "integration_features": {
+      "catalog_integration": {
+        "description": "Integration with Vyges catalog for encrypted IP",
+        "features": [
+          "Encrypted IP discovery and search",
+          "License type filtering and categorization",
+          "Customer-specific access control",
+          "Usage rights display and validation",
+          "License purchase and distribution workflow"
+        ]
+      },
+      "workflow_integration": {
+        "description": "Integration with Vyges development workflow",
+        "features": [
+          "Seamless encryption during IP development",
+          "Automated license generation and management",
+          "Integration with CI/CD for encrypted builds",
+          "Automated rights validation and enforcement",
+          "Customer certificate management workflow"
+        ]
+      },
+      "toolchain_integration": {
+        "description": "Integration with EDA toolchains",
+        "supported_tools": {
+          "synopsys": ["VCS", "Design Compiler", "IC Compiler"],
+          "cadence": ["Xcelium", "Genus", "Innovus"],
+          "siemens": ["Questa", "ModelSim", "Precision"],
+          "aldec": ["Active-HDL", "Riviera-PRO"]
+        },
+        "integration_methods": [
+          "Standard IEEE P1735 file format support",
+          "Tool-specific encryption options",
+          "License validation during tool execution",
+          "Rights enforcement at runtime"
+        ]
+      }
+    },
+    "compliance_and_legal": {
+      "description": "Legal and compliance considerations for IEEE P1735 implementation",
+      "legal_considerations": {
+        "licensing": "Ensure proper licensing terms and conditions",
+        "compliance": "Comply with IEEE P1735 standard specifications",
+        "liability": "Clear liability and warranty disclaimers",
+        "jurisdiction": "Applicable law and jurisdiction for disputes"
+      },
+      "compliance_requirements": {
+        "standard_compliance": "Full compliance with IEEE P1735 standard",
+        "vendor_compatibility": "Compatibility with major EDA vendor implementations",
+        "security_audit": "Regular security audits of encryption implementation",
+        "certification": "Industry certification for encryption capabilities"
+      }
+    }
+  },
+
+  "ipxact_conversion": {
+    "description": "IP-XACT to Vyges metadata conversion functionality for AI-assisted migration",
+    "conversion_mapping": {
+      "component_info": {
+        "vendor": "Extract vendor name for IP identification",
+        "library": "Extract library name for organization",
+        "name": "Extract component name for IP naming",
+        "version": "Extract version information",
+        "description": "Extract component description"
+      },
+      "ports_to_pins": {
+        "port_name": "Map IP-XACT port names to Vyges pin names",
+        "direction": "Convert IP-XACT direction (in/out/inout) to Vyges direction (input/output/inout)",
+        "width": "Extract bus width from vectors or arrays",
+        "signal_type": "Infer signal type from port name and context",
+        "description": "Generate pin description from port information"
+      },
+      "parameters": {
+        "parameter_name": "Map IP-XACT parameter names to Vyges parameter names",
+        "parameter_type": "Convert IP-XACT parameter types to Vyges types",
+        "default_value": "Extract default values and ranges",
+        "description": "Preserve parameter descriptions and documentation"
+      },
+      "bus_interfaces": {
+        "interface_name": "Map IP-XACT bus interface names to Vyges interface names",
+        "protocol": "Extract bus protocol information (APB, AXI, etc.)",
+        "port_maps": "Convert port maps to Vyges signal mappings",
+        "abstraction": "Handle abstraction type information"
+      },
+      "file_sets": {
+        "file_set_name": "Map IP-XACT file set names to Vyges file categories",
+        "file_paths": "Extract file paths and types",
+        "file_types": "Map IP-XACT file types to Vyges file types"
+      }
+    },
+    "conversion_rules": {
+      "naming_conventions": {
+        "ip_name": "Convert to lowercase with hyphens: {vendor}/{name}",
+        "pin_names": "Preserve original names or convert to snake_case",
+        "parameter_names": "Convert to UPPER_SNAKE_CASE",
+        "interface_names": "Preserve protocol names (APB, AXI, etc.)"
+      },
+      "type_mapping": {
+        "ipxact_types": {
+          "bit": "int",
+          "string": "string",
+          "float": "float",
+          "long": "int"
+        },
+        "direction_mapping": {
+          "in": "input",
+          "out": "output",
+          "inout": "inout"
+        },
+        "signal_type_inference": {
+          "clock_patterns": ["clk", "clock", "pclk", "aclk"],
+          "reset_patterns": ["rst", "reset", "preset", "areset"],
+          "interrupt_patterns": ["irq", "int", "interrupt"],
+          "data_patterns": ["data", "addr", "wdata", "rdata"],
+          "control_patterns": ["valid", "ready", "enable", "select"]
+        }
+      },
+      "metadata_structure": {
+        "required_fields": [
+          "name", "version", "description", "license", "target", 
+          "design_type", "maturity", "template", "created", "updated"
+        ],
+        "optional_fields": [
+          "parameters", "interfaces", "files", "test", "flows", "meta"
+        ],
+        "default_values": {
+          "license": "MIT",
+          "target": ["asic"],
+          "design_type": ["digital"],
+          "maturity": "beta",
+          "template": "vyges-ip-template@1.0.0"
+        }
+      }
+    },
+    "conversion_workflow": {
+      "step1_parse": "Parse IP-XACT XML and extract component information",
+      "step2_map_ports": "Map IP-XACT ports to Vyges pins with proper naming and types",
+      "step3_map_parameters": "Convert IP-XACT parameters to Vyges parameters",
+      "step4_map_interfaces": "Map bus interfaces to Vyges interface definitions",
+      "step5_map_files": "Convert file sets to Vyges file metadata",
+      "step6_generate_metadata": "Generate complete vyges-metadata.json structure",
+      "step7_validate": "Validate generated metadata against Vyges schema",
+      "step8_enhance": "Enhance metadata with Vyges-specific features and conventions"
+    },
+    "enhancement_features": {
+      "auto_detection": {
+        "protocol_detection": "Auto-detect bus protocols from interface names and signals",
+        "signal_grouping": "Group related signals into logical interfaces",
+        "parameter_validation": "Validate and enhance parameter definitions",
+        "interface_standardization": "Standardize interfaces to Vyges conventions"
+      },
+      "quality_improvements": {
+        "description_enhancement": "Improve descriptions for better catalog discoverability",
+        "tag_generation": "Generate relevant tags based on IP functionality",
+        "category_suggestion": "Suggest appropriate IP categories",
+        "maturity_assessment": "Assess and suggest appropriate maturity level"
+      },
+      "vyges_integration": {
+        "cli_commands": "Generate vyges CLI commands for project setup",
+        "template_expansion": "Suggest template expansion based on IP complexity",
+        "test_generation": "Suggest test generation based on interfaces",
+        "documentation": "Generate documentation structure recommendations"
+      }
+    },
+    "ai_prompts": {
+      "convert_ipxact": "Convert this IP-XACT XML to Vyges metadata JSON format following the conversion mapping and rules",
+      "parse_ipxact_component": "Parse this IP-XACT component and extract basic information (vendor, library, name, version, description)",
+      "map_ipxact_ports": "Map these IP-XACT ports to Vyges pins with proper naming, direction, width, and type inference",
+      "map_ipxact_parameters": "Convert these IP-XACT parameters to Vyges parameters with proper type mapping and validation",
+      "map_ipxact_interfaces": "Map these IP-XACT bus interfaces to Vyges interface definitions with protocol detection",
+      "map_ipxact_files": "Convert these IP-XACT file sets to Vyges file metadata with proper categorization",
+      "generate_vyges_metadata": "Generate complete vyges-metadata.json from the parsed IP-XACT information",
+      "enhance_converted_metadata": "Enhance the converted metadata with Vyges-specific features, tags, and quality improvements",
+      "validate_converted_metadata": "Validate the converted metadata against Vyges schema and suggest improvements",
+      "suggest_vyges_workflow": "Suggest Vyges CLI commands and workflow steps for the converted IP",
+      "compare_ipxact_vyges": "Compare the original IP-XACT structure with the converted Vyges metadata and highlight differences",
+      "migrate_ipxact_project": "Provide a complete migration plan from IP-XACT to Vyges including file structure and workflow changes"
+    },
+    "conversion_examples": {
+      "simple_component": {
+        "description": "Basic IP-XACT component with ports and parameters",
+        "ipxact_input": "IP-XACT XML with basic component definition",
+        "vyges_output": "Corresponding vyges-metadata.json structure",
+        "conversion_notes": "Key conversion decisions and mappings"
+      },
+      "complex_component": {
+        "description": "Complex IP-XACT component with multiple interfaces and file sets",
+        "ipxact_input": "IP-XACT XML with advanced features",
+        "vyges_output": "Enhanced vyges-metadata.json with Vyges-specific features",
+        "conversion_notes": "Advanced conversion techniques and enhancements"
+      },
+      "protocol_specific": {
+        "description": "IP-XACT component with specific bus protocols (APB, AXI, etc.)",
+        "ipxact_input": "IP-XACT XML with protocol-specific interfaces",
+        "vyges_output": "Vyges metadata with standardized protocol definitions",
+        "conversion_notes": "Protocol detection and standardization"
+      }
+    },
+    "validation_rules": {
+      "schema_compliance": "Ensure generated metadata complies with Vyges schema v1.0.0",
+      "naming_compliance": "Verify all names follow Vyges naming conventions",
+      "interface_compliance": "Validate interfaces follow Vyges Standardized Interface Catalog",
+      "completeness_check": "Ensure all required fields are present and populated",
+      "quality_assessment": "Assess metadata quality for catalog readiness"
+    },
+    "error_handling": {
+      "parsing_errors": "Handle malformed IP-XACT XML gracefully",
+      "mapping_errors": "Provide fallback mappings for unknown elements",
+      "validation_errors": "Report validation errors with suggestions for fixes",
+      "enhancement_warnings": "Warn about potential quality improvements"
+    },
+    "integration_features": {
+      "cli_integration": "Generate vyges CLI commands for the converted IP",
+      "template_integration": "Suggest appropriate Vyges template expansion",
+      "catalog_integration": "Prepare metadata for Vyges catalog publication",
+      "workflow_integration": "Provide complete Vyges development workflow"
     }
   }
 } 

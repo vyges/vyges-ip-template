@@ -1324,8 +1324,26 @@
       },
       "metadata_extensions": {
         "analog": true,
-        "pdks_supported": ["cadence/tsmc65", "cadence/gf22fdx", "cadence/tsmc28", "cadence/tsmc16"],
-        "simulation_types": ["dc", "ac", "transient", "noise", "monte_carlo", "corner"],
+        "pdks_supported": [
+          "cadence/tsmc65", 
+          "cadence/gf22fdx", 
+          "cadence/tsmc28", 
+          "cadence/tsmc16",
+          "cadence/tsmc40ulp"
+        ],
+        "simulation_types": [
+          "dc", "ac", "transient", "noise", "monte_carlo", "corner",
+          "stability", "psrr", "cmrr"
+        ],
+        "performance_metrics": {
+          "gain": "Voltage/current gain specifications",
+          "bandwidth": "Frequency response bandwidth",
+          "noise": "Input-referred noise density",
+          "psrr": "Power supply rejection ratio",
+          "cmrr": "Common mode rejection ratio",
+          "offset": "Input offset voltage",
+          "slew_rate": "Slew rate specifications"
+        },
         "layout_requirements": ["matching", "symmetry", "routing", "parasitics"]
       }
     },

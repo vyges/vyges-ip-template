@@ -10,6 +10,7 @@ This comprehensive guide covers:
 - Design, pinout, and interface documentation
 - Example metadata, RTL, testbenches, and flow configurations
 - Validation, CI/CD, and catalog publication
+- Code quality analysis and KPIs assessment
 - Best practices for quality, maintainability, and catalog readiness
 
 Whether you are a new user looking for a quickstart or an advanced developer seeking full automation, this guide will help you “Build IP, Not Boilerplate.”
@@ -1120,6 +1121,48 @@ vyges validate --strict
 - `sim/run_simulation.sh`
 - `sim/Makefile`
 
+### 8.3 Code Quality Analysis and KPIs
+**✅ NEW FEATURE:** Use the built-in code KPIs analysis script for comprehensive project quality assessment.
+
+**The `scripts/code_kpis.py` script provides detailed analysis of:**
+- **Code Metrics**: Lines of RTL, testbench, and constraint files
+- **Documentation Analysis**: Coverage of README, Developer Guide, and other docs
+- **Test Coverage**: Analysis of test files, coverage reports, and test vectors
+- **Quality Metrics**: Linting, synthesis, and simulation status
+- **Vyges Metadata Analysis**: Comprehensive metadata quality assessment including:
+  - Field completeness and validation
+  - Interface quality analysis
+  - Test coverage metadata evaluation
+  - Flow configuration assessment
+  - AI generation readiness
+  - Catalog publication readiness
+- **Project Structure**: File organization and directory analysis
+
+**Usage:**
+```bash
+# Basic analysis
+python scripts/code_kpis.py
+
+# Detailed analysis with file breakdowns
+python scripts/code_kpis.py --detailed
+
+# Output in different formats
+python scripts/code_kpis.py --output json
+python scripts/code_kpis.py --output csv
+python scripts/code_kpis.py --output text
+
+# Analyze a specific project directory
+python scripts/code_kpis.py --project-root /path/to/project
+```
+
+**Integration:**
+- **CI/CD pipelines** for automated quality checks
+- **Development workflows** for progress tracking
+- **Project reviews** for completeness assessment
+- **Catalog validation** for publication readiness
+
+**See `scripts/README.md` for detailed documentation and examples.**
+
 ## Step 9: Integration and Packaging
 
 ### 9.1 AI-Assisted Integration (Recommended)
@@ -1226,6 +1269,7 @@ vyges publish
 8. **Integration support** - AI-generated integration examples
 9. **Testing infrastructure** - CLI-generated simulation and test scripts
 10. **Flow configuration** - AI-generated tool configurations
+11. **Code KPIs analysis** - Comprehensive project quality assessment with `scripts/code_kpis.py`
 
 ### ✅ Implemented Features (Developer Experience)
 11. **Interactive setup** - Guided initialization with `vyges init --interactive`
@@ -1256,6 +1300,7 @@ vyges publish
 8. **Integration support** - AI-generated integration examples
 9. **Testing infrastructure** - Simulation and verification setup
 10. **Flow configuration** - Tool-specific configuration generation
+11. **Code KPIs analysis** - Project quality assessment and metadata validation
 
 ### 🔄 In Progress Features
 11. **Interactive CLI** - Enhanced interactive mode with guided setup

@@ -9,6 +9,40 @@
   
   "git_commit_guidance": "For Git commit messages, don't use double quotes as the command line version will reject the message. Use single quotes or no quotes instead.",
   
+  "critical_ai_instructions": {
+    "description": "CRITICAL instructions that must ALWAYS be followed when generating code, documents, or metadata",
+    "date_handling": {
+      "rule": "ALWAYS use the `date` command to get the current date/time",
+      "command": "date -u +%Y-%m-%dT%H:%M:%SZ",
+      "usage": "Use this command to get current UTC date/time in ISO 8601 format for all 'created', 'updated', and 'generated_at' fields",
+      "prohibition": "NEVER use pattern matching based on existing files in the current repo for dates",
+      "examples": [
+        "metadata.json: 'created': '$(date -u +%Y-%m-%dT%H:%M:%SZ)'",
+        "documentation: 'Last updated: $(date -u +%Y-%m-%d)'",
+        "commit messages: 'Updated on $(date -u +%Y-%m-%d)'"
+      ]
+    },
+    "repository_name_detection": {
+      "rule": "ALWAYS use `git rev-parse --show-toplevel` to get the correct repository name",
+      "command": "basename $(git rev-parse --show-toplevel)",
+      "usage": "Use this command to get the correct repo name for IP block names, metadata files, and documentation",
+      "importance": "This is critical as the same name gets into generated metadata files, documentation, and other artifacts",
+      "prohibition": "NEVER guess or use hardcoded repository names",
+      "examples": [
+        "IP block name: Use repo name from git rev-parse",
+        "Metadata files: Use repo name for file naming",
+        "Documentation: Use repo name in headers and titles"
+      ]
+    },
+    "context_file_protection": {
+      "rule": "NEVER update .vyges-ai-context.json file in any repository unless explicitly asked to do so",
+      "prohibition": "Do not modify, update, or regenerate .vyges-ai-context.json files",
+      "exception": "Only update when user explicitly requests: 'Update .vyges-ai-context.json' or similar",
+      "reason": "This file contains critical configuration and should only be changed intentionally"
+    },
+    "enforcement": "These rules are MANDATORY and must be followed in ALL code generation, documentation creation, and metadata updates"
+  },
+  
   "catalog_objectives": {
     "description": "Ensure generated IP meets requirements for inclusion in the Vyges IP Catalog",
     "requirements": [

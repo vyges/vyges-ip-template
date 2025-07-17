@@ -9,8 +9,8 @@
   "target": ["asic", "fpga"],
   "design_type": ["digital"],
   "maturity": "prototype",
-  "created": "2024-01-15T10:30:00Z",
-  "updated": "2024-01-15T10:30:00Z",
+  "created": "2025-07-17T03:03:25Z",
+  "updated": "2025-07-17T03:03:25Z",
   "source": {
     "type": "git",
     "url": "https://github.com/example/timer-16bit",
@@ -135,7 +135,7 @@
       "generator": "vyges-cli",
       "init_tool": "vyges-cli", 
       "template_version": "1.0.0",
-      "generated_at": "2024-01-15T10:30:00Z"
+      "generated_at": "2025-07-17T03:03:25Z"
     },
     "generated_by": "vyges-cli",
     "schema": {

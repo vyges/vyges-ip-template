@@ -81,3 +81,7 @@ secrets.json
 .env.local
 .env.production
 
+# Vyges AI context backup and hash files
+.vyges-ai-context.json.backup.*
+.vyges-ai-context.sha256
+

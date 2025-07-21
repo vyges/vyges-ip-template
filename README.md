@@ -1,10 +1,37 @@
-[![Vyges IP Template](https://img.shields.io/badge/template-vyges--ip--template-blue)](https://github.com/vyges/vyges-ip-template)
+[![Vyges IP Template](https://img.shields.io/badge/Vyges-IP%20Template-blue?style=flat&logo=github)](https://vyges.com)
 [![Use this template](https://img.shields.io/badge/Use%20this%20template-vyges--ip--template-brightgreen?style=for-the-badge)](https://github.com/vyges/vyges-ip-template/generate)
-![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
+[![Template](https://img.shields.io/badge/Template-Repository-orange)](https://github.com/vyges/vyges-ip-template)
+[![Design Types](https://img.shields.io/badge/Design%20Types-Digital%20%7C%20Analog%20%7C%20Mixed%20%7C%20Chiplets-purple)](https://vyges.com/docs/design-types)
+[![Tools](https://img.shields.io/badge/Tools-Verilator%20%7C%20Yosys%20%7C%20Magic%20%7C%20OpenROAD-blue)](https://vyges.com/docs/tools)
+[![Target](https://img.shields.io/badge/Target-ASIC%20%7C%20FPGA-orange)](https://vyges.com/docs/target-platforms)
+[![Verification](https://img.shields.io/badge/Verification-Cocotb%20%7C%20SystemVerilog-purple)](https://vyges.com/docs/verification)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-blue?style=flat&logo=github)](https://vyges.github.io/vyges-ip-template/)
+[![Repository](https://img.shields.io/badge/Repository-GitHub-black?style=flat&logo=github)](https://github.com/vyges/vyges-ip-template)
+[![Issues](https://img.shields.io/badge/Issues-GitHub-orange?style=flat&logo=github)](https://github.com/vyges/vyges-ip-template/issues)
+[![Pull Requests](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat&logo=github)](https://github.com/vyges/vyges-ip-template/pulls)
 
 # Vyges IP Template
 
 A comprehensive template for developing hardware IP blocks in the Vyges ecosystem. Supports digital, analog, mixed-signal, and chiplet design flows.
+
+## Template Information
+
+- **Template Name**: `vyges/vyges-ip-template`
+- **Version**: 1.0.0
+- **License**: Apache-2.0
+- **Type**: Template Repository
+- **Target**: ASIC, FPGA
+- **Design Types**: Digital, Analog, Mixed-Signal, Chiplets, Tapeout
+
+## 📊 Template Reports & Documentation
+
+- **[GitHub Pages](https://vyges.github.io/vyges-ip-template/)** - Live template documentation and reports
+- **[Test Harness Report](https://vyges.github.io/vyges-ip-template/test_harness_report.html)** - Template test results and analysis
+- **[Code KPIs](https://vyges.github.io/vyges-ip-template/code_kpis.txt)** - Template code quality metrics
+- **[Workflow Status](https://vyges.github.io/vyges-ip-template/)** - Template workflow execution status
+- **[Developer Guide](Developer_Guide.md)** - Template usage and customization guide
+- **[Installation Guide](install_tools.md)** - Tool installation and setup instructions
 
 ## 🚀 Quick Start
 

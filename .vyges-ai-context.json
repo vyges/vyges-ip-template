@@ -924,6 +924,67 @@
     "setup_encrypted_catalog_entry": "Set up encrypted IP catalog entry with proper metadata, licensing, and distribution information"
   },
   
+  "proprietary_tools_guidance": {
+    "description": "Guidance for handling proprietary EDA tools in build systems and workflows",
+    "principle": "When providing support via Makefiles with proprietary tools such as Vivado, Quartus, Synopsys, Innovus/Cadence, we should always skip running those as part of the build system. The user may subsequently add that support.",
+    "rationale": [
+      "Proprietary tools require licensing and are not openly available",
+      "Build systems should focus on open-source tools for accessibility",
+      "Users can add proprietary tool support based on their specific needs",
+      "Ensures build systems work out-of-the-box without licensing barriers"
+    ],
+    "proprietary_tools": {
+      "vivado": {
+        "vendor": "AMD/Xilinx",
+        "availability": "Commercial license required",
+        "build_system": "Skip in default builds",
+        "user_addition": "User can add Vivado support to Makefiles as needed"
+      },
+      "quartus": {
+        "vendor": "Intel/Altera", 
+        "availability": "Commercial license required",
+        "build_system": "Skip in default builds",
+        "user_addition": "User can add Quartus support to Makefiles as needed"
+      },
+      "synopsys": {
+        "vendor": "Synopsys",
+        "availability": "Commercial license required", 
+        "build_system": "Skip in default builds",
+        "user_addition": "User can add Synopsys support to Makefiles as needed"
+      },
+      "innovus": {
+        "vendor": "Cadence",
+        "availability": "Commercial license required",
+        "build_system": "Skip in default builds", 
+        "user_addition": "User can add Innovus support to Makefiles as needed"
+      },
+      "cadence": {
+        "vendor": "Cadence",
+        "availability": "Commercial license required",
+        "build_system": "Skip in default builds",
+        "user_addition": "User can add Cadence support to Makefiles as needed"
+      }
+    },
+    "open_source_alternatives": {
+      "synthesis": ["yosys", "berkeley-abc"],
+      "simulation": ["verilator", "icarus", "ghdl"],
+      "layout": ["magic", "klayout"],
+      "verification": ["netgen", "cocotb"],
+      "waveform": ["gtkwave"]
+    },
+    "build_system_approach": {
+      "default": "Use open-source tools for default builds",
+      "optional": "Provide optional targets for proprietary tools",
+      "documentation": "Document how users can add proprietary tool support",
+      "examples": "Provide example Makefile targets for proprietary tools"
+    },
+    "ai_prompts": {
+      "skip_proprietary_tools": "When generating Makefiles or build systems, skip proprietary tools like Vivado, Quartus, Synopsys, Innovus/Cadence. Focus on open-source alternatives.",
+      "add_proprietary_support": "Show user how to add support for {proprietary_tool} to existing Makefile as optional target.",
+      "document_proprietary_integration": "Document integration approach for {proprietary_tool} without including it in default build."
+    }
+  },
+
   "cli_integration": {
     "commands": {
       "init": {
@@ -2582,6 +2643,292 @@
           "License validation during tool execution",
           "Rights enforcement at runtime"
         ]
+      }
+    },
+    "development_flows": {
+      "description": "Standardized development flows for different IP types with OSS/COTS tool categorization",
+      "tool_categories": {
+        "oss": {
+          "full_name": "Open Source Software",
+          "description": "Free and open-source tools available without licensing costs",
+          "characteristics": [
+            "No licensing fees",
+            "Source code available",
+            "Community-driven development",
+            "Cross-platform compatibility",
+            "Educational and commercial use allowed"
+          ]
+        },
+        "cots": {
+          "full_name": "Commercial Off-The-Shelf",
+          "description": "Commercial tools requiring licenses and potentially PDK access",
+          "characteristics": [
+            "Requires licensing fees",
+            "Proprietary software",
+            "Vendor support available",
+            "Industry-standard tools",
+            "May require foundry relationships"
+          ]
+        }
+      },
+      "flows": {
+        "digital_asic": {
+          "description": "Standard digital ASIC design flow with synthesis and place-and-route",
+          "pdk_required_from": "technology_mapping",
+          "tools": {
+            "oss": [
+              "verilator",
+              "yosys",
+              "openroad",
+              "magic",
+              "netgen",
+              "klayout",
+              "cocotb",
+              "gtkwave"
+            ],
+            "cots": []
+          },
+          "phases": [
+            "requirements",
+            "architecture",
+            "rtl_generation",
+            "testbench",
+            "simulation",
+            "synthesis",
+            "technology_mapping",
+            "floorplanning",
+            "place_and_route",
+            "lvs_drc_sta",
+            "gdsii_generation"
+          ]
+        },
+        "digital_fpga": {
+          "description": "Digital FPGA flow using fully open-source tools",
+          "pdk_required": false,
+          "tools": {
+            "oss": [
+              "verilator",
+              "yosys",
+              "nextpnr",
+              "cocotb",
+              "gtkwave"
+            ],
+            "cots": [
+              "vivado",
+              "quartus"
+            ]
+          },
+          "phases": [
+            "requirements",
+            "architecture",
+            "rtl_generation",
+            "testbench",
+            "simulation",
+            "synthesis",
+            "bitstream_mapping",
+            "fpga_flash"
+          ]
+        },
+        "analog_asic": {
+          "description": "Analog ASIC flow requiring PDK for circuit-level design and layout",
+          "pdk_required_from": "circuit_implementation",
+          "tools": {
+            "oss": [
+              "ngspice",
+              "xyce",
+              "magic",
+              "netgen",
+              "klayout",
+              "xschem"
+            ],
+            "cots": [
+              "cadence_pdk",
+              "virtuoso",
+              "spectre"
+            ]
+          },
+          "phases": [
+            "requirements",
+            "specification",
+            "block_diagram",
+            "circuit_implementation",
+            "simulation",
+            "layout",
+            "extraction",
+            "gdsii_generation"
+          ]
+        },
+        "chiplet_integration": {
+          "description": "Chiplet flow focused on metadata-driven integration and system-level validation",
+          "pdk_required": false,
+          "tools": {
+            "oss": [
+              "vyges-cli",
+              "verilator",
+              "cocotb"
+            ],
+            "cots": []
+          },
+          "phases": [
+            "metadata_definition",
+            "interface_specification",
+            "wrapper_generation",
+            "testbench_generation",
+            "packaging_docs",
+            "integration_validation"
+          ]
+        }
+      },
+      "ai_prompts": {
+        "generate_flow_specific_code": "Using the {flow_name} flow, generate {component_type} for {ip_name}, and provide Makefile targets for {target_operations}.",
+        "setup_flow_environment": "Set up the {flow_name} development environment with appropriate tools and configurations.",
+        "validate_flow_compliance": "Validate the IP block against {flow_name} flow requirements and suggest improvements.",
+        "generate_flow_documentation": "Generate documentation specific to the {flow_name} flow for {ip_name}."
+      },
+      "cli_integration": {
+        "init_with_flow": "vyges init --flow {flow_name} --template {template_name}",
+        "test_with_flow": "vyges test --flow {flow_name} --ip {ip_name}",
+        "generate_flow_config": "vyges generate flow-config --flow {flow_name} --target {target_platform}"
+      }
+    },
+    "open_pdks": {
+      "description": "Open-source Process Design Kits (PDKs) available for academic and commercial use",
+      "pdks": {
+        "sky130": {
+          "full_name": "SkyWater 130nm Open PDK",
+          "provider": "Google/SkyWater Technology",
+          "description": "130nm CMOS process with open-source design rules and models",
+          "digital": true,
+          "analog": false,
+          "mixed_signal": false,
+          "features": [
+            "Digital design support",
+            "Open-source design rules",
+            "Community-driven development",
+            "Free for academic and commercial use"
+          ],
+          "supported_tools": ["openlane", "magic", "klayout", "ngspice"],
+          "repository": "https://github.com/google/skywater-pdk"
+        },
+        "ihp130": {
+          "full_name": "IHP 130nm Open PDK",
+          "provider": "IHP Microelectronics",
+          "description": "130nm BiCMOS process with open-source design rules",
+          "digital": true,
+          "analog": true,
+          "mixed_signal": true,
+          "features": [
+            "BiCMOS technology",
+            "Mixed-signal design support",
+            "Open-source design rules"
+          ],
+          "supported_tools": ["openlane", "magic", "klayout"],
+          "repository": "https://github.com/IHP-Microelectronics/pdk"
+        },
+        "gf180": {
+          "full_name": "GlobalFoundries 180nm Open PDK",
+          "provider": "GlobalFoundries",
+          "description": "180nm CMOS process with open-source design rules",
+          "digital": true,
+          "analog": false,
+          "mixed_signal": false,
+          "features": [
+            "Digital design support",
+            "Open-source design rules",
+            "Free for academic use"
+          ],
+          "supported_tools": ["openlane", "magic", "klayout"],
+          "repository": "https://github.com/google/gf180mcu-pdk"
+        },
+        "asap7": {
+          "full_name": "ASAP7 7nm Predictive PDK",
+          "provider": "Arizona State University",
+          "description": "7nm predictive process design kit for research",
+          "digital": true,
+          "analog": false,
+          "mixed_signal": false,
+          "features": [
+            "Predictive technology models",
+            "Research and educational use",
+            "Advanced node exploration"
+          ],
+          "supported_tools": ["openlane", "magic", "klayout"],
+          "repository": "https://github.com/The-OpenROAD-Project/asap7"
+        },
+        "freepdk45": {
+          "full_name": "FreePDK45 45nm Predictive PDK",
+          "provider": "North Carolina State University",
+          "description": "45nm predictive process design kit",
+          "digital": true,
+          "analog": false,
+          "mixed_signal": false,
+          "features": [
+            "Predictive technology models",
+            "Educational and research use",
+            "Open-source design rules"
+          ],
+          "supported_tools": ["openlane", "magic", "klayout"],
+          "repository": "https://github.com/The-OpenROAD-Project/FreePDK45"
+        },
+        "gf12lp": {
+          "full_name": "GlobalFoundries 12LP Open PDK",
+          "provider": "GlobalFoundries",
+          "description": "12nm FinFET process with open-source design rules",
+          "digital": true,
+          "analog": false,
+          "mixed_signal": false,
+          "features": [
+            "Advanced FinFET technology",
+            "Digital design support",
+            "Open-source design rules"
+          ],
+          "supported_tools": ["openlane", "magic", "klayout"],
+          "repository": "https://github.com/google/gf180mcu-pdk"
+        },
+        "gf22fdx": {
+          "full_name": "GlobalFoundries 22FDX Open PDK",
+          "provider": "GlobalFoundries",
+          "description": "22nm FD-SOI process with open-source design rules",
+          "digital": true,
+          "analog": false,
+          "mixed_signal": false,
+          "features": [
+            "FD-SOI technology",
+            "Low power digital design support",
+            "Open-source design rules"
+          ],
+          "supported_tools": ["openlane", "magic", "klayout"],
+          "repository": "https://github.com/google/gf180mcu-pdk"
+        },
+        "intel16": {
+          "full_name": "Intel 16nm Open PDK",
+          "provider": "Intel",
+          "description": "16nm FinFET process with open-source design rules",
+          "digital": true,
+          "analog": false,
+          "mixed_signal": false,
+          "features": [
+            "FinFET technology",
+            "Advanced node support",
+            "Open-source design rules"
+          ],
+          "supported_tools": ["openlane", "magic", "klayout"],
+          "repository": "https://github.com/intel/OpenROAD"
+        }
+      },
+      "ai_prompts": {
+        "select_pdk": "Based on the IP requirements (digital: {digital}, analog: {analog}, mixed_signal: {mixed_signal}), suggest the most appropriate open PDK from the available options. Filter PDKs by matching boolean flags.",
+        "select_digital_pdk": "Suggest open PDKs that support digital design (digital: true) for the given IP requirements.",
+        "select_analog_pdk": "Suggest open PDKs that support analog design (analog: true) for the given IP requirements.",
+        "select_mixed_signal_pdk": "Suggest open PDKs that support mixed-signal design (mixed_signal: true) for the given IP requirements.",
+        "pdk_compatibility": "Check if the IP design is compatible with the selected open PDK technology and boolean flags.",
+        "pdk_setup": "Provide setup instructions for the selected open PDK with appropriate tool configurations.",
+        "filter_pdks_by_type": "Filter the available open PDKs based on design type requirements: digital={digital}, analog={analog}, mixed_signal={mixed_signal}."
+      },
+      "cli_integration": {
+        "init_with_pdk": "vyges init --pdk {pdk_name} --type {ip_type}",
+        "validate_pdk": "vyges validate --pdk {pdk_name} --ip {ip_name}",
+        "setup_pdk": "vyges setup-pdk --pdk {pdk_name} --tools {tool_list}"
       }
     },
     "compliance_and_legal": {

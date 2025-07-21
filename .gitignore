@@ -85,3 +85,28 @@ secrets.json
 .vyges-ai-context.json.backup.*
 .vyges-ai-context.sha256
 
+# Analog design intermediate files (following Efabless recommendations)
+*.ext                    # Magic extraction files
+*.raw                    # SPICE raw files
+*.sp                     # SPICE files (if large)
+*.log                    # Tool log files
+
+# Layout intermediate files
+*.mag                    # Magic database files
+*.gds                    # GDS files (if large)
+*.lef                    # LEF files (if large)
+
+# Simulation results (large files)
+simulation/results/      # Large simulation outputs
+simulation/waveforms/    # Waveform files
+
+# Macros directory (should be separate repositories)
+analog/macros/          # Symbolic links to other projects
+
+# Analog tool temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+

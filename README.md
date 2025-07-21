@@ -38,6 +38,45 @@ A minimal, production-ready template for building reusable SystemVerilog IP bloc
 
 **✅ This approach avoids all remote configuration issues!**
 
+## 🔧 Project Structure
+
+This template provides a comprehensive structure supporting digital, analog, and mixed-signal IP development:
+
+```
+ip-block/
+├── rtl/                    # SystemVerilog RTL implementation
+├── analog/                 # Analog design files (Efabless flow)
+│   ├── xschem/            # Schematic entry (Xschem)
+│   ├── magic/             # Layout database (Magic)
+│   ├── netlist/           # SPICE netlists
+│   ├── gds/               # Final GDS layout
+│   ├── lef/               # Abstract layout views
+│   └── macros/            # Reusable analog components
+├── simulation/             # Mixed-signal simulation
+│   ├── configs/           # Simulation configurations
+│   ├── results/           # Simulation results
+│   └── waveforms/         # Waveform files
+├── layout/                 # Layout verification
+│   ├── constraints/       # Layout constraints
+│   ├── lvs/              # Layout vs Schematic
+│   └── drc/              # Design Rule Checks
+├── tb/                     # Testbenches and verification
+├── flow/                   # EDA tool flows
+│   ├── yosys/              # Generic synthesis (PDK-agnostic)
+│   ├── openlane/           # ASIC synthesis (PDK-required)
+│   ├── fpga/               # FPGA synthesis (PDK-agnostic)
+│   └── vivado/             # Xilinx FPGA flows
+├── integration/            # System integration examples
+├── packaging/              # IP packaging and distribution
+└── .github/workflows/      # CI/CD automation
+```
+
+### Design Flow Support
+
+- **Digital Flow**: RTL synthesis, verification, FPGA/ASIC implementation
+- **Analog Flow**: Schematic entry, layout, SPICE simulation, DRC/LVS
+- **Mixed-Signal Flow**: Combined digital-analog verification and integration
+
 ## 🔧 GitHub Actions Workflow
 
 This template includes a comprehensive GitHub Actions workflow (`build-and-test.yml`) that provides automated testing and validation for your IP projects.

@@ -242,27 +242,13 @@ jobs:
           echo "✅ OpenROAD tools installed"
           echo "Note: These tools are now available for advanced ASIC design flows"
 
-      - name: Install GHDL Yosys plugin (digital, mixed, chiplets, tapeout)
-        if: contains('${{ github.event.inputs.design_type }}', 'digital') || contains('${{ github.event.inputs.design_type }}', 'mixed') || contains('${{ github.event.inputs.design_type }}', 'chiplets') || contains('${{ github.event.inputs.design_type }}', 'tapeout')
+      - name: Install GHDL Yosys plugin (digital, mixed, chiplets, tapeout) - DISABLED
+        if: false  # Disabled due to Ubuntu 24.04 Yosys version incompatibility
         run: |
-          echo "🔧 Installing GHDL Yosys plugin for VHDL support..."
-          
-          # Install GHDL (VHDL simulator)
-          sudo apt-get install -y ghdl
-          
-          # Clone GHDL Yosys plugin
-          git clone https://github.com/ghdl/ghdl-yosys-plugin.git
-          cd ghdl-yosys-plugin
-          
-          # Build the plugin
-          make
-          
-          # Install the plugin
-          sudo make install
-          
-          # Verify installation
-          echo "✅ GHDL Yosys plugin installed"
-          echo "Note: VHDL synthesis support is now available in Yosys"
+          echo "⚠️ GHDL Yosys plugin installation disabled"
+          echo "Reason: Ubuntu 24.04 Yosys version (0.33) is too old for GHDL plugin"
+          echo "Note: VHDL synthesis support not available in this template"
+          echo "For VHDL support, use a newer Yosys version or install manually"
 
       - name: Install Open PDKs (analog, mixed, tapeout) - DISABLED
         if: false  # Disabled due to long installation time

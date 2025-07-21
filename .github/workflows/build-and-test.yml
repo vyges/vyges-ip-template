@@ -199,21 +199,8 @@ jobs:
       - name: Install Verilator (digital, mixed, chiplets, tapeout)
         if: contains('${{ github.event.inputs.design_type }}', 'digital') || contains('${{ github.event.inputs.design_type }}', 'mixed') || contains('${{ github.event.inputs.design_type }}', 'chiplets') || contains('${{ github.event.inputs.design_type }}', 'tapeout')
         run: |
-          echo "🔧 Installing Verilator for digital simulation..."
-          # Clone Verilator repository
-          git clone https://github.com/verilator/verilator.git
-          cd verilator
-          
-          # Checkout specific version 5.026
-          git checkout v5.026
-          
-          # Build and install
-          autoconf
-          ./configure
-          make -j$(nproc)
-          sudo make install
-          
-          # Verify installation
+          echo "🔧 Installing Verilator from Ubuntu package..."
+          sudo apt-get install -y verilator
           verilator --version
 
       - name: Install OpenROAD tools (chiplets, tapeout) - DISABLED

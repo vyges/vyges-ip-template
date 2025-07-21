@@ -221,8 +221,8 @@ jobs:
           # Verify installation
           verilator --version
 
-      - name: Install OpenROAD tools (chiplets, tapeout)
-        if: contains('${{ github.event.inputs.design_type }}', 'chiplets') || contains('${{ github.event.inputs.design_type }}', 'tapeout')
+      - name: Install OpenROAD tools (chiplets, tapeout) - DISABLED
+        if: false  # Disabled due to long installation time
         run: |
           echo "🔧 Installing OpenROAD tools for advanced ASIC flows..."
           
@@ -264,8 +264,8 @@ jobs:
           echo "✅ GHDL Yosys plugin installed"
           echo "Note: VHDL synthesis support is now available in Yosys"
 
-      - name: Install Open PDKs (analog, mixed, tapeout)
-        if: contains('${{ github.event.inputs.design_type }}', 'analog') || contains('${{ github.event.inputs.design_type }}', 'mixed') || contains('${{ github.event.inputs.design_type }}', 'tapeout')
+      - name: Install Open PDKs (analog, mixed, tapeout) - DISABLED
+        if: false  # Disabled due to long installation time
         run: |
           echo "🔧 Installing Open PDKs for analog design..."
           

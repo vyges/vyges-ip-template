@@ -1,14 +1,19 @@
 name: Build and Test IP Template
 
 # This workflow provides a comprehensive build and test pipeline for Vyges IP projects
-# This template workflow is disabled by default and requires manual triggering
+# This template workflow runs automatically on push/PR and can be manually triggered
 # Focus is on simulation, synthesis, and verification with open-source tools
 
 # Configuration variables - modify these to change versions
 # These are used throughout the workflow for version consistency
 
 on:
-  # Manual trigger only - no automatic triggers for template repository
+  # Automatic triggers for testing
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  # Manual trigger for specific configurations
   workflow_dispatch:
     inputs:
       design_type:
@@ -43,13 +48,17 @@ on:
         default: true
         type: boolean
 
-# Disable automatic runs - this workflow only runs on manual trigger
-# and when explicitly enabled by repository maintainers
+# Automatic runs enabled - this workflow runs on push/PR to main/develop
+# and can be manually triggered for specific configurations
 
 jobs:
   # Main build and test job - everything runs sequentially on one runner
   build-and-test:
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     env:
       # Configuration variables - modify these to change versions
       
@@ -90,7 +99,7 @@ jobs:
         run: |
           echo "🔧 Setting up workflow for testing..."
           echo "Design Type: ${{ github.event.inputs.design_type || 'tapeout' }}"
-          echo "✅ Workflow enabled by default for testing"
+          echo "✅ Workflow runs automatically on push/PR"
           echo "This will install all tools to verify the build process"
 
       - name: Setup Python
@@ -470,6 +479,372 @@ jobs:
           echo "- Synthesis: ${{ github.event.inputs.test_synthesis == 'true' && '✅ ENABLED' || '⏭️ DISABLED' }}"
           echo ""
           echo "Note: This is a template repository. Actual tests require IP-specific implementation."
+
+      - name: Generate comprehensive reports
+        run: |
+          echo "📊 Generating comprehensive reports..."
+          
+          # Create public directory for reports
+          mkdir -p public
+          
+          # Generate test harness report
+          if [ -f "scripts/generate_test_harness_report.py" ]; then
+            echo "🔧 Generating test harness report..."
+            python3 scripts/generate_test_harness_report.py
+            if [ -f "test_harness_report.md" ]; then
+              cp test_harness_report.md public/
+              echo "✅ Test harness report generated and copied to public directory"
+            fi
+          fi
+          
+          # Generate code KPIs report
+          if [ -f "scripts/code_kpis.py" ]; then
+            echo "🔧 Generating code KPIs report..."
+            python3 scripts/code_kpis.py --output json > public/code_kpis.json 2>/dev/null || echo "Code KPIs report generation failed"
+            python3 scripts/code_kpis.py > public/code_kpis.txt 2>/dev/null || echo "Code KPIs text report generation failed"
+            echo "✅ Code KPIs reports generated"
+          fi
+          
+          # Create CSS for HTML reports
+          cat > public/report-style.css << 'EOF'
+          <style>
+          body { 
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+              max-width: 1200px; 
+              margin: 0 auto; 
+              padding: 20px; 
+              line-height: 1.6;
+              color: #24292e;
+          }
+          .vyges-footer {
+              background: #f8f9fa;
+              border-top: 1px solid #e1e4e8;
+              padding: 20px 0;
+              margin: 40px -20px -20px -20px;
+              text-align: center;
+              color: #586069;
+          }
+          .vyges-footer p {
+              margin: 5px 0;
+          }
+          .vyges-footer strong {
+              color: #0366d6;
+          }
+          h1 { 
+              color: #0366d6; 
+              border-bottom: 2px solid #e1e4e8; 
+              padding-bottom: 10px; 
+              margin-top: 0;
+          }
+          h2 { 
+              color: #24292e; 
+              margin-top: 30px; 
+              border-bottom: 1px solid #e1e4e8;
+              padding-bottom: 5px;
+          }
+          h3 { 
+              color: #24292e; 
+              margin-top: 25px; 
+          }
+          table { 
+              border-collapse: collapse; 
+              width: 100%; 
+              margin: 20px 0;
+          }
+          th, td { 
+              border: 1px solid #e1e4e8; 
+              padding: 12px; 
+              text-align: left; 
+          }
+          th { 
+              background-color: #f6f8fa; 
+              font-weight: 600;
+          }
+          tr:nth-child(even) { 
+              background-color: #f6f8fa; 
+          }
+          code { 
+              background-color: #f6f8fa; 
+              padding: 2px 4px; 
+              border-radius: 3px; 
+              font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+          }
+          pre { 
+              background-color: #f6f8fa; 
+              padding: 16px; 
+              border-radius: 6px; 
+              overflow-x: auto;
+          }
+          .highlight { 
+              background-color: #fff3cd; 
+              padding: 10px; 
+              border-radius: 4px; 
+              border-left: 4px solid #ffc107;
+          }
+          .success { 
+              background-color: #d4edda; 
+              padding: 10px; 
+              border-radius: 4px; 
+              border-left: 4px solid #28a745;
+          }
+          .error { 
+              background-color: #f8d7da; 
+              padding: 10px; 
+              border-radius: 4px; 
+              border-left: 4px solid #dc3545;
+          }
+          </style>
+          EOF
+          
+          # Create Vyges footer
+          cat > public/vyges-footer.html << 'EOF'
+          <div class="vyges-footer">
+              <p><strong>Vyges Platform</strong> - Build Silicon Like Software</p>
+              <p>Generated by Vyges IP Template - Comprehensive EDA Toolchain</p>
+              <p>Open-source tools for digital, analog, and mixed-signal design</p>
+          </div>
+          EOF
+          
+          # Convert test harness report to HTML
+          if [ -f "public/test_harness_report.md" ]; then
+            if command -v pandoc &> /dev/null; then
+              pandoc public/test_harness_report.md -o public/test_harness_report.html --css=public/report-style.css --standalone --metadata title="Vyges IP Template - Test Harness Report" --include-after-body=public/vyges-footer.html
+              echo "✅ Converted test harness report to HTML with pandoc"
+            else
+              echo "⚠️ Pandoc not found, creating basic HTML report..."
+              cat > public/test_harness_report.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Vyges IP Template - Test Harness Report</title>
+              <link rel="stylesheet" href="report-style.css">
+          </head>
+          <body>
+              <h1>Vyges IP Template - Test Harness Report</h1>
+              <p><em>Generated: $(date -u)</em></p>
+              <div class="highlight">
+                  <p><strong>Note:</strong> This is a basic HTML report generated without pandoc. For full formatting, install pandoc.</p>
+              </div>
+              <pre><code>$(cat public/test_harness_report.md)</code></pre>
+          </body>
+          </html>
+          EOF
+              echo "✅ Created basic HTML report (pandoc not available)"
+            fi
+          fi
+          
+          echo "✅ Comprehensive report generation complete"
+
+      - name: Create GitHub Pages index
+        run: |
+          echo "🌐 Creating GitHub Pages index..."
+          
+          # Create index.html for GitHub Pages
+          cat > public/index.html << EOF
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Vyges IP Template - Reports</title>
+              <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@1,400&display=swap" rel="stylesheet">
+              <style>
+                  body { 
+                      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+                      max-width: 1200px; 
+                      margin: 0 auto; 
+                      padding: 20px; 
+                      line-height: 1.6;
+                      color: #24292e;
+                  }
+                  h1 { 
+                      color: #0366d6; 
+                      border-bottom: 2px solid #e1e4e8; 
+                      padding-bottom: 10px; 
+                      margin-top: 0;
+                  }
+                  h2 { 
+                      color: #24292e; 
+                      margin-top: 30px; 
+                      border-bottom: 1px solid #e1e4e8;
+                      padding-bottom: 5px;
+                  }
+                  .timestamp { 
+                      color: #586069; 
+                      font-size: 14px; 
+                      margin-bottom: 30px;
+                  }
+                  table { 
+                      border-collapse: collapse; 
+                      width: 100%; 
+                      margin: 20px 0;
+                      background: white;
+                      border-radius: 8px;
+                      overflow: hidden;
+                      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                  }
+                  th, td { 
+                      border: 1px solid #e1e4e8; 
+                      padding: 16px; 
+                      text-align: left; 
+                      vertical-align: top;
+                  }
+                  th { 
+                      background-color: #f6f8fa; 
+                      font-weight: 600;
+                      color: #24292e;
+                  }
+                  tr:nth-child(even) { 
+                      background-color: #f8f9fa; 
+                  }
+                  tr:hover { 
+                      background-color: #f1f3f4; 
+                  }
+                  .report-link { 
+                      display: inline-block; 
+                      background: #0366d6; 
+                      color: white; 
+                      padding: 6px 12px; 
+                      text-decoration: none; 
+                      border-radius: 4px; 
+                      margin: 2px 4px 2px 0;
+                      font-size: 12px;
+                      font-weight: 500;
+                  }
+                  .report-link:hover { 
+                      background: #0256cc; 
+                      text-decoration: none;
+                  }
+                  .report-link.html { 
+                      background: #28a745; 
+                  }
+                  .report-link.html:hover { 
+                      background: #218838; 
+                  }
+                  .report-link.md { 
+                      background: #6c757d; 
+                  }
+                  .report-link.md:hover { 
+                      background: #5a6268; 
+                  }
+                  .status-badge {
+                      display: inline-block;
+                      padding: 4px 8px;
+                      border-radius: 12px;
+                      font-size: 12px;
+                      font-weight: 500;
+                      text-transform: uppercase;
+                  }
+                  .status-success {
+                      background: #d4edda;
+                      color: #155724;
+                  }
+                  .status-warning {
+                      background: #fff3cd;
+                      color: #856404;
+                  }
+                  .status-info {
+                      background: #d1ecf1;
+                      color: #0c5460;
+                  }
+              </style>
+          </head>
+          <body>
+              <h1>Vyges IP Template - Reports</h1>
+              <div class="timestamp">
+                  Generated: $(date -u)<br>
+                  Repository: ${{ github.repository }}<br>
+                  Workflow: ${{ github.workflow }}<br>
+                  Run ID: ${{ github.run_id }}
+              </div>
+              
+              <div class="highlight">
+                  <p><strong>Template Repository:</strong> This is the Vyges IP Template repository. Use "Use this template" to create your own IP project with this comprehensive EDA toolchain.</p>
+              </div>
+              
+              <h2>Available Reports</h2>
+              <table>
+                  <thead>
+                      <tr>
+                          <th>Report Type</th>
+                          <th>Description</th>
+                          <th>Status</th>
+                          <th>Links</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <td><strong>Test Harness Report</strong></td>
+                          <td>Comprehensive test results and simulation analysis</td>
+                          <td><span class="status-badge status-success">Available</span></td>
+                          <td>
+                              <a href="./test_harness_report.html" class="report-link html">HTML</a>
+                              <a href="./test_harness_report.md" class="report-link md">Markdown</a>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td><strong>Code KPIs Report</strong></td>
+                          <td>Code quality metrics and project analysis</td>
+                          <td><span class="status-badge status-success">Available</span></td>
+                          <td>
+                              <a href="./code_kpis.txt" class="report-link md">Text</a>
+                              <a href="./code_kpis.json" class="report-link md">JSON</a>
+                          </td>
+                      </tr>
+                      <tr>
+                          <td><strong>Workflow Status</strong></td>
+                          <td>Current workflow execution status and tool installation</td>
+                          <td><span class="status-badge status-info">Template</span></td>
+                          <td>
+                              <span class="report-link md">Template Only</span>
+                          </td>
+                      </tr>
+                  </tbody>
+              </table>
+              
+              <h2>Template Information</h2>
+              <div class="success">
+                  <p><strong>Design Type Support:</strong> digital, analog, mixed, chiplets, tapeout</p>
+                  <p><strong>Toolchain:</strong> Verilator, Yosys, Icarus, Magic, ngspice, OpenROAD, and more</p>
+                  <p><strong>Testbench Support:</strong> SystemVerilog, Cocotb, UVM</p>
+                  <p><strong>FPGA Support:</strong> Open-source FPGA tools (Yosys, NextPNR)</p>
+              </div>
+              
+              <div class="vyges-footer">
+                  <p><strong>Vyges Platform</strong> - Build Silicon Like Software</p>
+                  <p>Generated by Vyges IP Template - Comprehensive EDA Toolchain</p>
+                  <p>Open-source tools for digital, analog, and mixed-signal design</p>
+              </div>
+          </body>
+          </html>
+          EOF
+          
+          echo "✅ GitHub Pages index created"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: vyges-ip-template-build-artifacts
+          path: |
+            public/
+            test_harness_report.md
+            scripts/
+            flow/*/reports/
+            flow/*/build/
+            tb/*/build/
+            tb/*/waves/
+            tb/*/coverage/
+            tb/*/*.vcd
+            tb/*/obj_dir/*.vcd
+          retention-days: 30
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: actions/deploy-pages@v4
+        with:
+          path: public/
 
       - name: Workflow status
         run: |

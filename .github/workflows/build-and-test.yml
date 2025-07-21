@@ -8,12 +8,7 @@ name: Build and Test IP Template
 # These are used throughout the workflow for version consistency
 
 on:
-  # Automatic triggers for testing
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
-  # Manual trigger for specific configurations
+  # Manual trigger only - template repository
   workflow_dispatch:
     inputs:
       design_type:
@@ -48,8 +43,8 @@ on:
         default: true
         type: boolean
 
-# Automatic runs enabled - this workflow runs on push/PR to main/develop
-# and can be manually triggered for specific configurations
+# Manual trigger only - this template workflow can be manually triggered
+# for testing different design types and configurations
 
 jobs:
   # Main build and test job - everything runs sequentially on one runner
@@ -814,7 +809,6 @@ jobs:
         with:
           name: vyges-ip-template-build-artifacts
           path: |
-            public/
             test_harness_report.md
             scripts/
             flow/*/reports/
@@ -828,9 +822,61 @@ jobs:
 
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'
-        uses: actions/deploy-pages@v4
-        with:
-          path: public/
+        run: |
+          echo "🚀 Deploying template reports to GitHub Pages..."
+          
+          # Configure git for deployment with proper authentication
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Create a clean working directory for deployment
+          echo "Setting up clean deployment environment..."
+          
+          # Check if gh-pages branch exists
+          if git ls-remote --heads origin gh-pages | grep gh-pages; then
+            echo "gh-pages branch exists, creating clean checkout..."
+            # Create a temporary directory for deployment
+            mkdir -p /tmp/gh-pages-deploy
+            cd /tmp/gh-pages-deploy
+            
+            # Clone the gh-pages branch (shallow clone for speed)
+            git clone --branch gh-pages --single-branch --depth=1 https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git .
+            
+            # Remove all existing files
+            git rm -rf . || true
+            
+            # Copy new files from the original workspace
+            cp -r ${{ github.workspace }}/public/* .
+            
+            # Commit and push
+            git add .
+            git commit -m "Update template reports - $(date -u)" || echo "No changes to commit"
+            git push origin gh-pages
+            
+            echo "✅ GitHub Pages deployment complete!"
+          else
+            echo "gh-pages branch not found, creating new one..."
+            # Create a temporary directory for deployment
+            mkdir -p /tmp/gh-pages-deploy
+            cd /tmp/gh-pages-deploy
+            
+            # Initialize new repository
+            git init
+            git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+            
+            # Copy files from the original workspace
+            cp -r ${{ github.workspace }}/public/* .
+            
+            # Create and push gh-pages branch
+            git add .
+            git commit -m "Initial template reports - $(date -u)"
+            git branch -M gh-pages
+            git push -u origin gh-pages
+            
+            echo "✅ GitHub Pages deployment complete!"
+          fi
+          
+          echo "📖 Template reports available at: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
 
       - name: Workflow status
         run: |

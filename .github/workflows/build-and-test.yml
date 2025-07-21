@@ -11,7 +11,17 @@ on:
   # Manual trigger only - no automatic triggers for template repository
   workflow_dispatch:
     inputs:
-      # Allow users to specify which components to test
+      design_type:
+        description: 'Design type and tool requirements'
+        required: false
+        default: 'tapeout'
+        type: choice
+        options:
+          - digital       # Digital only (Verilator, Yosys, FPGA tools)
+          - analog        # Analog only (Xschem, Magic, ngspice)
+          - mixed         # Mixed-signal (Digital + Analog tools)
+          - chiplets      # Chiplet integration (Advanced packaging)
+          - tapeout       # Full tapeout flow (Efabless-style)
       test_simulation:
         description: 'Run simulation tests'
         required: false
@@ -31,29 +41,6 @@ on:
         description: 'Run validation checks'
         required: false
         default: true
-        type: boolean
-      target_platform:
-        description: 'Target platform (asic, fpga, or both)'
-        required: false
-        default: 'both'
-        type: choice
-        options:
-          - asic
-          - fpga
-          - both
-      simulator:
-        description: 'Simulator to use'
-        required: false
-        default: 'both'
-        type: choice
-        options:
-          - verilator
-          - icarus
-          - both
-      test_chiplet_tools:
-        description: 'Test chiplet development tools'
-        required: false
-        default: false
         type: boolean
 
 # Disable automatic runs - this workflow only runs on manual trigger
@@ -99,12 +86,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup workflow for testing
+        run: |
+          echo "🔧 Setting up workflow for testing..."
+          echo "Design Type: ${{ github.event.inputs.design_type || 'tapeout' }}"
+          echo "✅ Workflow enabled by default for testing"
+          echo "This will install all tools to verify the build process"
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install system packages and setup repositories
+      - name: Install core system packages
         run: |
           # Install software-properties-common first (needed for add-apt-repository)
           sudo apt-get update
@@ -116,7 +110,7 @@ jobs:
           # Update package list once after adding repository
           sudo apt-get update
           
-          # Install all remaining packages
+          # Install core packages (always needed)
           sudo apt-get install -y --no-install-recommends \
             build-essential \
             cmake \
@@ -136,34 +130,53 @@ jobs:
             libfl2 \
             libgit2-dev \
             libgoogle-perftools-dev \
-            libqt5multimediawidgets5 \
-            libqt5opengl5 \
-            libqt5svg5-dev \
-            libqt5xmlpatterns5-dev \
             libz-dev \
             perl \
-            qtmultimedia5-dev \
-            qttools5-dev \
             ruby \
             ruby-dev \
             time \
             zlib1g \
             zlib1g-dev \
-            magic \
-            netgen \
-            xschem \
-            ngspice \
             gettext \
             gnat
 
-      - name: Install KLayout (AppImage)
+      - name: Install digital tools (digital, mixed, chiplets, tapeout)
+        if: contains('${{ github.event.inputs.design_type }}', 'digital') || contains('${{ github.event.inputs.design_type }}', 'mixed') || contains('${{ github.event.inputs.design_type }}', 'chiplets') || contains('${{ github.event.inputs.design_type }}', 'tapeout')
         run: |
-          wget https://www.klayout.org/downloads/ubuntu22_04/klayout_0.30.2-1_amd64.deb
-          sudo apt-get install -y ./klayout_0.30.2-1_amd64.deb
+          echo "🔧 Installing digital design tools..."
+          
+          # Install digital simulation and synthesis tools
+          sudo apt-get install -y --no-install-recommends \
+            libqt5multimediawidgets5 \
+            libqt5opengl5 \
+            libqt5svg5-dev \
+            libqt5xmlpatterns5-dev \
+            qtmultimedia5-dev \
+            qttools5-dev
+
+      - name: Install analog tools (analog, mixed, tapeout)
+        if: contains('${{ github.event.inputs.design_type }}', 'analog') || contains('${{ github.event.inputs.design_type }}', 'mixed') || contains('${{ github.event.inputs.design_type }}', 'tapeout')
+        run: |
+          echo "🔧 Installing analog design tools..."
+          
+          # Install analog design tools
+          sudo apt-get install -y --no-install-recommends \
+            magic \
+            netgen \
+            xschem \
+            ngspice
+
+      - name: Install KLayout (digital, mixed, chiplets, tapeout)
+        if: contains('${{ github.event.inputs.design_type }}', 'digital') || contains('${{ github.event.inputs.design_type }}', 'mixed') || contains('${{ github.event.inputs.design_type }}', 'chiplets') || contains('${{ github.event.inputs.design_type }}', 'tapeout')
+        run: |
+          echo "🔧 Installing KLayout for layout viewing..."
+          sudo apt-get install -y klayout
           klayout -v
 
-      - name: Install Yosys (nightly PPA)
+      - name: Install Yosys (digital, mixed, chiplets, tapeout)
+        if: contains('${{ github.event.inputs.design_type }}', 'digital') || contains('${{ github.event.inputs.design_type }}', 'mixed') || contains('${{ github.event.inputs.design_type }}', 'chiplets') || contains('${{ github.event.inputs.design_type }}', 'tapeout')
         run: |
+          echo "🔧 Installing Yosys for digital synthesis..."
           sudo apt-get install -y yosys
           yosys -V
           yosys -m slang -p "slang_version"
@@ -180,8 +193,10 @@ jobs:
             exit 1
           fi
 
-      - name: Install Verilator 5.026
+      - name: Install Verilator (digital, mixed, chiplets, tapeout)
+        if: contains('${{ github.event.inputs.design_type }}', 'digital') || contains('${{ github.event.inputs.design_type }}', 'mixed') || contains('${{ github.event.inputs.design_type }}', 'chiplets') || contains('${{ github.event.inputs.design_type }}', 'tapeout')
         run: |
+          echo "🔧 Installing Verilator for digital simulation..."
           # Clone Verilator repository
           git clone https://github.com/verilator/verilator.git
           cd verilator
@@ -198,9 +213,10 @@ jobs:
           # Verify installation
           verilator --version
 
-      - name: Install OpenROAD tools
+      - name: Install OpenROAD tools (chiplets, tapeout)
+        if: contains('${{ github.event.inputs.design_type }}', 'chiplets') || contains('${{ github.event.inputs.design_type }}', 'tapeout')
         run: |
-          echo "🔧 Installing OpenROAD tools..."
+          echo "🔧 Installing OpenROAD tools for advanced ASIC flows..."
           
           # Clone OpenROAD-flow-scripts repository
           git clone https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts.git
@@ -216,11 +232,12 @@ jobs:
           
           # Verify installations
           echo "✅ OpenROAD tools installed"
-          echo "Note: These tools are now available for the ASIC design flow"
+          echo "Note: These tools are now available for advanced ASIC design flows"
 
-      - name: Install GHDL Yosys plugin
+      - name: Install GHDL Yosys plugin (digital, mixed, chiplets, tapeout)
+        if: contains('${{ github.event.inputs.design_type }}', 'digital') || contains('${{ github.event.inputs.design_type }}', 'mixed') || contains('${{ github.event.inputs.design_type }}', 'chiplets') || contains('${{ github.event.inputs.design_type }}', 'tapeout')
         run: |
-          echo "🔧 Installing GHDL Yosys plugin..."
+          echo "🔧 Installing GHDL Yosys plugin for VHDL support..."
           
           # Install GHDL (VHDL simulator)
           sudo apt-get install -y ghdl
@@ -239,9 +256,10 @@ jobs:
           echo "✅ GHDL Yosys plugin installed"
           echo "Note: VHDL synthesis support is now available in Yosys"
 
-      - name: Install Open PDKs
+      - name: Install Open PDKs (analog, mixed, tapeout)
+        if: contains('${{ github.event.inputs.design_type }}', 'analog') || contains('${{ github.event.inputs.design_type }}', 'mixed') || contains('${{ github.event.inputs.design_type }}', 'tapeout')
         run: |
-          echo "🔧 Installing Open PDKs..."
+          echo "🔧 Installing Open PDKs for analog design..."
           
           # Clone Open PDKs repository
           git clone https://github.com/RTimothyEdwards/open_pdks.git
@@ -260,9 +278,10 @@ jobs:
           echo "Available PDKs: sky130, gf180mcu"
           echo "PDK_ROOT set to: /usr/local/share/pdk"
 
-      - name: Install Icarus Verilog (if selected)
-        if: ${{ github.event.inputs.simulator == 'icarus' || github.event.inputs.simulator == 'both' }}
+      - name: Install Icarus Verilog (digital, mixed, chiplets, tapeout)
+        if: contains('${{ github.event.inputs.design_type }}', 'digital') || contains('${{ github.event.inputs.design_type }}', 'mixed') || contains('${{ github.event.inputs.design_type }}', 'chiplets') || contains('${{ github.event.inputs.design_type }}', 'tapeout')
         run: |
+          echo "🔧 Installing Icarus Verilog for digital simulation..."
           sudo apt-get install -y iverilog
           iverilog -V
 
@@ -425,6 +444,25 @@ jobs:
           echo "Repository: ${{ github.repository }}"
           echo "Workflow: ${{ github.workflow }}"
           echo "Run ID: ${{ github.run_id }}"
+          echo "Design Type: ${{ github.event.inputs.design_type }}"
+          echo ""
+          echo "Tool Installation:"
+          echo "- Core Tools: ✅ Always installed"
+          if [[ "${{ github.event.inputs.design_type }}" =~ ^(digital|mixed|chiplets|tapeout)$ ]]; then
+            echo "- Digital Tools: ✅ Installed (Verilator, Yosys, Icarus, GHDL)"
+          else
+            echo "- Digital Tools: ⏭️ Skipped"
+          fi
+          if [[ "${{ github.event.inputs.design_type }}" =~ ^(analog|mixed|tapeout)$ ]]; then
+            echo "- Analog Tools: ✅ Installed (Magic, Xschem, ngspice, Open PDKs)"
+          else
+            echo "- Analog Tools: ⏭️ Skipped"
+          fi
+          if [[ "${{ github.event.inputs.design_type }}" =~ ^(chiplets|tapeout)$ ]]; then
+            echo "- Advanced Tools: ✅ Installed (OpenROAD, TritonRoute)"
+          else
+            echo "- Advanced Tools: ⏭️ Skipped"
+          fi
           echo ""
           echo "Test Results:"
           echo "- Validation: ${{ github.event.inputs.test_validation == 'true' && '✅ ENABLED' || '⏭️ DISABLED' }}"

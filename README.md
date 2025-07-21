@@ -1,51 +1,25 @@
 [![Vyges IP Template](https://img.shields.io/badge/template-vyges--ip--template-blue)](https://github.com/vyges/vyges-ip-template)
 [![Use this template](https://img.shields.io/badge/Use%20this%20template-vyges--ip--template-brightgreen?style=for-the-badge)](https://github.com/vyges/vyges-ip-template/generate)
 ![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)
-![Build](https://github.com/vyges/vyges-ip-template/actions/workflows/test.yml/badge.svg)
 
 # Vyges IP Template
 
-A minimal, production-ready template for building reusable SystemVerilog IP blocks with the Vyges ecosystem.
+A comprehensive template for developing hardware IP blocks in the Vyges ecosystem. Supports digital, analog, mixed-signal, and chiplet design flows.
 
-## 🚀 Quickstart
+## 🚀 Quick Start
 
-1. **Create Repository from Template:**
-   - Go to [https://github.com/vyges/vyges-ip-template/generate](https://github.com/vyges/vyges-ip-template/generate)
-   - Click "Use this template"
-   - Name your repository (e.g., `uart-controller`)
-   - Create repository
+1. **Use this template**: Click "Use this template" button above
+2. **Clone your repository**: `git clone <your-repo-url>`
+3. **Initialize with Vyges CLI**: `vyges init --interactive`
+4. **Add your RTL and testbenches**
+5. **Enable CI/CD workflow** in your repository settings
 
-2. **Clone Your New Repository:**
-   ```bash
-   git clone https://github.com/your-username/your-repo.git
-   cd your-repo
-   ```
-
-3. **Initialize your project:**
-   ```bash
-   vyges init --interactive
-   ```
-
-4. **Simulate a Hello World test:**
-   ```bash
-   vyges test --simulation
-   ```
-
-5. **Next steps:**
-   - Edit your RTL in `rtl/`
-   - Add testbenches in `tb/`
-   - See [Developer_Guide.md](Developer_Guide.md) for advanced usage, project structure, and customization.
-
-**✅ This approach avoids all remote configuration issues!**
-
-## 🔧 Project Structure
-
-This template provides a comprehensive structure supporting digital, analog, and mixed-signal IP development:
+## 📁 Project Structure
 
 ```
-ip-block/
-├── rtl/                    # SystemVerilog RTL implementation
-├── analog/                 # Analog design files (Efabless flow)
+project/
+├── rtl/                    # Digital RTL sources
+├── analog/                 # Analog design files
 │   ├── xschem/            # Schematic entry (Xschem)
 │   ├── magic/             # Layout database (Magic)
 │   ├── netlist/           # SPICE netlists
@@ -53,106 +27,59 @@ ip-block/
 │   ├── lef/               # Abstract layout views
 │   └── macros/            # Reusable analog components
 ├── simulation/             # Mixed-signal simulation
-│   ├── configs/           # Simulation configurations
-│   ├── results/           # Simulation results
-│   └── waveforms/         # Waveform files
 ├── layout/                 # Layout verification
-│   ├── constraints/       # Layout constraints
-│   ├── lvs/              # Layout vs Schematic
-│   └── drc/              # Design Rule Checks
-├── tb/                     # Testbenches and verification
-├── flow/                   # EDA tool flows
-│   ├── yosys/              # Generic synthesis (PDK-agnostic)
-│   ├── openlane/           # ASIC synthesis (PDK-required)
-│   ├── fpga/               # FPGA synthesis (PDK-agnostic)
-│   └── vivado/             # Xilinx FPGA flows
-├── integration/            # System integration examples
-├── packaging/              # IP packaging and distribution
-└── .github/workflows/      # CI/CD automation
+├── tb/                     # Testbenches
+├── flow/                   # Synthesis flows
+├── docs/                   # IP specifications & requirements
+├── integration/            # Integration examples
+└── packaging/              # IP packaging
 ```
 
-### Design Flow Support
+## 🛠️ Design Type Support
 
-- **Digital Flow**: RTL synthesis, verification, FPGA/ASIC implementation
-- **Analog Flow**: Schematic entry, layout, SPICE simulation, DRC/LVS
-- **Mixed-Signal Flow**: Combined digital-analog verification and integration
+The template supports different design types with modular tool installation:
 
-## 🔧 GitHub Actions Workflow
+| Design Type | Tools Installed | Use Case |
+|-------------|----------------|----------|
+| `digital` | Verilator, Yosys, Icarus, GHDL | Digital IP development |
+| `analog` | Magic, Xschem, ngspice, Open PDKs | Analog IP development |
+| `mixed` | Digital + Analog tools | Mixed-signal IP development |
+| `chiplets` | Digital + Advanced tools | Chiplet integration |
+| `tapeout` | All tools | Full tapeout flow |
 
-This template includes a comprehensive GitHub Actions workflow (`build-and-test.yml`) that provides automated testing and validation for your IP projects.
+## 🔧 CI/CD Workflow
 
-### Features
+- **Manual Trigger Only**: Runs only when manually triggered
+- **Modular Tool Installation**: Installs tools based on `design_type`
+- **Comprehensive Testing**: Validation, linting, simulation, synthesis
 
-- ✅ **Disabled by default** - Only runs when manually triggered
-- ✅ **Configurable testing** - Choose which components to test
-- ✅ **Multiple simulators** - Support for Verilator and Icarus Verilog
-- ✅ **Multiple platforms** - Support for ASIC and FPGA targets
-- ✅ **Complete EDA toolchain** - Full open-source ASIC design flow
-- ✅ **Project validation** - Checks project structure and metadata
-- ✅ **Linting** - SystemVerilog code quality checks
-- ✅ **Simulation testing** - Testbench execution and validation
-- ✅ **Synthesis checking** - Flow configuration validation
-
-### Quick Start
-
-1. **Enable the workflow** in your IP repository (see detailed instructions below)
-2. **Go to Actions tab** and select "Build and Test IP"
-3. **Click "Run workflow"** and configure your test options
-4. **Review results** and artifacts
-
-### Enabling the Workflow
-
-The workflow is **disabled by default** for the template repository. To enable it in your IP repository:
-
-1. Edit `.github/workflows/build-and-test.yml`
-2. Find the `check-enabled` job
-3. Change the line:
-   ```yaml
-   echo "should-run=false" >> $GITHUB_OUTPUT
-   ```
-   to:
-   ```yaml
-   echo "should-run=true" >> $GITHUB_OUTPUT
-   ```
-
-### What's Included
-
-The workflow automatically installs a complete open-source EDA toolchain including:
-- **Simulation**: Verilator 5.026, Icarus Verilog, GHDL
-- **Synthesis**: Yosys ≥0.39 with VHDL plugin
-- **Layout**: KLayout, Magic, Netgen
-- **Physical Design**: OpenROAD tools (TritonFPlan, RePlAce, TritonCTS, FastRoute, TritonRoute)
-- **Circuit Design**: XSChem, ngspice
-- **Process Kits**: Open PDKs (sky130, gf180mcu)
-- **Languages**: SystemVerilog, VHDL, Python (cocotb), Ada
-
-**📖 For complete documentation, see [`.github/workflows/README.md`](.github/workflows/README.md)**
+### Workflow Inputs
+- `design_type`: Select design type and tool requirements
+- `test_simulation`: Run simulation tests
+- `test_synthesis`: Run synthesis tests
+- `test_linting`: Run linting checks
+- `test_validation`: Run validation checks
 
 ## 📚 Documentation
 
-- **[Developer_Guide.md](Developer_Guide.md)** - Comprehensive development guide with AI-assisted workflows
-- **[.github/workflows/README.md](.github/workflows/README.md)** - Detailed GitHub Actions workflow documentation
-- **[vyges-metadata-spec/](https://github.com/vyges/vyges-metadata-spec)** - Metadata specification and schema
+- `docs/`: IP specifications, requirements, and design documents
+- `analog/README.md`: Analog design workflow
+- `simulation/README.md`: Mixed-signal simulation
+- `layout/README.md`: Layout verification
+- `flow/openlane/README.md`: ASIC synthesis
+- `flow/vivado/README.md`: FPGA synthesis
 
-## 🛠️ Development Tools
+## 🔗 Related Projects
 
-This template is designed to work with the complete Vyges ecosystem:
-
-- **Vyges CLI** - Command-line interface for IP development
-- **Vyges Catalog** - IP catalog and discovery platform
-- **Vyges IDE** - Integrated development environment
-- **AI-assisted development** - Comprehensive AI context and guidance
+Learn from existing IP examples:
+- **Beginner**: [full-adder-ip](https://github.com/vyges/full-adder-ip)
+- **Intermediate**: [spi-controller](https://github.com/vyges/spi-controller)
+- **Advanced**: [programmable-adc](https://github.com/vyges/programmable-adc)
 
 ## 📄 License
 
-This template is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
+MIT License - see [LICENSE](LICENSE) for details.
 
-## 🤝 Contributing
+---
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## 📞 Support
-
-- **Documentation**: [Developer_Guide.md](Developer_Guide.md)
-- **Issues**: [GitHub Issues](https://github.com/vyges/vyges-ip-template/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/vyges/vyges-ip-template/discussions)
+**Note**: This is a template repository. Use "Use this template" to create your own IP repository.

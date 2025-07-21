@@ -19,7 +19,7 @@ on:
       design_type:
         description: 'Design type and tool requirements'
         required: false
-        default: 'tapeout'
+        default: 'digital'
         type: choice
         options:
           - digital       # Digital only (Verilator, Yosys, FPGA tools)
@@ -98,7 +98,7 @@ jobs:
       - name: Setup workflow for testing
         run: |
           echo "🔧 Setting up workflow for testing..."
-          echo "Design Type: ${{ github.event.inputs.design_type || 'tapeout' }}"
+          echo "Design Type: ${{ github.event.inputs.design_type || 'digital' }}"
           echo "✅ Workflow runs automatically on push/PR"
           echo "This will install all tools to verify the build process"
 

@@ -1137,6 +1137,30 @@
           "Future: vyges licenses add --cert customer1.crt --name 'Customer A' --rights simulate=true,synthesize=true"
         ],
         "status": "Planned for future release - model may change"
+      },
+      "security": {
+        "description": "Manage security validation and testing for IP blocks",
+        "examples": [
+          "vyges security generate-assertions --ip uart-controller --risk-area memory_access",
+          "vyges security create-testbench --ip spi-controller --test-types fsm_security,reset_glitch",
+          "vyges security generate-fuzzing --ip uart-controller --config fuzzing_config.json",
+          "vyges security create-formal --ip spi-controller --properties memory_safety,fsm_safety",
+          "vyges security generate-side-channel --ip crypto-controller --attack-vectors timing,power",
+          "vyges security validate-compliance --ip uart-controller --standards iso_26262,fips_140",
+          "vyges security create-documentation --ip spi-controller --include-threat-model",
+          "vyges security generate-metadata --ip uart-controller --risk-analysis high",
+          "vyges security create-policy --project my-project --min-level high --require-assertions",
+          "vyges security validate-metadata --ip spi-controller --strict",
+          "vyges security generate-coverage --ip uart-controller --coverage-goals 95,90,100",
+          "vyges security create-threat-model --ip crypto-controller --attack-surfaces all",
+          "vyges security generate-report --ip spi-controller --compliance-status --recommendations",
+          "vyges security select-tools --ip uart-controller --availability oss --security-level high",
+          "vyges security select-target-flow --ip uart-controller --flow fpga --availability open_source",
+          "vyges security generate-oss-tests --ip spi-controller --tools verilator,cocotb",
+          "vyges security generate-commercial-tests --ip crypto-controller --tools spyglass,vcs",
+          "vyges security create-hybrid-workflow --ip uart-controller --oss-tools verilator --commercial-tools spyglass",
+          "vyges security configure-student-defaults --ip uart-controller --disable-security --target-flow fpga --tool-availability open_source"
+        ]
       }
     },
     "suggestions": {
@@ -1184,6 +1208,27 @@
         "Future: When encrypting HDL files: vyges encrypt --file rtl/my_ip.vhdl --public-key licenses/customer.crt --rights simulate=true,synthesize=false",
         "Future: When publishing encrypted IP: vyges publish --encrypted --license simulation-only --certs licenses/",
         "Status: Planned for future release - model may change"
+      ],
+      "security_workflow": [
+        "When starting security-focused IP: vyges security generate-metadata --ip my-ip --risk-analysis high",
+        "When selecting security tools: vyges security select-tools --ip my-ip --availability oss --security-level high",
+        "When selecting target flow tools: vyges security select-target-flow --ip my-ip --flow fpga --availability open_source",
+        "When configuring student defaults: vyges security configure-student-defaults --ip my-ip --disable-security --target-flow fpga --tool-availability open_source",
+        "When using open-source tools only: vyges security generate-oss-tests --ip my-ip --tools verilator,cocotb",
+        "When using commercial tools: vyges security generate-commercial-tests --ip my-ip --tools spyglass,vcs",
+        "When creating hybrid workflow: vyges security create-hybrid-workflow --ip my-ip --oss-tools verilator --commercial-tools spyglass",
+        "When creating security testbench: vyges security create-testbench --ip my-ip --test-types fsm_security,reset_glitch",
+        "When generating security assertions: vyges security generate-assertions --ip my-ip --risk-area memory_access",
+        "When setting up fuzzing tests: vyges security generate-fuzzing --ip my-ip --config fuzzing_config.json",
+        "When creating formal properties: vyges security create-formal --ip my-ip --properties memory_safety,fsm_safety",
+        "When analyzing side-channels: vyges security generate-side-channel --ip my-ip --attack-vectors timing,power",
+        "When validating compliance: vyges security validate-compliance --ip my-ip --standards iso_26262,fips_140",
+        "When creating security documentation: vyges security create-documentation --ip my-ip --include-threat-model",
+        "When setting up project security: vyges security create-policy --project my-project --min-level high --require-assertions",
+        "When validating security metadata: vyges security validate-metadata --ip my-ip --strict",
+        "When generating security coverage: vyges security generate-coverage --ip my-ip --coverage-goals 95,90,100",
+        "When creating threat model: vyges security create-threat-model --ip my-ip --attack-surfaces all",
+        "When generating security report: vyges security generate-report --ip my-ip --compliance-status --recommendations"
       ],
       "uvm_workflow": [
         "When starting UVM project: vyges uvm setup-project --ip uart-controller --simulator vcs",
@@ -1719,7 +1764,296 @@
   },
 
   "security_and_trust": {
-    "description": "Security validation, trust indicators, and supply chain security for IP blocks",
+    "description": "Security-aware RTL design and validation capabilities for silicon IP blocks",
+    "security_test_generation": {
+      "enabled": false,
+      "default_settings": {
+        "enabled": false,
+        "tool_availability": "open_source",
+        "target_flow": "fpga",
+        "rationale": "Student-friendly defaults to lower barrier to entry"
+      },
+      "based_on_metadata": true,
+      "frameworks": ["systemverilog", "cocotb", "uvm"],
+      "test_types": [
+        "assert_illegal_address_access",
+        "assert_fsm_safe_states", 
+        "inject_reset_glitch",
+        "stress_random_inputs",
+        "side_channel_analysis",
+        "timing_attack_simulation",
+        "fault_injection_testing",
+        "cryptographic_validation",
+        "privilege_escalation_check",
+        "data_integrity_verification"
+      ],
+      "assertion_style": "systemverilog_assertions",
+      "output_folder": "generated/security_tests",
+      "metadata_integration": {
+        "security_level": "Use security.enabled and security.security_level to determine test intensity",
+        "tool_availability": "Use security.tool_availability to select open-source/commercial/hybrid tools",
+        "target_flow": "Use security.target_flow to select tools from tools.{flow}.{license}.{category}",
+        "risk_areas": "Generate targeted tests based on security.risk_areas array",
+        "protection_features": "Validate implemented security.protection_features",
+        "recommended_tests": "Generate tests from security.recommended_tests array",
+        "assertion_coverage": "Use security.assertion_coverage for coverage requirements",
+        "fuzzing_config": "Apply security.fuzzing_config for randomized testing",
+        "formal_verification": "Use security.formal_verification.tools from tools.{flow}.{license}.formal",
+        "side_channel_analysis": "Use security.side_channel_analysis.analysis_tools from tools.{flow}.{license}.security",
+        "compliance_standards": "Validate against security.compliance_standards"
+      },
+      "ai_prompts": {
+        "generate_security_assertions": "Generate SystemVerilog assertions for {risk_area} based on security metadata for {module_name}",
+        "create_security_testbench": "Create security-focused testbench for {module_name} with {test_types} based on security metadata",
+        "generate_fuzzing_tests": "Generate fuzzing tests for {module_name} using {fuzzing_config} from security metadata",
+        "create_formal_properties": "Generate formal verification properties for {module_name} based on {security_properties}",
+        "generate_side_channel_tests": "Generate side-channel analysis tests for {module_name} targeting {attack_vectors}",
+        "validate_security_compliance": "Validate {module_name} against {compliance_standards} security requirements",
+        "create_security_documentation": "Generate security documentation for {module_name} including threat model and validation results",
+        "select_security_tools": "Recommend appropriate security testing tools for {module_name} based on {tool_availability} and {security_level}",
+        "select_target_flow_tools": "Select security tools for {module_name} from tools.{target_flow}.{tool_availability}.{category} based on security metadata",
+        "generate_oss_security_tests": "Generate security tests for {module_name} using open-source tools only",
+        "generate_commercial_security_tests": "Generate security tests for {module_name} using commercial tools with {tool_licenses}",
+        "create_hybrid_security_workflow": "Create hybrid security testing workflow for {module_name} combining open-source and commercial tools",
+        "configure_student_defaults": "Configure {module_name} with student-friendly defaults: security disabled, FPGA target flow, open-source tools"
+      },
+      "test_generation_rules": {
+        "memory_access": {
+          "description": "Generate tests for memory access control and validation",
+          "assertions": [
+            "assert property (!(addr >= MEM_SIZE)) else $fatal('Out-of-bounds memory access');",
+            "assert property (valid_addr -> granted_access) else $fatal('Invalid memory access granted');"
+          ],
+          "test_cases": [
+            "Test illegal address access",
+            "Test address range validation", 
+            "Test memory protection mechanisms"
+          ]
+        },
+        "fsm_state_control": {
+          "description": "Generate tests for FSM state validation and safe transitions",
+          "assertions": [
+            "assert property (state inside {IDLE, START, RUN, DONE}) else $fatal('Illegal FSM state');",
+            "assert property (state == IDLE && valid_transition -> next_state inside {START, ERROR}) else $fatal('Invalid FSM transition');"
+          ],
+          "test_cases": [
+            "Test illegal state transitions",
+            "Test FSM recovery mechanisms",
+            "Test state encoding validation"
+          ]
+        },
+        "bus_protocol": {
+          "description": "Generate tests for bus protocol compliance and timing",
+          "assertions": [
+            "assert property (req && !ack |-> ##[1:3] ack) else $fatal('Bus protocol violation');",
+            "assert property (!req |-> !ack) else $fatal('Unexpected bus acknowledgment');"
+          ],
+          "test_cases": [
+            "Test protocol timing violations",
+            "Test handshake sequence validation",
+            "Test bus arbitration mechanisms"
+          ]
+        },
+        "reset_glitch": {
+          "description": "Generate tests for reset signal integrity and glitch protection",
+          "assertions": [
+            "assert property (reset_n |-> ##[1:5] stable_state) else $fatal('Reset glitch detected');",
+            "assert property (reset_n && !reset_glitch -> stable_operation) else $fatal('Reset glitch impact');"
+          ],
+          "test_cases": [
+            "Inject reset glitches",
+            "Test reset recovery behavior",
+            "Test reset domain crossing"
+          ]
+        },
+        "clock_domain_crossing": {
+          "description": "Generate tests for CDC synchronization and safety",
+          "assertions": [
+            "assert property (cdc_signal |-> ##[1:2] synchronized) else $fatal('CDC violation');",
+            "assert property (!metastability_detected) else $fatal('Metastability detected');"
+          ],
+          "test_cases": [
+            "Test CDC synchronization",
+            "Test metastability handling",
+            "Test CDC timing constraints"
+          ]
+        },
+        "side_channel": {
+          "description": "Generate tests for side-channel attack protection",
+          "assertions": [
+            "assert property (constant_time_operation) else $fatal('Side-channel vulnerability');",
+            "assert property (!power_correlation) else $fatal('Power analysis vulnerability');"
+          ],
+          "test_cases": [
+            "Test timing attack resistance",
+            "Test power analysis resistance",
+            "Test electromagnetic emission control"
+          ]
+        },
+        "cryptographic_operations": {
+          "description": "Generate tests for cryptographic operation security",
+          "assertions": [
+            "assert property (key_never_exposed) else $fatal('Key exposure detected');",
+            "assert property (random_entropy_sufficient) else $fatal('Insufficient entropy');"
+          ],
+          "test_cases": [
+            "Test key protection mechanisms",
+            "Test random number generation",
+            "Test cryptographic algorithm validation"
+          ]
+        },
+        "timing_attacks": {
+          "description": "Generate tests for timing attack resistance",
+          "assertions": [
+            "assert property (constant_execution_time) else $fatal('Timing attack vulnerability');",
+            "assert property (!data_dependent_timing) else $fatal('Data-dependent timing detected');"
+          ],
+          "test_cases": [
+            "Test constant-time operations",
+            "Test data-independent timing",
+            "Test timing attack countermeasures"
+          ]
+        },
+        "fault_injection": {
+          "description": "Generate tests for fault injection resistance",
+          "assertions": [
+            "assert property (fault_detection_active) else $fatal('Fault detection disabled');",
+            "assert property (fault_recovery_successful) else $fatal('Fault recovery failed');"
+          ],
+          "test_cases": [
+            "Test fault detection mechanisms",
+            "Test fault recovery procedures",
+            "Test fault injection countermeasures"
+          ]
+        }
+      },
+      "cocotb_integration": {
+        "test_structure": [
+          "Import cocotb and security testing modules",
+          "Create security test coroutines with @cocotb.test()",
+          "Implement security-specific stimulus generation",
+          "Add security assertion checking",
+          "Include side-channel analysis functions",
+          "Generate security coverage reports"
+        ],
+        "security_test_examples": {
+          "illegal_address_test": "Test illegal address access with error flag validation",
+          "fsm_security_test": "Test FSM state security with illegal transition injection",
+          "reset_glitch_test": "Test reset glitch injection and recovery behavior",
+          "side_channel_test": "Test side-channel vulnerability with timing analysis",
+          "fault_injection_test": "Test fault injection resistance with error injection"
+        }
+      },
+      "uvm_integration": {
+        "security_sequence_items": "Create UVM sequence items for security test scenarios",
+        "security_sequences": "Implement UVM sequences for security test execution",
+        "security_scoreboard": "Create UVM scoreboard for security validation",
+        "security_coverage": "Implement UVM coverage for security test coverage",
+        "security_monitor": "Create UVM monitor for security violation detection"
+      },
+      "formal_verification": {
+        "security_properties": [
+          "Memory access control properties",
+          "FSM state safety properties", 
+          "Bus protocol compliance properties",
+          "Reset integrity properties",
+          "CDC safety properties",
+          "Side-channel resistance properties"
+        ],
+        "tools_support": {
+          "open_source": {
+            "yosys_smtbmc": "Use Yosys SMTBMC for formal verification",
+            "sby": "Use SBY for formal verification",
+            "symbiyosys": "Use Symbiyosys for formal verification",
+            "jtag": "Use JTAG for formal verification"
+          },
+          "commercial": {
+            "onespin": "Use OneSpin for formal verification",
+            "jasper": "Use Cadence Jasper for formal verification",
+            "vc_formal": "Use Synopsys VC Formal for formal verification",
+            "questa_formal": "Use Siemens Questa Formal for formal verification"
+          }
+        }
+      },
+      "compliance_validation": {
+        "iso_26262": "Automotive functional safety standard validation",
+        "iec_61508": "Functional safety of electrical systems validation",
+        "do_254": "Avionics hardware design assurance validation",
+        "common_criteria": "IT security evaluation validation",
+        "fips_140": "Cryptographic module security validation",
+        "nist_sp_800": "NIST cybersecurity framework validation",
+        "iso_21434": "Road vehicle cybersecurity validation"
+      },
+      "automation_hooks": {
+        "ci_integration": "Integrate security tests into CI/CD pipeline",
+        "coverage_reporting": "Generate security coverage reports",
+        "compliance_reporting": "Generate compliance validation reports",
+        "threat_modeling": "Automated threat model generation",
+        "risk_assessment": "Automated security risk assessment"
+      },
+      "tool_categorization": {
+        "description": "Security testing tools categorized by open source vs commercial availability",
+        "static_analysis": {
+          "open_source": {
+            "verilator": "Verilator for SystemVerilog linting and basic security checks",
+            "yosys": "Yosys for synthesis and basic security analysis",
+            "ghdl": "GHDL for VHDL linting and security checks"
+          },
+          "commercial": {
+            "spyglass": "Synopsys SpyGlass for comprehensive security analysis",
+            "leda": "Aldec Leda for VHDL/Verilog security checking",
+            "hal": "Mentor Graphics HAL for security analysis"
+          }
+        },
+        "dynamic_testing": {
+          "open_source": {
+            "cocotb": "cocotb for Python-based security test generation",
+            "verilator": "Verilator for simulation-based security testing",
+            "icarus": "Icarus Verilog for simulation-based security testing"
+          },
+          "commercial": {
+            "vcs": "Synopsys VCS for advanced security simulation",
+            "xcelium": "Cadence Xcelium for comprehensive security testing",
+            "questa": "Siemens Questa for security-focused simulation"
+          }
+        },
+        "side_channel_analysis": {
+          "open_source": {
+            "custom_python": "Custom Python scripts for basic side-channel analysis",
+            "numpy": "NumPy for statistical analysis of side-channel data",
+            "scipy": "SciPy for advanced signal processing in side-channel analysis"
+          },
+          "commercial": {
+            "secure_ic": "Secure-IC for comprehensive side-channel analysis",
+            "rambus": "Rambus DPA Workstation for power analysis",
+            "rohde_schwarz": "Rohde & Schwarz for electromagnetic analysis"
+          }
+        },
+        "fuzzing": {
+          "open_source": {
+            "afl": "American Fuzzy Lop for generic fuzzing",
+            "libfuzzer": "LLVM LibFuzzer for coverage-guided fuzzing",
+            "custom_python": "Custom Python fuzzing frameworks"
+          },
+          "commercial": {
+            "synopsys_defensics": "Synopsys Defensics for protocol fuzzing",
+            "rapid7": "Rapid7 for comprehensive fuzzing solutions",
+            "parasoft": "Parasoft for automated security testing"
+          }
+        },
+        "compliance_checking": {
+          "open_source": {
+            "custom_scripts": "Custom scripts for basic compliance checking",
+            "python_tools": "Python-based compliance validation tools"
+          },
+          "commercial": {
+            "synopsys_coverity": "Synopsys Coverity for security compliance",
+            "checkmarx": "Checkmarx for security compliance validation",
+            "fortify": "Micro Focus Fortify for security compliance"
+          }
+        }
+      }
+    },
     "security_validation": {
       "description": "Security assessment and validation guidelines for IP blocks",
       "security_levels": {
@@ -2574,7 +2908,20 @@
       "create_hybrid_encryption": "Create hybrid encryption setup with plaintext interface and encrypted core implementation",
       "validate_license_compliance": "Validate license compliance for encrypted IP including rights enforcement and expiration checking",
       "generate_decryption_instructions": "Generate decryption instructions for authorized users of encrypted IP",
-      "setup_encrypted_catalog_entry": "Set up encrypted IP catalog entry with proper metadata, licensing, and distribution information"
+      "setup_encrypted_catalog_entry": "Set up encrypted IP catalog entry with proper metadata, licensing, and distribution information",
+      "generate_security_assertions": "Generate SystemVerilog assertions for {risk_area} based on security metadata for {module_name}",
+      "create_security_testbench": "Create security-focused testbench for {module_name} with {test_types} based on security metadata",
+      "generate_fuzzing_tests": "Generate fuzzing tests for {module_name} using {fuzzing_config} from security metadata",
+      "create_formal_properties": "Generate formal verification properties for {module_name} based on {security_properties}",
+      "generate_side_channel_tests": "Generate side-channel analysis tests for {module_name} targeting {attack_vectors}",
+      "validate_security_compliance": "Validate {module_name} against {compliance_standards} security requirements",
+      "create_security_documentation": "Generate security documentation for {module_name} including threat model and validation results",
+      "generate_security_metadata": "Generate security metadata for {module_name} based on risk analysis and protection requirements",
+      "create_security_policy": "Create project-wide security policy for {project_name} with minimum requirements and automated checks",
+      "validate_security_metadata": "Validate security metadata for {module_name} against schema requirements and best practices",
+      "generate_security_coverage": "Generate security coverage plan for {module_name} with assertion coverage and test requirements",
+      "create_threat_model": "Create comprehensive threat model for {module_name} identifying attack vectors and countermeasures",
+      "generate_security_report": "Generate security validation report for {module_name} with compliance status and recommendations"
     },
     "security_considerations": {
       "key_management": {
@@ -2643,6 +2990,83 @@
           "License validation during tool execution",
           "Rights enforcement at runtime"
         ]
+      }
+    },
+    "tools": {
+      "description": "Comprehensive tool categorization for different design flows and security testing (matches schema structure)",
+      "asic": {
+        "description": "ASIC design and verification tools",
+        "open_source": {
+          "synthesis": ["yosys", "abc"],
+          "place_route": ["openroad", "tritonroute"],
+          "verification": ["verilator", "iverilog"],
+          "formal": ["yosys-smtbmc", "sby", "symbiyosys", "jtag"],
+          "security": ["custom_python", "numpy", "scipy", "chipwhisperer"],
+          "layout": ["magic", "klayout"],
+          "drc_lvs": ["magic", "netgen"]
+        },
+        "commercial": {
+          "synthesis": ["design_compiler", "synplify"],
+          "place_route": ["ic_compiler", "innovus"],
+          "verification": ["vcs", "xcelium", "questa"],
+          "formal": ["onespin", "jasper", "vc_formal"],
+          "security": ["secure_ic", "rambus_dpa"],
+          "layout": ["virtuoso", "laker"],
+          "drc_lvs": ["calibre", "hercules"]
+        }
+      },
+      "fpga": {
+        "description": "FPGA design and verification tools",
+        "open_source": {
+          "synthesis": ["yosys", "nextpnr"],
+          "place_route": ["nextpnr", "vpr"],
+          "verification": ["verilator", "iverilog"],
+          "formal": ["yosys-smtbmc", "sby"],
+          "security": ["custom_python", "numpy", "chipwhisperer"],
+          "programming": ["openfpgaloader", "fujprog"]
+        },
+        "commercial": {
+          "synthesis": ["vivado", "quartus"],
+          "place_route": ["vivado", "quartus"],
+          "verification": ["modelsim", "questa"],
+          "formal": ["questa_formal", "jasper"],
+          "security": ["secure_ic", "rohde_schwarz"],
+          "programming": ["vivado", "quartus"]
+        }
+      },
+      "chiplet": {
+        "description": "Chiplet design and verification tools",
+        "open_source": {
+          "design": ["yosys", "openroad"],
+          "verification": ["verilator", "cocotb"],
+          "formal": ["yosys-smtbmc", "sby"],
+          "security": ["custom_python", "numpy", "chipwhisperer"],
+          "integration": ["openroad", "magic"]
+        },
+        "commercial": {
+          "design": ["innovus", "virtuoso"],
+          "verification": ["vcs", "questa"],
+          "formal": ["onespin", "jasper"],
+          "security": ["secure_ic", "rambus_dpa"],
+          "integration": ["innovus", "virtuoso"]
+        }
+      },
+      "analog": {
+        "description": "Analog design and verification tools",
+        "open_source": {
+          "schematic": ["xschem", "kicad"],
+          "simulation": ["ngspice", "xyce"],
+          "layout": ["magic", "klayout"],
+          "verification": ["ngspice", "custom_python"],
+          "security": ["custom_python", "numpy", "chipwhisperer"]
+        },
+        "commercial": {
+          "schematic": ["virtuoso", "composer"],
+          "simulation": ["spectre", "hspice", "ams_designer"],
+          "layout": ["virtuoso", "laker"],
+          "verification": ["spectre", "ams_designer"],
+          "security": ["secure_ic", "rohde_schwarz"]
+        }
       }
     },
     "development_flows": {

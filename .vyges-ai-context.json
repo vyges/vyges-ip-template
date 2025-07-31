@@ -88,15 +88,94 @@
     "ai_prompts": {
       "generate_catalog_entry": "Generate a catalog-ready summary with name, version, description, interfaces, targets, tags, and trust indicators for the Vyges IP Catalog.",
       "catalog_search_query": "Given IP metadata, suggest effective search keywords and tags to improve discoverability in the Vyges IP Catalog.",
-      "improve_catalog_presentation": "Enhance IP metadata for better catalog presentation: improve description, add relevant tags, optimize discoverability.",
-      "validate_catalog_compliance": "Check IP metadata for Vyges Catalog compliance: required fields, format validation, and completeness."
+      "improve_catalog_presentation": "Enhance IP metadata for better catalog presentation: improve description, add relevant tags, optimize discoverability, and suggest appropriate hierarchical categories.",
+      "validate_catalog_compliance": "Check IP metadata for Vyges Catalog compliance: required fields, format validation, and completeness.",
+    "suggest_catalog_categories": "Suggest appropriate hierarchical catalog categories for this IP block using the Vyges catalog structure with main categories and subcategories based on functionality, interfaces, and target applications."
     },
-    "discoverability_features": {
-      "tags": "Generate relevant tags for IP discovery (e.g., uart, communication, apb, asic, fpga)",
-      "keywords": "Extract search keywords from IP description and interfaces",
-      "categories": "Suggest appropriate catalog categories based on IP type and interfaces",
-      "related_ips": "Identify related IPs in the catalog based on interfaces and functionality"
-    }
+          "discoverability_features": {
+        "tags": "Generate relevant tags for IP discovery (e.g., uart, communication, apb, asic, fpga)",
+        "keywords": "Extract search keywords from IP description and interfaces",
+        "categories": "Suggest appropriate catalog categories based on IP type and interfaces using the hierarchical Vyges catalog structure",
+        "related_ips": "Identify related IPs in the catalog based on interfaces and functionality"
+      },
+      "catalog_categories": {
+        "description": "Comprehensive hierarchical catalog categories for IP classification",
+        "main_categories": {
+          "Analog & Mixed-Signal": {
+            "description": "Analog circuits, mixed-signal designs, and analog-to-digital interfaces",
+            "subcategories": ["Bandgap References", "Comparators", "Oscillators", "Temperature Sensors", "Voltage Regulators"]
+          },
+          "Arithmetic Units": {
+            "description": "Mathematical computation units and arithmetic logic blocks",
+            "subcategories": ["Basic", "Custom DSP Cores", "Fixed-Point", "Floating-Point", "Vector"]
+          },
+          "Base Libraries": {
+            "description": "Standard cell libraries and fundamental building blocks",
+            "subcategories": ["Arbiters", "Counters & Timers", "Crossbars", "Decoders", "Flip-Flops & Latches", "Muxes & Demuxes", "Pipeline & Bypass Logic", "Priority Encoders", "Synchronizers"]
+          },
+          "Chiplet Integration": {
+            "description": "Multi-die integration and chiplet interface protocols",
+            "subcategories": ["AIB Interfaces", "BoW Interfaces", "Die-to-Die Protocol IP", "Interposer Models", "UCIe Interfaces", "Chiplet Wrappers"]
+          },
+          "Control Logic": {
+            "description": "Control and management logic blocks",
+            "subcategories": ["Interrupt Controllers", "Power Management Units", "Reset & Clock Control", "Sequencers", "State Machines"]
+          },
+          "Converters": {
+            "description": "Analog-to-digital and digital-to-analog converters",
+            "subcategories": ["ADC", "Clock Domain Crossers", "DAC", "Level Shifters"]
+          },
+          "Interface Controllers": {
+            "description": "Communication interface IP blocks for serial and parallel protocols",
+            "subcategories": {
+              "High-Speed Interfaces": ["Ethernet", "MIPI", "PCIe", "SDIO/eMMC", "USB"],
+              "Parallel Interfaces": ["AHB/APB", "AXI", "GPIO", "Wishbone"],
+              "Serial Interfaces": ["I2C", "LIN", "SPI", "UART"]
+            }
+          },
+          "Memory Subsystems": {
+            "description": "Memory controllers, interfaces, and storage subsystems",
+            "subcategories": ["Cache Subsystems", "DRAM Controllers", "FIFOs & Buffers", "Flash Interfaces", "Register Files", "SRAM Controllers"]
+          },
+          "Miscellaneous": {
+            "description": "Utility and specialized IP blocks",
+            "subcategories": ["Custom Accelerators", "IP Wrappers & Glue Logic", "LED Controllers", "PWM Generators", "Watchdog Timers"]
+          },
+          "Processing Cores": {
+            "description": "CPU cores, microcontrollers, and processing units",
+            "subcategories": ["ARM-Compatible", "Co-Processors", "Custom ISAs", "Microcontrollers", "RISC-V", "Vector Processors"]
+          },
+          "Security IP": {
+            "description": "Security and cryptographic IP blocks",
+            "subcategories": {
+              "Crypto Engines": ["AES", "RSA/ECC", "SHA"],
+              "Security Components": ["Fuse Controllers", "Secure Boot Blocks", "Tamper Detection", "True Random Number Generators (TRNG)"]
+            }
+          },
+          "Signal Processing": {
+            "description": "Digital signal processing blocks and algorithms",
+            "subcategories": {
+              "Codecs": ["Audio", "Compression", "Encryption", "Video"],
+              "Filters": ["CIC", "Decimators/Interpolators", "FIR", "IIR"],
+              "Transforms": ["DCT", "FFT", "Hilbert", "Wavelet"]
+            }
+          },
+          "Timing & Clocking": {
+            "description": "Clock generation, distribution, and timing management",
+            "subcategories": ["Clock Gating", "Clock Tree Models", "DLL", "Frequency Dividers", "PLL"]
+          },
+          "Verification & Testing": {
+            "description": "Verification IP, testbenches, and testing infrastructure",
+            "subcategories": ["Assertions", "Driver/Monitor Agents", "Formal Models", "Scoreboards", "Testbenches"]
+          }
+        },
+        "ai_prompts": {
+          "suggest_categories": "Suggest appropriate catalog categories for this IP block using the hierarchical Vyges catalog structure. Consider the IP's primary function, interfaces, and target applications.",
+          "validate_categories": "Validate that the suggested categories align with the IP's functionality and follow the Vyges catalog hierarchy.",
+          "map_interfaces_to_categories": "Map the IP's interfaces to appropriate catalog categories (e.g., SPI interface maps to 'Interface Controllers > Serial Interfaces > SPI').",
+          "suggest_multiple_categories": "Suggest multiple relevant categories if the IP spans multiple functional areas (e.g., a DSP core with AXI interface could be in both 'Processing Cores' and 'Interface Controllers')."
+        }
+      }
   },
 
   "template_integration": {
@@ -3471,7 +3550,7 @@
       "quality_improvements": {
         "description_enhancement": "Improve descriptions for better catalog discoverability",
         "tag_generation": "Generate relevant tags based on IP functionality",
-        "category_suggestion": "Suggest appropriate IP categories",
+        "category_suggestion": "Suggest appropriate IP categories using the hierarchical Vyges catalog structure with main categories and subcategories",
         "maturity_assessment": "Assess and suggest appropriate maturity level"
       },
       "vyges_integration": {

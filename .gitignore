@@ -110,3 +110,4 @@ analog/macros/          # Symbolic links to other projects
 *.backup
 *.orig
 
+update_ai_context.sh

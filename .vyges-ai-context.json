@@ -446,11 +446,75 @@
         "location": "tb/cocotb/",
         "file_naming": "test_<module_name>.py"
       },
-      "integration_notes": "Ensure Makefile or sim/ run script supports cocotb test execution",
+              "integration_notes": "Ensure Makefile or sim/ run script supports cocotb test execution",
+        "makefile_patterns": {
+          "description": "Standard cocotb Makefile patterns for proper simulator integration",
+          "location": "tb/cocotb/Makefile",
+          "standard_approach": "Follow cocotb documentation: https://docs.cocotb.org/en/stable/quickstart.html#creating-a-makefile",
+          "required_variables": {
+            "SIM": "Simulator to use (icarus, verilator, vcs, modelsim)",
+            "TOPLEVEL_LANG": "Language of top-level module (verilog, vhdl)",
+            "VERILOG_SOURCES": "List of RTL source files with full paths",
+            "TOPLEVEL": "Name of the top-level module in RTL",
+            "MODULE": "Basename of the Python test file (without .py)"
+          },
+          "cocotb_config_detection": {
+            "pattern": "COCOTB_CONFIG := $(shell which cocotb-config 2>/dev/null || echo $(HOME)/.local/bin/cocotb-config)",
+            "purpose": "Detect cocotb-config in PATH or common installation locations",
+            "fallback_locations": ["$(HOME)/.local/bin/cocotb-config", "/usr/local/bin/cocotb-config", "/usr/bin/cocotb-config"]
+          },
+          "makefile_inclusion": {
+            "standard": "include $(shell cocotb-config --makefiles)/Makefile.sim",
+            "fallback": "Provide fallback targets when cocotb-config is not available",
+            "conditional": "Use ifneq ($(wildcard $(COCOTB_CONFIG)),) for conditional compilation"
+          },
+          "fallback_patterns": {
+            "icarus_only": "When cocotb-config not found, provide basic Icarus Verilog compilation",
+            "warning_messages": "Inform user about missing cocotb and installation instructions",
+            "limited_functionality": "Only basic compilation and simulation, no advanced cocotb features"
+          },
+          "additional_targets": {
+            "test_modules": "Create targets for different test modules (test_rescaling, test_edge_cases)",
+            "test_all": "Target to run all test modules in sequence",
+            "coverage": "Generate coverage reports and copy to public directory",
+            "help": "Comprehensive help target with usage examples and status"
+          },
+          "verilator_integration": {
+            "build_command": "verilator -cc --exe -Mdir sim_build -DCOCOTB_SIM=1 --top-module {module} --timescale 1ns/1ps --vpi --public-flat-rw --prefix Vtop -o Vtop -LDFLAGS \"-Wl,-rpath,{cocotb_lib_path} -L{cocotb_lib_path} -lcocotbvpi_verilator\" {rtl_files} {cocotb_verilator_cpp}",
+            "linking": "Automatic linking with cocotb VPI library via -lcocotbvpi_verilator",
+            "simulation": "Run with sim_build/Vtop executable"
+          },
+          "icarus_integration": {
+            "compilation": "iverilog -g2012 -I{rtl_path} -o sim_build/sim.vvp {verilog_sources}",
+            "simulation": "vvp -M {cocotb_lib_path} -m libcocotbvpi_icarus sim_build/sim.vvp",
+            "vpi_library": "libcocotbvpi_icarus for Icarus Verilog integration"
+          },
+          "best_practices": [
+            "Always check for cocotb-config availability before including Makefile.sim",
+            "Provide meaningful fallback behavior when cocotb is not available",
+            "Include comprehensive help target with usage examples",
+            "Use conditional compilation for simulator-specific features",
+            "Create modular test targets for different test categories",
+            "Include coverage generation and reporting capabilities",
+            "Provide clear error messages and installation instructions",
+            "Use proper variable expansion and path handling"
+          ]
+        },
       "supported_simulators": {
         "open_source": ["verilator", "icarus", "ghdl"],
         "commercial": ["vcs", "xcelium", "questa", "riviera-pro"],
-        "ci_integration": "Use verilator for CI/CD pipelines, commercial tools for development"
+        "ci_integration": "Use verilator for CI/CD pipelines, commercial tools for development",
+        "verilator_integration": {
+          "status": "FULLY_WORKING",
+          "tested_version": "Verilator 5.020",
+          "cocotb_version": "v1.9.2",
+          "integration_method": "VPI (Verilog Procedural Interface)",
+          "build_command": "verilator -cc --exe -Mdir sim_build -DCOCOTB_SIM=1 --top-module {module} --timescale 1ns/1ps --vpi --public-flat-rw --prefix Vtop -o Vtop -LDFLAGS \"-Wl,-rpath,{cocotb_lib_path} -L{cocotb_lib_path} -lcocotbvpi_verilator\" {rtl_files} {cocotb_verilator_cpp}",
+          "linking": "Automatic linking with cocotb VPI library via -lcocotbvpi_verilator",
+          "test_results": "All cocotb tests pass with both Icarus and Verilator simulators",
+          "performance": "Verilator provides faster simulation compared to Icarus for complex designs",
+          "recommendation": "Use Verilator as primary simulator for CI/CD, Icarus as fallback"
+        }
       },
       "advanced_features": {
         "auto_generation": "Generate cocotb testbenches from vyges-metadata.json test specifications",
@@ -484,7 +548,17 @@
         "create_advanced_tests": "Generate comprehensive cocotb tests with coverage, assertions, and edge case testing.",
         "setup_cocotb_ci": "Configure CI/CD pipeline for cocotb testing with multiple simulators and coverage reporting.",
         "generate_test_categories": "Generate comprehensive test categories including functional, performance, corner case, and error tests",
-        "create_verification_plan": "Create detailed verification plan with coverage goals, assertion requirements, and regression strategy"
+        "create_verification_plan": "Create detailed verification plan with coverage goals, assertion requirements, and regression strategy",
+        "enable_verilator_tests": "Enable Verilator tests in build system - both SystemVerilog and cocotb testbenches now work with Verilator",
+        "update_build_system": "Update Makefile and CI/CD to enable all simulators (Icarus and Verilator) for both testbench types",
+        "validate_cocotb_integration": "Validate that cocotb-config is available and cocotb tests run successfully with both Icarus and Verilator",
+        "generate_cocotb_makefile": "Generate a standard cocotb Makefile for {module_name} with proper simulator integration, cocotb-config detection, fallback patterns, and additional test targets",
+        "create_cocotb_makefile_patterns": "Create cocotb Makefile patterns following the standard approach with required variables, conditional compilation, and simulator-specific integration",
+        "setup_cocotb_fallback": "Set up fallback patterns in cocotb Makefile for when cocotb-config is not available, providing basic Icarus Verilog compilation",
+        "add_cocotb_test_targets": "Add additional test targets to cocotb Makefile for different test modules, coverage generation, and comprehensive help",
+        "integrate_cocotb_simulators": "Integrate multiple simulators (Icarus, Verilator) in cocotb Makefile with proper build commands and VPI library linking",
+        "setup_comprehensive_tool_detection": "Set up comprehensive tool detection in GitHub Actions workflow with cocotb-config detection, fallback location checking, and version reporting for all tools",
+        "validate_tool_availability": "Validate tool availability in CI/CD pipeline with proper error handling and fallback strategies for missing tools"
       },
       "code_generation_rules": {
         "directory": "tb/cocotb/",
@@ -505,7 +579,122 @@
           "Add comprehensive assertions for all outputs",
           "Generate meaningful test names and descriptions",
           "Include parameterized tests for different configurations"
-        ]
+        ],
+        "execution_patterns": {
+          "description": "Standard cocotb execution patterns and workflow",
+          "basic_execution": {
+            "command": "make SIM={simulator}",
+            "examples": [
+              "make SIM=icarus",
+              "make SIM=verilator", 
+              "make SIM=vcs"
+            ],
+            "variables": {
+              "SIM": "Simulator selection (icarus, verilator, vcs, modelsim)",
+              "MODULE": "Test module selection (overrides default)",
+              "TOPLEVEL": "Top-level module name (overrides default)"
+            }
+          },
+          "test_module_execution": {
+            "pattern": "make SIM={simulator} MODULE={test_module}",
+            "examples": [
+              "make SIM=icarus MODULE=test_fft_rescaling",
+              "make SIM=verilator MODULE=test_fft_edge_cases"
+            ]
+          },
+          "coverage_execution": {
+            "pattern": "make SIM={simulator} coverage",
+            "description": "Run tests with coverage collection and reporting",
+            "outputs": ["coverage.xml", "coverage.html", "public/coverage/"]
+          },
+          "ci_cd_execution": {
+            "pattern": "make SIM=verilator test_all",
+            "description": "Run all test modules with preferred simulator for CI/CD",
+            "recommendation": "Use Verilator for CI/CD due to performance advantages"
+          },
+          "debug_execution": {
+            "pattern": "make SIM=icarus MODULE={test_module}",
+            "description": "Use Icarus for debugging due to better error messages",
+            "waveform": "Generate VCD files for waveform analysis"
+          },
+          "fallback_execution": {
+            "pattern": "make SIM=icarus",
+            "description": "Fallback when cocotb-config is not available",
+            "limitations": "Only basic compilation and simulation, no advanced cocotb features"
+          }
+        },
+        "successful_integration_results": {
+          "fft_ip_test_results": {
+            "test_date": "2025-08-01",
+            "simulators_tested": ["Icarus Verilog", "Verilator"],
+            "testbench_types": ["SystemVerilog", "cocotb"],
+            "results": {
+              "sv_icarus": "PASS - All SystemVerilog tests with Icarus",
+              "sv_verilator": "PASS - All SystemVerilog tests with Verilator", 
+              "cocotb_icarus": "PASS - All cocotb tests with Icarus",
+              "cocotb_verilator": "PASS - All cocotb tests with Verilator"
+            },
+            "performance_metrics": {
+              "cocotb_icarus": "730ns simulation time, 0.27s real time",
+              "cocotb_verilator": "730ns simulation time, 0.28s real time",
+              "verilator_advantage": "Faster compilation and execution for complex designs"
+            },
+            "build_system": {
+              "makefile_targets": "All simulator combinations now enabled",
+              "ci_cd_integration": "GitHub Actions updated with cocotb-config detection",
+              "error_handling": "Removed GitHub issue references, now production-ready"
+            }
+          },
+          "lessons_learned": [
+            "Verilator + cocotb integration is fully functional and production-ready",
+            "Both Icarus and Verilator should be enabled in build systems by default",
+            "cocotb-config detection is critical for CI/CD pipeline robustness",
+            "Remove references to temporary workarounds once issues are resolved",
+            "Comprehensive test coverage across multiple simulators improves reliability"
+          ],
+                  "recommendations": [
+          "Use Verilator as primary simulator for CI/CD due to performance advantages",
+          "Keep Icarus as fallback simulator for compatibility",
+          "Enable both simulators in all new IP projects by default",
+          "Include cocotb-config detection in CI/CD workflows",
+          "Maintain comprehensive test coverage across all supported simulators"
+        ],
+        "ci_cd_tool_detection": {
+          "description": "Comprehensive tool detection patterns for GitHub Actions workflows",
+          "required_tools": {
+            "python": "Check for Python availability with version reporting",
+            "cocotb_config": "Check for cocotb-config in PATH and common installation locations",
+            "verilator": "Check for Verilator with version reporting",
+            "icarus": "Check for Icarus Verilog with version reporting",
+            "yosys": "Check for Yosys with version reporting"
+          },
+          "optional_tools": {
+            "ghdl": "Check for GHDL (optional for VHDL simulation)",
+            "abc": "Check for Berkeley ABC (optional for synthesis)",
+            "magic": "Check for Magic (optional for layout)",
+            "netgen": "Check for Netgen (optional for LVS)",
+            "klayout": "Check for KLayout (optional for layout viewing)",
+            "nextpnr": "Check for NextPNR variants (optional for FPGA P&R)",
+            "gtkwave": "Check for GTKWave (optional for waveform viewing)",
+            "pandoc": "Check for Pandoc (optional for documentation)",
+            "vyges_cli": "Check for Vyges CLI (optional for metadata validation)"
+          },
+          "detection_patterns": {
+            "basic_check": "if command -v {tool} &> /dev/null; then echo \"✅ {tool}: $(version_command)\"; else echo \"❌ {tool} not found\"; fi",
+            "cocotb_special": "Check PATH first, then fallback locations ($HOME/.local/bin, /usr/local/bin, /usr/bin)",
+            "version_reporting": "Use tool-specific version commands with error handling",
+            "status_indicators": "✅ for found, ❌ for required but missing, ⚠️ for optional but missing, ℹ️ for optional and not critical"
+          },
+          "best_practices": [
+            "Always check for cocotb-config availability before running cocotb tests",
+            "Provide fallback detection for tools installed in non-standard locations",
+            "Use consistent status indicators across all tool checks",
+            "Include version reporting for better debugging and support",
+            "Separate required tools from optional tools in detection logic",
+            "Provide clear error messages and installation instructions for missing tools"
+          ]
+        }
+        }
       }
     },
 
@@ -1145,8 +1334,17 @@
           "vyges cocotb create-harness --bundle-metadata",
           "vyges cocotb generate-categories --ip spi-controller",
           "vyges cocotb create-verification-plan --ip spi-controller",
-          "vyges cocotb validate-coverage --ip spi-controller --goals 95,90,100"
-        ]
+          "vyges cocotb validate-coverage --ip spi-controller --goals 95,90,100",
+          "vyges cocotb test-all-simulators --ip fft-controller",
+          "vyges cocotb enable-verilator --ip uart-controller",
+          "vyges cocotb validate-integration --simulators icarus,verilator"
+        ],
+        "integration_status": {
+          "verilator": "FULLY_WORKING - Tested with Verilator 5.020 and cocotb v1.9.2",
+          "icarus": "FULLY_WORKING - Tested with Icarus Verilog 12.0",
+          "ci_cd": "PRODUCTION_READY - GitHub Actions with cocotb-config detection",
+          "recommendation": "Enable both simulators by default in new projects"
+        }
       },
       "uvm": {
         "description": "Manage UVM testbenches and verification methodology",

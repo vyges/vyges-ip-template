@@ -194,6 +194,8 @@ test_all_types:
 	@for tb_type in $(TB_TYPES); do \
 		echo "Testing $$tb_type testbench..."; \
 		$(MAKE) test_basic TESTBENCH_TYPE=$$tb_type SIM=icarus || exit 1; \
+		echo "Testing $$tb_type testbench with Verilator..."; \
+		$(MAKE) test_basic TESTBENCH_TYPE=$$tb_type SIM=verilator || exit 1; \
 	done
 	@echo "All testbench types tested successfully!"
 

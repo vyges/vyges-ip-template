@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{IP_NAME}} - Vyges</title>
+    <style>
+        :root {
+            --primary-color: #0366d6;
+            --secondary-color: #28a745;
+            --accent-color: #6f42c1;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+            --light-bg: #f8f9fa;
+            --border-color: #e1e4e8;
+            --text-primary: #24292e;
+            --text-secondary: #586069;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: #f6f8fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0366d6, #6f42c1);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .vyges-logo {
+            margin-bottom: 20px;
+        }
+        
+        .vyges-logo img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 20px;
+            vertical-align: middle;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+        
+        .vyges-logo span {
+            vertical-align: middle;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .back-link {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .back-link:hover {
+            background: #0256cc;
+        }
+        
+        .info-box {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .info-box h3 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        
+        .waveform-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .waveform-table th,
+        .waveform-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .waveform-table th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+        
+        .waveform-table tr:hover {
+            background: var(--light-bg);
+        }
+        
+        .waveform-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .download-link {
+            display: inline-block;
+            background: var(--success-color);
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 5px 0;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        
+        .download-link:hover {
+            background: #218838;
+        }
+        
+        .view-link {
+            background: var(--accent-color);
+        }
+        
+        .view-link:hover {
+            background: #5a32a3;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 40px;
+        }
+        
+        .footer strong {
+            color: var(--text-primary);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .waveform-table {
+                font-size: 0.9rem;
+            }
+            
+            .waveform-table th,
+            .waveform-table td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="vyges-logo">
+                <img src="https://github.com/vyges.png" alt="Vyges Logo">
+                <span>vyges</span>
+            </div>
+            <h1>{{IP_NAME}} - Waveform Reports</h1>
+            <p>Download VCD files for waveform analysis</p>
+        </div>
+        
+        <a href="../index.html" class="back-link">← Back to Main Reports</a>
+        
+        <div class="info-box">
+            <h3>📋 VCD File Information</h3>
+            <p><strong>Format:</strong> Value Change Dump (VCD) - Standard waveform format</p>
+            <p><strong>Generated:</strong> {{GENERATED_DATE}}</p>
+            <p><strong>Usage:</strong> Download and open with GTKWave, Surfer, or other VCD viewers</p>
+        </div>
+        
+        <table class="waveform-table">
+            <thead>
+                <tr>
+                    <th>VCD File</th>
+                    <th>Size</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{VCD_FILES}}
+            </tbody>
+        </table>
+        
+        <div class="info-box">
+            <h4>Quick Start:</h4>
+            <ol>
+                <li>Download any VCD file using the buttons above</li>
+                <li>Open with your preferred VCD viewer</li>
+                <li>Analyze signal timing and behavior</li>
+                <li>Compare with test results in the main reports</li>
+            </ol>
+            
+            <h4>Recommended Tools:</h4>
+            <ul>
+                <li><strong>GTKWave:</strong> Open-source waveform viewer</li>
+                <li><strong>Surfer:</strong> Web-based VCD viewer (click "View" button)</li>
+                <li><strong>WaveDrom:</strong> Online waveform editor</li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Vyges Platform</strong> - Build Silicon Like Software</p>
+            <p>Generated on: {{GENERATED_DATE}} | Run ID: {{RUN_ID}}</p>
+        </div>
+    </div>
+</body>
+</html> 

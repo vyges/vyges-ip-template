@@ -1,0 +1,247 @@
+/* Vyges Report Styles */
+:root {
+    --primary-color: #16213e; /* #0366d6; */
+    --secondary-color: #28a745;
+    --accent-color: #0f3460; /* #6f42c1; */
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --success-color: #28a745;
+    --info-color: #17a2b8;
+    --light-bg: #f8f9fa;
+    --border-color: #e1e4e8;
+    --text-primary: #24292e;
+    --text-secondary: #586069;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: #24292e;
+    background-color: #ffffff;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    color: #0366d6;
+    border-bottom: 2px solid #e1e4e8;
+    padding-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #24292e;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #e1e4e8;
+    padding-bottom: 5px;
+}
+
+h3 {
+    color: #24292e;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+p {
+    margin-bottom: 15px;
+}
+
+ul, ol {
+    margin-bottom: 15px;
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+th, td {
+    border: 1px solid #e1e4e8;
+    padding: 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    background-color: #f6f8fa;
+    font-weight: 600;
+}
+
+tr:nth-child(even) {
+    background-color: #f6f8fa;
+}
+
+tr:hover {
+    background-color: #f1f3f4;
+}
+
+code {
+    background-color: #f6f8fa;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 0.9em;
+}
+
+pre {
+    background-color: #f6f8fa;
+    padding: 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 15px 0;
+    border: 1px solid var(--border-color);
+}
+
+pre code {
+    background: none;
+    padding: 0;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.status-success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-info {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-error {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    background: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin: 2px 4px 2px 0;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.btn:hover {
+    background: #0256cc;
+    text-decoration: none;
+}
+
+.btn-success {
+    background: var(--success-color);
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+.btn-info {
+    background: var(--info-color);
+}
+
+.btn-info:hover {
+    background: #138496;
+}
+
+.timestamp {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 30px;
+    padding: 10px;
+    background-color: var(--light-bg);
+    border-radius: 6px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.highlight {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 6px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 6px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 6px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 6px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.vyges-footer {
+    text-align: center;
+    padding: 30px 0;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-color);
+    margin-top: 40px;
+}
+
+.vyges-footer strong {
+    color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+    
+    table {
+        font-size: 14px;
+    }
+    
+    th, td {
+        padding: 8px;
+    }
+} 

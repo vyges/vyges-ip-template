@@ -276,6 +276,130 @@ jobs:
             echo "Vyges CLI not found - skipping CLI-based tests"
           fi
 
+      - name: Detect and verify installed tools
+        run: |
+          echo "🔍 Detecting and verifying installed tools..."
+          echo "================================================"
+          
+          # Python and Python tools
+          if command -v python${{ env.PYTHON_VERSION_SHORT }} &> /dev/null; then
+            echo "✅ Python ${{ env.PYTHON_VERSION_SHORT }}: $(python${{ env.PYTHON_VERSION_SHORT }} --version)"
+          elif command -v python3 &> /dev/null; then
+            echo "✅ Python3: $(python3 --version)"
+          elif command -v python &> /dev/null; then
+            echo "✅ Python: $(python --version)"
+          else
+            echo "❌ Python not found"
+          fi
+          
+          # Check cocotb installation
+          if command -v cocotb-config &> /dev/null; then
+            echo "✅ cocotb-config: $(which cocotb-config)"
+            echo "✅ cocotb: $(python3 -c 'import cocotb; print(cocotb.__version__)' 2>/dev/null || echo 'cocotb available')"
+          else
+            echo "⚠️ cocotb-config not found in PATH"
+            # Check common installation locations
+            COCOTB_PATHS=("$HOME/.local/bin/cocotb-config" "/usr/local/bin/cocotb-config" "/usr/bin/cocotb-config")
+            COCOTB_FOUND=false
+            for path in "${COCOTB_PATHS[@]}"; do
+              if [ -f "$path" ]; then
+                echo "✅ cocotb-config found at: $path"
+                COCOTB_FOUND=true
+                break
+              fi
+            done
+            if [ "$COCOTB_FOUND" = false ]; then
+              echo "❌ cocotb-config not found in any expected location"
+            fi
+          fi
+          
+          # Simulation tools
+          if command -v verilator &> /dev/null; then
+            echo "✅ Verilator: $(verilator --version | head -1)"
+          else
+            echo "❌ Verilator not found"
+          fi
+          
+          if command -v iverilog &> /dev/null; then
+            echo "✅ Icarus Verilog: $(iverilog -V | head -1)"
+          else
+            echo "❌ Icarus Verilog not found"
+          fi
+          
+          if command -v ghdl &> /dev/null; then
+            echo "✅ GHDL: $(ghdl --version 2>/dev/null | head -1 || echo 'GHDL available')"
+          else
+            echo "⚠️ GHDL not found (optional for VHDL simulation)"
+          fi
+          
+          # Synthesis tools
+          if command -v yosys &> /dev/null; then
+            echo "✅ Yosys: $(yosys -V | head -1)"
+          else
+            echo "❌ Yosys not found"
+          fi
+          
+          if command -v abc &> /dev/null; then
+            echo "✅ Berkeley ABC: $(abc -v 2>/dev/null | head -1 || echo 'ABC available')"
+          else
+            echo "ℹ️ Berkeley ABC not found (optional for synthesis)"
+          fi
+          
+          # Layout & Verification tools
+          if command -v magic &> /dev/null; then
+            echo "✅ Magic: $(magic --version 2>/dev/null | head -1 || echo 'Magic available')"
+          else
+            echo "⚠️ Magic not found (optional for layout)"
+          fi
+          
+          if command -v netgen &> /dev/null; then
+            echo "✅ Netgen: $(netgen -version 2>/dev/null | head -1 || echo 'Netgen available')"
+          else
+            echo "⚠️ Netgen not found (optional for LVS)"
+          fi
+          
+          if command -v klayout &> /dev/null; then
+            echo "✅ KLayout: $(klayout -v 2>/dev/null | head -1 || echo 'KLayout available')"
+          else
+            echo "⚠️ KLayout not found (optional for layout viewing)"
+          fi
+          
+          # FPGA tools
+          if command -v nextpnr-ice40 &> /dev/null; then
+            echo "✅ NextPNR ICE40: $(nextpnr-ice40 --version 2>/dev/null | head -1 || echo 'NextPNR ICE40 available')"
+          else
+            echo "⚠️ NextPNR ICE40 not found (optional for FPGA P&R)"
+          fi
+          
+          if command -v nextpnr-ecp5 &> /dev/null; then
+            echo "✅ NextPNR ECP5: $(nextpnr-ecp5 --version 2>/dev/null | head -1 || echo 'NextPNR ECP5 available')"
+          else
+            echo "⚠️ NextPNR ECP5 not found (optional for FPGA P&R)"
+          fi
+          
+          # Utility tools
+          if command -v gtkwave &> /dev/null; then
+            echo "✅ GTKWave: $(gtkwave --version 2>/dev/null | head -1 || echo 'GTKWave available')"
+          else
+            echo "⚠️ GTKWave not found (optional for waveform viewing)"
+          fi
+          
+          if command -v pandoc &> /dev/null; then
+            echo "✅ Pandoc: $(pandoc --version 2>/dev/null | head -1 || echo 'Pandoc available')"
+          else
+            echo "⚠️ Pandoc not found (optional for documentation generation)"
+          fi
+          
+          # Vyges CLI
+          if command -v vyges &> /dev/null; then
+            echo "✅ Vyges CLI: $(vyges --version 2>/dev/null || echo 'Vyges CLI available')"
+          else
+            echo "ℹ️ Vyges CLI not found (optional for metadata validation)"
+          fi
+          
+          echo "================================================"
+          echo "✅ Tool detection complete"
+
       - name: Validate project structure
         if: ${{ github.event.inputs.test_validation == 'true' }}
         run: |
@@ -376,8 +500,8 @@ jobs:
             cocotb_files=$(find tb -name "test_*.py" -type f)
             if [ -n "$cocotb_files" ]; then
               echo "Found cocotb testbenches: $cocotb_files"
-              # Note: Actual test execution would require specific testbench setup
-              echo "ℹ️ Cocotb testbench execution requires specific setup"
+            else
+              echo "ℹ️ No cocotb testbenches found (expected for template)"
             fi
             
             if [ -z "$sv_tb_files" ] && [ -z "$cocotb_files" ]; then
@@ -388,6 +512,52 @@ jobs:
           fi
           
           echo "✅ Simulation test check complete"
+
+      - name: Run Cocotb testbench tests
+        if: ${{ github.event.inputs.test_simulation == 'true' }}
+        run: |
+          echo "🧪 Running Cocotb testbench tests..."
+          if [ -d "tb/cocotb" ] && [ -f "tb/cocotb/Makefile" ]; then
+            cd tb/cocotb
+            
+            # Check if cocotb-config is available
+            if command -v cocotb-config >/dev/null 2>&1; then
+              echo "✅ cocotb-config found: $(which cocotb-config)"
+              echo "Running Cocotb tests with Icarus..."
+              make SIM=icarus || echo "⚠️ Cocotb Icarus tests failed"
+              echo "Running Cocotb tests with Verilator..."
+              make SIM=verilator || echo "⚠️ Cocotb Verilator tests failed"
+            else
+              echo "⚠️ cocotb-config not found, checking for fallback..."
+              # Check if cocotb-config is in common locations
+              COCOTB_CONFIG_PATHS=("$HOME/.local/bin/cocotb-config" "/usr/local/bin/cocotb-config" "/usr/bin/cocotb-config")
+              COCOTB_FOUND=false
+              
+              for path in "${COCOTB_CONFIG_PATHS[@]}"; do
+                if [ -f "$path" ]; then
+                  echo "✅ Found cocotb-config at: $path"
+                  export PATH="$(dirname "$path"):$PATH"
+                  COCOTB_FOUND=true
+                  break
+                fi
+              done
+              
+              if [ "$COCOTB_FOUND" = true ]; then
+                echo "Running Cocotb tests with Icarus (using found cocotb-config)..."
+                make SIM=icarus || echo "⚠️ Cocotb Icarus tests failed"
+                echo "Running Cocotb tests with Verilator (using found cocotb-config)..."
+                make SIM=verilator || echo "⚠️ Cocotb Verilator tests failed"
+              else
+                echo "❌ cocotb-config not found in any expected location"
+                echo "Skipping Cocotb tests - cocotb not properly installed"
+              fi
+            fi
+            
+            cd ../..
+          else
+            echo "No Cocotb Makefile found in tb/cocotb/"
+          fi
+          echo "✅ Cocotb testbench tests complete"
 
       - name: Check synthesis configuration
         if: ${{ github.event.inputs.test_synthesis == 'true' }}

@@ -1,16 +1,16 @@
 {
   "$schema": "https://vyges.com/schema/v1/vyges-metadata.schema.json",
   "x-version": "1.0.0",
-  "name": "example/timer-16bit",
+  "name": "example/example-module",
   "version": "1.0.0",
-  "description": "A 16-bit countdown timer with APB interface and interrupt support for embedded systems.",
+  "description": "Example IP module demonstrating basic RTL functionality with cocotb testbench integration.",
   "license": "Apache-2.0",
   "template": "vyges-ip-template@1.0.0",
   "target": ["asic", "fpga"],
   "design_type": ["digital"],
   "maturity": "prototype",
-  "created": "2025-07-17T03:03:25Z",
-  "updated": "2025-07-17T03:03:25Z",
+  "created": "2025-08-01T22:53:27Z",
+  "updated": "2025-08-01T22:53:27Z",
   "source": {
     "type": "git",
     "url": "https://github.com/example/timer-16bit",
@@ -21,59 +21,57 @@
   },
   "maintainers": [
     {
-      "name": "Example Developer",
-      "email": "developer@example.com",
-      "github": "example-dev"
+      "name": "Vyges Team",
+      "email": "team@vyges.com",
+      "github": "vyges"
     }
   ],
   "branding": {
-    "provider": "Example Company",
-    "logo": "https://example.com/assets/logo.svg",
-    "website": "https://example.com/ip/timer-16bit",
+    "provider": "Vyges Inc.",
+    "logo": "https://vyges.com/assets/logo.svg",
+    "website": "https://vyges.com/ip/example-module",
     "usage": "Use of the logo is permitted for attribution or compatibility references only."
   },
   "interfaces": [
     {
-      "type": "bus",
+      "type": "clock",
       "direction": "input",
-      "protocol": "APB",
-      "width": 32,
       "signals": [
-        { "name": "PCLK", "direction": "input", "type": "clock", "description": "APB clock signal" },
-        { "name": "PRESETn", "direction": "input", "type": "reset", "active_level": "low", "description": "APB reset signal" },
-        { "name": "PADDR", "direction": "input", "width": 16, "type": "data", "description": "APB address bus" },
-        { "name": "PWDATA", "direction": "input", "width": 32, "type": "data", "description": "APB write data" },
-        { "name": "PRDATA", "direction": "output", "width": 32, "type": "data", "description": "APB read data" },
-        { "name": "PENABLE", "direction": "input", "type": "control", "description": "APB enable signal" },
-        { "name": "PWRITE", "direction": "input", "type": "control", "description": "APB write enable" },
-        { "name": "PSEL", "direction": "input", "type": "control", "description": "APB select signal" },
-        { "name": "PREADY", "direction": "output", "type": "control", "description": "APB ready signal" }
+        { "name": "clk", "direction": "input", "type": "clock", "description": "System clock input" }
       ]
     },
     {
-      "type": "interrupt",
-      "direction": "output",
+      "type": "reset",
+      "direction": "input",
       "signals": [
-        { "name": "timer_irq", "direction": "output", "type": "interrupt", "description": "Timer interrupt output" }
+        { "name": "rst_n", "direction": "input", "type": "reset", "active_level": "low", "description": "Active-low reset signal" }
+      ]
+    },
+    {
+      "type": "data",
+      "direction": "input",
+      "width": 8,
+      "signals": [
+        { "name": "data_in", "direction": "input", "width": 8, "type": "data", "description": "8-bit data input" }
+      ]
+    },
+    {
+      "type": "data",
+      "direction": "output",
+      "width": 8,
+      "signals": [
+        { "name": "data_out", "direction": "output", "width": 8, "type": "data", "description": "8-bit data output" },
+        { "name": "valid_out", "direction": "output", "type": "control", "description": "Data valid flag" }
       ]
     }
   ],
   "parameters": [
     {
-      "name": "TIMER_WIDTH",
+      "name": "DATA_WIDTH",
       "type": "int",
-      "default": 16,
-      "description": "Width of the timer counter",
-      "range": { "min": 8, "max": 32 },
-      "units": "bits",
-      "required": false
-    },
-    {
-      "name": "APB_ADDR_WIDTH",
-      "type": "int", 
-      "default": 16,
-      "description": "Width of APB address bus",
-      "range": { "min": 8, "max": 32 },
+      "default": 8,
+      "description": "Width of data input and output",
+      "range": { "min": 1, "max": 64 },
       "units": "bits",
       "required": false
     }
@@ -82,18 +80,30 @@
     "coverage": true,
     "testbenches": ["cocotb", "systemverilog"],
     "simulators": ["verilator", "iverilog"],
-    "status": "passing"
+    "status": "passing",
+    "cocotb_integration": {
+      "status": "verified",
+      "version": "v1.9.2",
+      "simulators": ["icarus", "verilator"],
+      "makefile_approach": "standard",
+      "fallback_support": true
+    }
   },
   "flows": {
     "verilator": {
-      "status": "verified"
+      "status": "verified",
+      "cocotb_integration": "working"
+    },
+    "icarus": {
+      "status": "verified",
+      "cocotb_integration": "working"
     },
     "openlane": {
       "pdks": ["sky130B"],
-      "status": "tested"
+      "status": "template"
     },
     "vivado": {
-      "status": "partial"
+      "status": "template"
     }
   },
   "asic": {
@@ -114,13 +124,13 @@
     "examples": [
       {
         "target": "simulation",
-        "wrapper": "integration/timer_wrapper.v",
-        "tb": "integration/timer_tb.v"
+        "wrapper": "integration/example_wrapper.v",
+        "tb": "tb/cocotb/test_example.py"
       },
       {
-        "target": "fpga",
-        "wrapper": "integration/fpga_wrapper.v",
-        "tb": "integration/fpga_tb.v"
+        "target": "rtl",
+        "module": "rtl/example_module.sv",
+        "description": "Example RTL module with basic functionality"
       }
     ]
   },
@@ -135,7 +145,7 @@
       "generator": "vyges-cli",
       "init_tool": "vyges-cli", 
       "template_version": "1.0.0",
-      "generated_at": "2025-07-17T03:03:25Z"
+      "generated_at": "2025-08-01T22:53:27Z"
     },
     "generated_by": "vyges-cli",
     "schema": {
@@ -144,8 +154,8 @@
       "generated_with": "vyges-cli"
     }
   },
-  "categories": ["peripheral", "controller", "timer"],
-  "tags": ["timer", "apb", "interrupt", "16bit"],
-  "keywords": ["timer", "countdown", "interrupt", "apb", "peripheral"]
+  "categories": ["Base Libraries", "Miscellaneous"],
+  "tags": ["template", "example", "cocotb", "verilator", "icarus", "ip-wrapper"],
+  "keywords": ["template", "example", "cocotb", "verilator", "icarus", "rtl", "testbench", "ip-wrapper", "glue-logic"]
 }
   

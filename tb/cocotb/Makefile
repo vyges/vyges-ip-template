@@ -18,7 +18,7 @@ SIM ?= icarus
 TOPLEVEL_LANG ?= verilog
 
 # Design source files (user should customize these)
-VERILOG_SOURCES += $(PWD)/../../rtl/example_module.sv
+VERILOG_SOURCES += $(PWD)/../../rtl/example_core_example_module.sv
 # Add more RTL files as needed:
 # VERILOG_SOURCES += $(PWD)/../../rtl/module1.sv
 # VERILOG_SOURCES += $(PWD)/../../rtl/module2.sv

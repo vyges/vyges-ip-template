@@ -19,6 +19,62 @@
     "containsEncryptedPayload": false,
     "indexing": true
   },
+  "sourceFiles": [
+    {
+      "path": "rtl/example_core_example_module.sv",
+      "type": "rtl",
+      "owner": "Vyges Team",
+      "version": "1.0.0",
+      "license": "Apache-2.0",
+      "block": "example_core",
+      "vendor": {
+        "name": "Vyges Inc.",
+        "docs": [
+          {
+            "title": "Example Module Documentation",
+            "url": "https://vyges.com/docs/example-module",
+            "type": "user_guide"
+          }
+        ],
+        "contact": {
+          "email": "team@vyges.com",
+          "url": "https://vyges.com/support"
+        }
+      }
+    },
+    {
+      "path": "tb/cocotb/test_example.py",
+      "type": "testbench",
+      "owner": "Vyges Team",
+      "version": "1.0.0",
+      "license": "Apache-2.0",
+      "block": "example_core"
+    },
+    {
+      "path": "integration/example_core_example_wrapper.v",
+      "type": "rtl",
+      "owner": "Vyges Team",
+      "version": "1.0.0",
+      "license": "Apache-2.0",
+      "block": "example_core"
+    },
+    {
+      "path": "constraints/constraints.sdc",
+      "type": "constraint",
+      "owner": "Vyges Team",
+      "version": "1.0.0",
+      "license": "Apache-2.0",
+      "block": "example_core"
+    },
+    {
+      "path": "constraints/constraints.xdc",
+      "type": "constraint",
+      "owner": "Vyges Team",
+      "version": "1.0.0",
+      "license": "Apache-2.0",
+      "block": "example_core"
+    }
+  ],
   "maintainers": [
     {
       "name": "Vyges Team",
@@ -124,19 +180,25 @@
     "examples": [
       {
         "target": "simulation",
-        "wrapper": "integration/example_wrapper.v",
+        "wrapper": "integration/example_core_example_wrapper.v",
         "tb": "tb/cocotb/test_example.py"
       },
       {
         "target": "rtl",
-        "module": "rtl/example_module.sv",
+        "module": "rtl/example_core_example_module.sv",
         "description": "Example RTL module with basic functionality"
       }
-    ]
+    ],
+    "dependencies": [],
+    "toolRequirements": {
+      "synthesis": ["yosys", "openroad"],
+      "simulation": ["verilator", "icarus"],
+      "verification": ["cocotb"]
+    }
   },
   "automation": {
     "automation_level": "enhanced",
-    "minimal_required": ["name", "version", "license", "interfaces", "template", "target", "design_type", "maturity", "description", "source", "asic", "fpga", "test", "flows"],
+    "minimal_required": ["name", "version", "license", "interfaces", "template", "target", "design_type", "maturity", "description", "source", "sourceFiles", "asic", "fpga", "test", "flows"],
     "recommended_for_automation": ["parameters", "dependencies", "toolRequirements", "performance", "reliability", "packaging", "community"],
     "blocking_issues": []
   },
@@ -153,6 +215,26 @@
       "compatible_versions": ["1.0.0", "1.1.0"],
       "generated_with": "vyges-cli"
     }
+  },
+  "performance": {
+    "clock_freq_mhz": 100,
+    "power_consumption": "low",
+    "area_efficiency": "medium"
+  },
+  "reliability": {
+    "fault_tolerance": "basic",
+    "error_detection": "none",
+    "recovery_mechanisms": "none"
+  },
+  "packaging": {
+    "format": "source",
+    "distribution": "git",
+    "versioning": "semantic"
+  },
+  "community": {
+    "support_level": "community",
+    "documentation_quality": "template",
+    "update_frequency": "as_needed"
   },
   "categories": ["Base Libraries", "Miscellaneous"],
   "tags": ["template", "example", "cocotb", "verilator", "icarus", "ip-wrapper"],

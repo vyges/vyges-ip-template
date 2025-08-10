@@ -55,12 +55,29 @@ project/
 │   └── macros/            # Reusable analog components
 ├── simulation/             # Mixed-signal simulation
 ├── layout/                 # Layout verification
+│   ├── constraints/        # Physical layout constraints (timing, power, thermal)
+│   ├── drc/               # Design Rule Check results
+│   └── lvs/               # Layout vs Schematic verification
+├── constraints/            # RTL synthesis constraints (SDC, XDC files)
 ├── tb/                     # Testbenches
 ├── flow/                   # Synthesis flows
 ├── docs/                   # IP specifications & requirements
 ├── integration/            # Integration examples
 └── packaging/              # IP packaging
 ```
+
+### 🔧 Constraints Directory Structure
+
+The template uses two separate constraints directories for different design phases:
+
+- **`constraints/`** (Root level): RTL synthesis and implementation constraints
+  - `constraints.sdc` - Synopsys Design Constraints for ASIC synthesis
+  - `constraints.xdc` - Xilinx Design Constraints for FPGA implementation
+  
+- **`layout/constraints/`**: Physical layout and manufacturing constraints
+  - Timing, power, thermal, and signal integrity constraints
+  - Foundry-specific design rules and manufacturing constraints
+  - Analog layout matching and symmetry requirements
 
 ## 🛠️ Design Type Support
 

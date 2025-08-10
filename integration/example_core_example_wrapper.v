@@ -6,7 +6,7 @@
 // License: Apache-2.0
 //=============================================================================
 
-module example_wrapper #(
+module example_core_example_wrapper #(
     parameter int DATA_WIDTH = 8
 ) (
     input  logic                    clk_i,      // Clock input
@@ -20,9 +20,9 @@ module example_wrapper #(
     // Instance of the example module
     //=============================================================================
     
-    example_module #(
+    example_core_example_module #(
         .DATA_WIDTH(DATA_WIDTH)
-    ) u_example_module (
+    ) u_example_core_example_module (
         .clk_i      (clk_i),
         .rst_n_i    (rst_n_i),
         .data_in_i  (data_in_i),
@@ -48,4 +48,4 @@ module example_wrapper #(
     //
     //=============================================================================
 
-endmodule : example_wrapper
+endmodule : example_core_example_wrapper

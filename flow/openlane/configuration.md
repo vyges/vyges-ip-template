@@ -27,12 +27,12 @@ Update `config.json` and modify the same for your flow configuration. For ease o
 ```json
 {
     // Module under test (your design's top-level)
-    "DESIGN_NAME": "top_wrapper",
+    "DESIGN_NAME": "your_block_top_wrapper",
   
     // Source files
     "VERILOG_FILES": [
-      "dir::../../rtl/your_ip_block.sv",
-      "dir::../../rtl/top_wrapper.sv"
+      "dir::../../rtl/your_block_your_module.sv",
+      "dir::../../rtl/your_block_top_wrapper.sv"
     ],
   
     // Optional constraint files (if any)
@@ -60,7 +60,7 @@ Update `config.json` and modify the same for your flow configuration. For ease o
     "FP_PIN_ORDER_CFG": "dir::pin_order.cfg", // Optional pin order
   
     // GDS output
-    "GDS_OUTPUT": "gds/top_wrapper.gds",
+    "GDS_OUTPUT": "gds/your_block_top_wrapper.gds",
   
     // Additional flow control (optional)
     "RUN_LINTER": 1,
@@ -88,12 +88,12 @@ Certainly! Here's a clean and well-commented template for `flow/openlane/config.
 ```json
 {
   // Module under test (your design's top-level)
-  "DESIGN_NAME": "top_wrapper",
+  "DESIGN_NAME": "your_block_top_wrapper",
 
   // Source files
   "VERILOG_FILES": [
-    "dir::../../rtl/your_ip_block.sv",
-    "dir::../../rtl/top_wrapper.sv"
+    "dir::../../rtl/your_block_your_module.sv",
+    "dir::../../rtl/your_block_top_wrapper.sv"
   ],
 
   // Optional constraint files (if any)
@@ -121,7 +121,7 @@ Certainly! Here's a clean and well-commented template for `flow/openlane/config.
   "FP_PIN_ORDER_CFG": "dir::pin_order.cfg", // Optional pin order
 
   // GDS output
-  "GDS_OUTPUT": "gds/top_wrapper.gds",
+  "GDS_OUTPUT": "gds/your_block_top_wrapper.gds",
 
   // Additional flow control (optional)
   "RUN_LINTER": 1,

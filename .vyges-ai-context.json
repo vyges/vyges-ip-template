@@ -458,8 +458,8 @@
         "required_patterns": {
             "include_guards": {
                 "description": "Every RTL file must have include guards to prevent multiple inclusion",
-                "pattern": "`ifndef {BLOCK}_{MODULE}_SV` and `define {BLOCK}_{MODULE}_SV`",
-                "example": "`ifndef FFT_MEMORY_INTERFACE_SV` ... `endif // FFT_MEMORY_INTERFACE_SV`",
+                "pattern": "`ifndef {BLOCK}_{MODULE}_SV` and `define {BLOCK}_{MODULE}_SV",
+                "example": "`ifndef FFT_MEMORY_INTERFACE_SV` ... `endif // FFT_MEMORY_INTERFACE_SV",
                 "naming": "Use UPPER_SNAKE_CASE with BLOCK_MODULE_SV format"
             },
             "common_headers": {
@@ -472,12 +472,12 @@
                 "timescale_header": {
                     "filename": "{block}_timescale.vh",
                     "content": "Common timescale definition (e.g., `timescale 1ns/1ps)",
-                    "include_guard": "`ifndef {BLOCK}_TIMESCALE_VH` ... `endif // {BLOCK}_TIMESCALE_VH`"
+                    "include_guard": "`ifndef {BLOCK}_TIMESCALE_VH` ... `endif // {BLOCK}_TIMESCALE_VH"
                 },
                 "defines_header": {
                     "filename": "{block}_defines.vh",
                     "content": "Shared parameters, types, and constants",
-                    "include_guard": "`ifndef {BLOCK}_DEFINES_VH` ... `endif // {BLOCK}_DEFINES_VH`"
+                    "include_guard": "`ifndef {BLOCK}_DEFINES_VH` ... `endif // {BLOCK}_DEFINES_VH"
                 }
             },
             "module_header": {
@@ -550,7 +550,64 @@
                 "side_channel_protection": "Ensure RTL includes side-channel attack protections when required",
                 "formal_security_properties": "Generate formal verification properties for security-critical paths",
                 "security_assertion_generation": "Automatically generate security assertions based on risk areas",
-                "vulnerability_scanning": "Scan RTL for common security vulnerabilities and suggest fixes"
+                "vulnerability_scanning": "Scan RTL for common security vulnerabilities and suggest fixes",
+                "dual_mode_implementation": "Implement security using dual-mode approach for tool compatibility",
+                "yosys_compatibility": "Provide YOSYS_SYNTHESIS mode for open-source tool compatibility",
+                "full_systemverilog_mode": "Provide SECURITY_ASSERTIONS mode for commercial tools and simulation",
+                "conditional_compilation": "Use ifdef/endif blocks to enable/disable security features per tool",
+                "synthesis_safe_assertions": "Create synthesis-safe logic signals when SystemVerilog assertions not supported"
+            },
+            "security_implementation_patterns": {
+                "description": "Proven security implementation patterns for RTL design",
+                "dual_mode_security": {
+                    "description": "Implement security using dual-mode approach for maximum tool compatibility",
+                    "yosys_mode": {
+                        "define": "YOSYS_SYNTHESIS",
+                        "implementation": "Use synthesis-safe logic signals and assignments",
+                        "example": "logic security_violation; assign security_violation = condition;",
+                        "benefits": "Compatible with open-source synthesis tools, no compilation errors"
+                    },
+                    "full_mode": {
+                        "define": "SECURITY_ASSERTIONS",
+                        "implementation": "Use complete SystemVerilog assertions and properties",
+                        "example": "property security_check; @(posedge clk) condition; endproperty",
+                        "benefits": "Full formal verification support, comprehensive security validation"
+                    }
+                },
+                "security_assertion_patterns": {
+                    "address_bounds_checking": {
+                        "description": "Validate memory address bounds to prevent illegal access",
+                        "yosys_pattern": "assign security_violation = (addr >= MAX_ADDR);",
+                        "full_pattern": "property addr_bounds; @(posedge clk) addr < MAX_ADDR; endproperty"
+                    },
+                    "fsm_state_validation": {
+                        "description": "Ensure FSM states are valid and transitions are legal",
+                        "yosys_pattern": "assign security_violation = !(state == VALID_STATE1 || state == VALID_STATE2);",
+                        "full_pattern": "property fsm_valid; @(posedge clk) state inside {VALID_STATES}; endproperty"
+                    },
+                    "reset_synchronization": {
+                        "description": "Verify proper reset behavior and synchronization",
+                        "yosys_pattern": "assign security_violation = !reset_n && (state != IDLE_STATE);",
+                        "full_pattern": "property reset_sync; @(posedge clk) !reset_n |-> state == IDLE_STATE; endproperty"
+                    },
+                    "memory_access_validation": {
+                        "description": "Prevent simultaneous read/write access and protocol violations",
+                        "yosys_pattern": "assign security_violation = read_en && write_en;",
+                        "full_pattern": "property mem_access; @(posedge clk) !(read_en && write_en); endproperty"
+                    }
+                },
+                "tool_compatibility_strategies": {
+                    "open_source_tools": {
+                        "yosys": "Use YOSYS_SYNTHESIS define, avoid SystemVerilog assertions",
+                        "iverilog": "Use YOSYS_SYNTHESIS define, basic simulation support",
+                        "verilator": "Use SECURITY_ASSERTIONS define, full assertion support"
+                    },
+                    "commercial_tools": {
+                        "synopsys": "Use SECURITY_ASSERTIONS define, full formal verification",
+                        "cadence": "Use SECURITY_ASSERTIONS define, comprehensive security analysis",
+                        "mentor": "Use SECURITY_ASSERTIONS define, advanced assertion checking"
+                    }
+                }
             }
         }
     },
@@ -3607,7 +3664,10 @@
         "ai_prompts": {
             "generate_memory_ip": "Generate memory controller IP for {memory_type}",
             "generate_security_ip": "Generate security IP block for {security_feature}",
-            "generate_network_ip": "Generate network IP block for {protocol}"
+            "generate_network_ip": "Generate network IP block for {protocol}",
+            "implement_dual_mode_security": "Implement dual-mode security for {module_name}: YOSYS_SYNTHESIS mode for synthesis tools, SECURITY_ASSERTIONS mode for full SystemVerilog support, using conditional compilation with ifdef/endif blocks",
+            "create_security_test_infrastructure": "Create comprehensive security testing infrastructure for {module_name} including Makefile targets, testbenches, and coverage validation for both Yosys and full SystemVerilog modes",
+            "generate_security_validation": "Generate comprehensive security validation testbench for {module_name} covering all identified risk areas and attack vectors with dual-mode support"
         }
     },
     "ieee_p1735_encryption": {
@@ -3754,12 +3814,13 @@
             "generate_side_channel_tests": "Generate side-channel analysis tests for {module_name} targeting {attack_vectors}",
             "validate_security_compliance": "Validate {module_name} against {compliance_standards} security requirements",
             "create_security_documentation": "Generate security documentation for {module_name} including threat model and validation results",
-            "generate_security_metadata": "Generate security metadata for {module_name} based on risk analysis and protection requirements",
-            "create_security_policy": "Create project-wide security policy for {project_name} with minimum requirements and automated checks",
-            "validate_security_metadata": "Validate security metadata for {module_name} against schema requirements and best practices",
-            "generate_security_coverage": "Generate security coverage plan for {module_name} with assertion coverage and test requirements",
-            "create_threat_model": "Create comprehensive threat model for {module_name} identifying attack vectors and countermeasures",
-            "generate_security_report": "Generate security validation report for {module_name} with compliance status and recommendations"
+            "enforce_naming_conventions": "Ensure {module_name} follows Vyges naming conventions: {block}_{module}.sv filename, proper include guards, and common header inclusion",
+            "apply_header_patterns": "Add proper include guards and common includes to {module_name} following Vyges header patterns: `ifndef {BLOCK}_{MODULE}_SV, `include \"{block}_timescale.vh\", `include \"{block}_defines.vh\"",
+            "create_common_headers": "Create common header files for {block}: {block}_timescale.vh and {block}_defines.vh with proper include guards and shared definitions",
+            "validate_namespace_safety": "Validate that {module_name} follows namespace safety rules: filename uses {block}_{module}.sv pattern, module name remains functional, include guards prevent conflicts",
+            "implement_dual_mode_security": "Implement security for {module_name} using dual-mode approach: YOSYS_SYNTHESIS for synthesis tools, SECURITY_ASSERTIONS for full SystemVerilog support",
+            "create_security_test_targets": "Create Makefile targets for security testing: test-security, test-security-yosys, test-security-synthesis, test-security-coverage",
+            "generate_security_validation": "Generate comprehensive security validation testbench for {module_name} covering all identified risk areas and attack vectors"
         },
         "security_considerations": {
             "key_management": {
@@ -4700,6 +4761,61 @@
             "template_integration": "Suggest appropriate Vyges template expansion",
             "catalog_integration": "Prepare metadata for Vyges catalog publication",
             "workflow_integration": "Provide complete Vyges development workflow"
+        }
+    },
+    "security_testing_infrastructure": {
+        "description": "Comprehensive security testing infrastructure patterns and targets",
+        "makefile_security_targets": {
+            "test_security": {
+                "description": "Run full SystemVerilog security validation tests",
+                "define": "SECURITY_ASSERTIONS",
+                "tools": ["iverilog", "verilator"],
+                "coverage": "100% security assertion coverage"
+            },
+            "test_security_yosys": {
+                "description": "Run security tests with Yosys compatibility",
+                "define": "YOSYS_SYNTHESIS",
+                "tools": ["iverilog", "yosys"],
+                "coverage": "Basic security validation without assertions"
+            },
+            "test_security_synthesis": {
+                "description": "Test security checks in synthesis tools",
+                "define": "YOSYS_SYNTHESIS",
+                "tools": ["yosys", "synth"],
+                "purpose": "Verify security logic synthesizes correctly"
+            },
+            "test_security_coverage": {
+                "description": "Validate security coverage requirements",
+                "metrics": ["Security Assertions: 100%", "Vulnerability Coverage: 95%", "Attack Vector Coverage: 90%"]
+            },
+            "generate_security_docs": {
+                "description": "Generate comprehensive security documentation",
+                "outputs": ["security_analysis.md", "threat_model.md", "vulnerability_assessment.md"]
+            }
+        },
+        "security_testbench_patterns": {
+            "basic_structure": {
+                "clock_reset": "Generate clock and reset signals",
+                "test_control": "Test count, pass/fail tracking",
+                "test_sequence": "Sequential execution of security tests",
+                "coverage_reporting": "Comprehensive security coverage summary"
+            },
+            "security_test_categories": {
+                "address_bounds": "Test illegal memory access prevention",
+                "fsm_validity": "Test state machine security",
+                "reset_synchronization": "Test reset behavior security",
+                "memory_access": "Test memory access validation",
+                "protocol_compliance": "Test bus protocol security",
+                "data_integrity": "Test data validation security",
+                "overflow_protection": "Test arithmetic overflow security",
+                "buffer_access": "Test buffer selection security"
+            }
+        },
+        "security_validation_workflow": {
+            "development_phase": "Use YOSYS_SYNTHESIS for synthesis and basic validation",
+            "verification_phase": "Use SECURITY_ASSERTIONS for comprehensive testing",
+            "production_phase": "Enable both modes for maximum compatibility",
+            "continuous_integration": "Run security tests in CI/CD pipeline"
         }
     }
 }

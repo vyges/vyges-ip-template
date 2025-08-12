@@ -378,17 +378,26 @@
                     "warning": "Ensure Git remote points to new repository, not template repository",
                     "fix_command": "git remote remove origin && git remote add origin https://github.com/{org}/{repo}.git",
                     "cli_fix": "Use 'vyges init --fix-remote' or 'vyges quickstart --fix-remote' to automatically remove template remote",
-                    "functional_ip_principle": "Each repository represents one functional IP in the catalog (e.g., uart-controller contains UART Master, FIFO, and other components as one functional unit)"
+                    "functional_ip_principle": "Each repository represents one functional IP in the catalog (e.g., uart-controller contains UART Master, FIFO, and other components as one functional unit)",
+                    "namespace_safety_principle": "Use {block}_{module}.sv naming to prevent namespace collisions when integrating multiple IP blocks from different vendors or organizations"
                 },
                 "ip_name": "lowercase with hyphens/underscores, 3-50 chars, start with letter, no consecutive hyphens/underscores",
                 "modules": "snake_case (e.g., pwm_controller, uart_transmitter)",
-                "files": "snake_case.sv (e.g., pwm_controller.sv, uart_transmitter.sv)",
+                "files": "{block}_{module}.sv (e.g., fft_memory_interface.sv, fft_rescale_unit.sv)",
                 "testbenches": "tb_<module_name>.sv (e.g., tb_pwm_controller.sv)",
                 "parameters": "UPPER_SNAKE_CASE (e.g., CLOCK_FREQUENCY, DATA_WIDTH)",
                 "signals": "snake_case (e.g., clock_i, data_o, enable_n)"
             },
+            "naming_convention_benefits": {
+                "namespace_safety": "Prevents naming collisions when integrating IP blocks from multiple vendors",
+                "file_organization": "Clear identification of IP block ownership and module functionality",
+                "automation_friendly": "Enables automated tooling and CI/CD pipelines to identify and process files correctly",
+                "integration_support": "Facilitates safe integration of third-party IP without namespace conflicts",
+                "catalog_management": "Supports Vyges IP Catalog organization and discovery"
+            },
             "organization": {
-                "rtl_files": "Place all RTL modules in rtl/ directory",
+                "rtl_files": "Place all RTL modules in rtl/ directory with {block}_{module}.sv naming",
+                "header_files": "Place common headers in rtl/ directory with {block}_{type}.vh naming",
                 "testbench_files": "Place all testbenches in tb/ directory",
                 "test_files": "Place test vectors and coverage in test/ directory",
                 "documentation": "Place all docs in docs/ directory",
@@ -447,21 +456,58 @@
             }
         },
         "required_patterns": {
+            "include_guards": {
+                "description": "Every RTL file must have include guards to prevent multiple inclusion",
+                "pattern": "`ifndef {BLOCK}_{MODULE}_SV` and `define {BLOCK}_{MODULE}_SV`",
+                "example": "`ifndef FFT_MEMORY_INTERFACE_SV` ... `endif // FFT_MEMORY_INTERFACE_SV`",
+                "naming": "Use UPPER_SNAKE_CASE with BLOCK_MODULE_SV format"
+            },
+            "common_headers": {
+                "description": "Include common header files for consistency",
+                "required": [
+                    "{block}_timescale.vh",
+                    "{block}_defines.vh"
+                ],
+                "purpose": "Centralized parameter management and consistency across modules",
+                "timescale_header": {
+                    "filename": "{block}_timescale.vh",
+                    "content": "Common timescale definition (e.g., `timescale 1ns/1ps)",
+                    "include_guard": "`ifndef {BLOCK}_TIMESCALE_VH` ... `endif // {BLOCK}_TIMESCALE_VH`"
+                },
+                "defines_header": {
+                    "filename": "{block}_defines.vh",
+                    "content": "Shared parameters, types, and constants",
+                    "include_guard": "`ifndef {BLOCK}_DEFINES_VH` ... `endif // {BLOCK}_DEFINES_VH`"
+                }
+            },
             "module_header": {
-                "description": "Every RTL module must have a standardized header",
+                "description": "Every RTL module must have a standardized header with include guards",
                 "template": [
+                    "`ifndef {BLOCK}_{MODULE}_SV",
+                    "`define {BLOCK}_{MODULE}_SV",
+                    "",
+                    "`include \"{block}_timescale.vh\"",
+                    "`include \"{block}_defines.vh\"",
+                    "",
                     "//=============================================================================",
                     "// Module Name: {module_name}",
                     "//=============================================================================",
                     "// Description: {description}",
-                    "//",
-                    "// Features:",
-                    "// - {feature1}",
-                    "// - {feature2}",
-                    "//",
                     "// Author: {author}",
                     "// License: {license}",
-                    "//============================================================================="
+                    "//=============================================================================",
+                    "",
+                    "module {module_name} #(",
+                    "    // ... parameters ...",
+                    ") (",
+                    "    // ... ports ...",
+                    ");",
+                    "",
+                    "    // ... implementation ...",
+                    "",
+                    "endmodule",
+                    "",
+                    "`endif // {BLOCK}_{MODULE}_SV"
                 ]
             },
             "interface_patterns": {
@@ -1188,7 +1234,24 @@
             "synthesis": "RTL must be synthesizable",
             "simulation": "Testbenches must run without errors",
             "coverage": "Basic functional coverage must be implemented",
-            "cocotb_compatibility": "If cocotb is used, test must run with ghdl/iverilog/verilator"
+            "cocotb_compatibility": "If cocotb is used, test must run with ghdl/iverilog/verilator",
+            "include_guard_validation": {
+                "description": "Validate that all RTL files have proper include guards",
+                "check": "Every .sv file must start with `ifndef and end with `endif",
+                "naming": "Include guard names must match filename pattern: {BLOCK}_{MODULE}_SV"
+            },
+            "common_header_inclusion": {
+                "description": "Validate that all RTL files include common headers",
+                "required": [
+                    "`include \"{block}_timescale.vh\"",
+                    "`include \"{block}_defines.vh\""
+                ]
+            },
+            "namespace_safety": {
+                "description": "Ensure namespace safety through proper file naming",
+                "principle": "Use {block}_{module}.sv to prevent collisions between IP blocks",
+                "benefit": "Enables safe integration of multiple IP blocks without naming conflicts"
+            }
         },
         "design_document_quality": {
             "completeness": {
@@ -1321,8 +1384,10 @@
         "generate_sourceFiles_metadata": "Generate sourceFiles metadata for {module_name} with proper file categorization, ownership, and vendor information",
         "validate_sourceFiles_structure": "Validate sourceFiles metadata structure for {module_name} against schema requirements",
         "enhance_sourceFiles_with_vendor": "Enhance sourceFiles metadata for {module_name} with comprehensive vendor information and documentation links",
-        "enforce_naming_conventions": "Ensure {module_name} follows Vyges naming conventions: one module per file, filename matches module name, proper block prefixes",
-        "apply_header_patterns": "Add proper include guards and common includes to {module_name} following Vyges header patterns",
+        "enforce_naming_conventions": "Ensure {module_name} follows Vyges naming conventions: {block}_{module}.sv filename, proper include guards, and common header inclusion",
+        "apply_header_patterns": "Add proper include guards and common includes to {module_name} following Vyges header patterns: `ifndef {BLOCK}_{MODULE}_SV, `include \"{block}_timescale.vh\", `include \"{block}_defines.vh\"",
+        "create_common_headers": "Create common header files for {block}: {block}_timescale.vh and {block}_defines.vh with proper include guards and shared definitions",
+        "validate_namespace_safety": "Validate that {module_name} follows namespace safety rules: filename uses {block}_{module}.sv pattern, module name remains functional, include guards prevent conflicts",
         "apply_code_quality_rules": "Make {module_name} lint-ready by applying Vyges code quality rules and fixing forbidden constructs",
         "apply_semantic_fixes": "Apply semantic fixes to {module_name}: replace casex with casez, fix width mismatches, handle unused signals",
         "validate_security_requirements": "Validate {module_name} against security requirements: protection features, compliance standards, threat model alignment",
@@ -1424,24 +1489,60 @@
             "document_proprietary_integration": "Document integration approach for {proprietary_tool} without including it in default build."
         }
     },
-    "cli_integration": {
-        "commands": {
-            "init": {
-                "description": "Initialize a new functional IP project with interactive setup",
-                "examples": [
-                    "vyges init --interactive",
-                    "vyges init my-ip --type digital --pdk sky130",
-                    "vyges setup --from-template uart-controller"
-                ],
-                "features": [
-                    "Git integration for auto-detecting author",
-                    "Interactive license selection",
-                    "Platform and design type selection",
-                    "Tool auto-configuration",
-                    "IP name validation",
-                    "Functional IP principle (one repository = one functional IP)"
+            "implementation_examples": {
+            "fft_ip_block": {
+                "description": "Example of proper Vyges naming convention implementation",
+                "files": {
+                    "fft_fft_top.sv": "Top-level module with include guards and common headers",
+                    "fft_memory_interface.sv": "Memory interface with proper naming",
+                    "fft_timescale.vh": "Common timescale header",
+                    "fft_defines.vh": "Common definitions header"
+                },
+                "benefits": [
+                    "Namespace safety between IP blocks",
+                    "Clear file ownership and organization",
+                    "Prevents compilation conflicts",
+                    "Enables automated tooling"
                 ]
-            },
+            }
+        },
+        "implementation_workflow": {
+            "description": "Step-by-step workflow for implementing Vyges naming conventions",
+            "steps": [
+                "1. Rename RTL files to follow {block}_{module}.sv pattern",
+                "2. Create common header files: {block}_timescale.vh and {block}_defines.vh",
+                "3. Add include guards to all RTL files using {BLOCK}_{MODULE}_SV format",
+                "4. Include common headers in all RTL files",
+                "5. Update build system references to use new filenames",
+                "6. Verify all tests pass with new structure",
+                "7. Commit changes and push to repository"
+            ],
+            "best_practices": [
+                "Use git mv for file renaming to preserve history",
+                "Maintain module names for functionality (only filenames change)",
+                "Ensure include guards match filename patterns exactly",
+                "Test build system thoroughly after filename changes",
+                "Document the naming convention for team members"
+            ]
+        },
+        "cli_integration": {
+            "commands": {
+                "init": {
+                    "description": "Initialize a new functional IP project with interactive setup",
+                    "examples": [
+                        "vyges init --interactive",
+                        "vyges init my-ip --type digital --pdk sky130",
+                        "vyges setup --from-template uart-controller"
+                    ],
+                    "features": [
+                        "Git integration for auto-detecting author",
+                        "Interactive license selection",
+                        "Platform and design type selection",
+                        "Tool auto-configuration",
+                        "IP name validation",
+                        "Functional IP principle (one repository = one functional IP)"
+                    ]
+                },
             "validate": {
                 "description": "Validates functional IP metadata, project structure, and lint/simulation readiness",
                 "example": "vyges validate --strict"

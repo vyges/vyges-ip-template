@@ -1,19 +1,19 @@
 {
   "$schema": "https://vyges.com/schema/v1/vyges-metadata.schema.json",
   "x-version": "1.0.0",
-  "name": "example/example-module",
+  "name": "example.com/example-core",
   "version": "1.0.0",
-  "description": "Example IP module demonstrating basic RTL functionality with cocotb testbench integration.",
+  "description": "Generic IP module template demonstrating Vyges IP development standards and best practices. Replace with your actual IP functionality.",
   "license": "Apache-2.0",
   "template": "vyges-ip-template@1.0.0",
   "target": ["asic", "fpga"],
   "design_type": ["digital"],
   "maturity": "prototype",
-  "created": "2025-08-01T22:53:27Z",
-  "updated": "2025-08-01T22:53:27Z",
+  "created": "2025-08-12T00:00:00Z",
+  "updated": "2025-08-12T00:00:00Z",
   "source": {
     "type": "git",
-    "url": "https://github.com/example/timer-16bit",
+    "url": "https://github.com/example.com/example-ip-repo",
     "commit": "main",
     "private": false,
     "containsEncryptedPayload": false,
@@ -21,71 +21,87 @@
   },
   "sourceFiles": [
     {
-      "path": "rtl/example_core_example_module.sv",
+      "path": "rtl/example_core.sv",
       "type": "rtl",
-      "owner": "Vyges Team",
+      "owner": "Example Team",
       "version": "1.0.0",
       "license": "Apache-2.0",
-      "block": "example_core",
+      "block": "example",
       "vendor": {
-        "name": "Vyges Inc.",
+        "name": "Example.com Inc.",
         "docs": [
           {
-            "title": "Example Module Documentation",
-            "url": "https://vyges.com/docs/example-module",
+            "title": "Example Core Documentation",
+            "url": "https://example.com/docs/example-core",
             "type": "user_guide"
           }
         ],
         "contact": {
-          "email": "team@vyges.com",
-          "url": "https://vyges.com/support"
+          "email": "team@example.com",
+          "url": "https://example.com/support"
         }
       }
     },
     {
-      "path": "tb/cocotb/test_example.py",
+      "path": "tb/sv_tb/tb_example.sv",
       "type": "testbench",
-      "owner": "Vyges Team",
+      "owner": "Example Team",
       "version": "1.0.0",
       "license": "Apache-2.0",
-      "block": "example_core"
+      "block": "example"
     },
     {
-      "path": "integration/example_core_example_wrapper.v",
+      "path": "integration/example_wrapper.v",
       "type": "rtl",
-      "owner": "Vyges Team",
+      "owner": "Example Team",
       "version": "1.0.0",
       "license": "Apache-2.0",
-      "block": "example_core"
+      "block": "example"
     },
     {
       "path": "constraints/constraints.sdc",
       "type": "constraint",
-      "owner": "Vyges Team",
+      "owner": "Example Team",
       "version": "1.0.0",
       "license": "Apache-2.0",
-      "block": "example_core"
+      "block": "example"
     },
     {
       "path": "constraints/constraints.xdc",
       "type": "constraint",
-      "owner": "Vyges Team",
+      "owner": "Example Team",
       "version": "1.0.0",
       "license": "Apache-2.0",
-      "block": "example_core"
+      "block": "example"
+    },
+    {
+      "path": "docs/example-architecture.md",
+      "type": "documentation",
+      "owner": "Example Team",
+      "version": "1.0.0",
+      "license": "Apache-2.0",
+      "block": "example"
+    },
+    {
+      "path": "docs/example-design_spec.md",
+      "type": "documentation",
+      "owner": "Example Team",
+      "version": "1.0.0",
+      "license": "Apache-2.0",
+      "block": "example"
     }
   ],
   "maintainers": [
     {
-      "name": "Vyges Team",
-      "email": "team@vyges.com",
-      "github": "vyges"
+      "name": "Example Team",
+      "email": "team@example.com",
+      "github": "example-org"
     }
   ],
   "branding": {
-    "provider": "Vyges Inc.",
-    "logo": "https://vyges.com/assets/logo.svg",
-    "website": "https://vyges.com/ip/example-module",
+    "provider": "Example.com Inc.",
+    "logo": "https://example.com/assets/logo.svg",
+    "website": "https://example.com/ip/example-core",
     "usage": "Use of the logo is permitted for attribution or compatibility references only."
   },
   "interfaces": [
@@ -93,31 +109,81 @@
       "type": "clock",
       "direction": "input",
       "signals": [
-        { "name": "clk", "direction": "input", "type": "clock", "description": "System clock input" }
+        { "name": "clk_i", "direction": "input", "type": "clock", "description": "System clock input" }
       ]
     },
     {
       "type": "reset",
       "direction": "input",
       "signals": [
-        { "name": "rst_n", "direction": "input", "type": "reset", "active_level": "low", "description": "Active-low reset signal" }
+        { "name": "reset_n_i", "direction": "input", "type": "reset", "active_level": "low", "description": "Active-low reset signal" }
+      ]
+    },
+    {
+      "type": "control",
+      "direction": "input",
+      "signals": [
+        { "name": "enable_i", "direction": "input", "type": "control", "description": "Module enable signal" },
+        { "name": "start_i", "direction": "input", "type": "control", "description": "Start operation signal" },
+        { "name": "clear_i", "direction": "input", "type": "control", "description": "Clear/reset operation signal" }
+      ]
+    },
+    {
+      "type": "control",
+      "direction": "output",
+      "signals": [
+        { "name": "busy_o", "direction": "output", "type": "status", "description": "Module busy flag" },
+        { "name": "done_o", "direction": "output", "type": "status", "description": "Operation complete flag" },
+        { "name": "error_o", "direction": "output", "type": "status", "description": "Error flag" }
       ]
     },
     {
       "type": "data",
       "direction": "input",
-      "width": 8,
+      "width": 32,
       "signals": [
-        { "name": "data_in", "direction": "input", "width": 8, "type": "data", "description": "8-bit data input" }
+        { "name": "data_in_i", "direction": "input", "width": 32, "type": "data", "description": "Input data" },
+        { "name": "valid_in_i", "direction": "input", "type": "control", "description": "Input data valid flag" }
       ]
     },
     {
       "type": "data",
       "direction": "output",
-      "width": 8,
+      "width": 32,
       "signals": [
-        { "name": "data_out", "direction": "output", "width": 8, "type": "data", "description": "8-bit data output" },
-        { "name": "valid_out", "direction": "output", "type": "control", "description": "Data valid flag" }
+        { "name": "data_out_o", "direction": "output", "width": 32, "type": "data", "description": "Output data" },
+        { "name": "valid_out_o", "direction": "output", "type": "control", "description": "Output data valid flag" }
+      ]
+    },
+    {
+      "type": "handshake",
+      "direction": "input",
+      "signals": [
+        { "name": "ready_out_i", "direction": "input", "type": "control", "description": "Downstream ready signal" }
+      ]
+    },
+    {
+      "type": "handshake",
+      "direction": "output",
+      "signals": [
+        { "name": "ready_in_o", "direction": "output", "type": "control", "description": "Ready for input data signal" }
+      ]
+    },
+    {
+      "type": "configuration",
+      "direction": "input",
+      "signals": [
+        { "name": "config_addr_i", "direction": "input", "width": 8, "type": "address", "description": "Configuration address" },
+        { "name": "config_data_i", "direction": "input", "width": 32, "type": "data", "description": "Configuration data" },
+        { "name": "config_valid_i", "direction": "input", "type": "control", "description": "Configuration valid flag" }
+      ]
+    },
+    {
+      "type": "configuration",
+      "direction": "output",
+      "signals": [
+        { "name": "config_ready_o", "direction": "output", "type": "control", "description": "Configuration ready signal" },
+        { "name": "status_o", "direction": "output", "width": 32, "type": "data", "description": "Status information" }
       ]
     }
   ],
@@ -125,21 +191,39 @@
     {
       "name": "DATA_WIDTH",
       "type": "int",
-      "default": 8,
+      "default": 32,
       "description": "Width of data input and output",
-      "range": { "min": 1, "max": 64 },
+      "range": { "min": 8, "max": 64 },
       "units": "bits",
+      "required": false
+    },
+    {
+      "name": "ADDR_WIDTH",
+      "type": "int",
+      "default": 8,
+      "description": "Width of configuration address",
+      "range": { "min": 4, "max": 16 },
+      "units": "bits",
+      "required": false
+    },
+    {
+      "name": "BUFFER_DEPTH",
+      "type": "int",
+      "default": 16,
+      "description": "Depth of internal data buffer",
+      "range": { "min": 4, "max": 256 },
+      "units": "entries",
       "required": false
     }
   ],
   "test": {
     "coverage": true,
-    "testbenches": ["cocotb", "systemverilog"],
+    "testbenches": ["systemverilog"],
     "simulators": ["verilator", "iverilog"],
     "status": "passing",
-    "cocotb_integration": {
+    "systemverilog_integration": {
       "status": "verified",
-      "version": "v1.9.2",
+      "version": "IEEE 1800-2017",
       "simulators": ["icarus", "verilator"],
       "makefile_approach": "standard",
       "fallback_support": true
@@ -148,11 +232,11 @@
   "flows": {
     "verilator": {
       "status": "verified",
-      "cocotb_integration": "working"
+      "systemverilog_integration": "working"
     },
     "icarus": {
       "status": "verified",
-      "cocotb_integration": "working"
+      "systemverilog_integration": "working"
     },
     "openlane": {
       "pdks": ["sky130B"],
@@ -180,64 +264,50 @@
     "examples": [
       {
         "target": "simulation",
-        "wrapper": "integration/example_core_example_wrapper.v",
-        "tb": "tb/cocotb/test_example.py"
+        "wrapper": "integration/example_wrapper.v",
+        "tb": "tb/sv_tb/tb_example.sv"
       },
       {
         "target": "rtl",
-        "module": "rtl/example_core_example_module.sv",
-        "description": "Example RTL module with basic functionality"
+        "module": "rtl/example_core.sv",
+        "description": "Generic template module with configurable data processing"
       }
     ],
     "dependencies": [],
     "toolRequirements": {
       "synthesis": ["yosys", "openroad"],
       "simulation": ["verilator", "icarus"],
-      "verification": ["cocotb"]
+      "verification": ["systemverilog"]
     }
   },
   "automation": {
     "automation_level": "enhanced",
-    "minimal_required": ["name", "version", "license", "interfaces", "template", "target", "design_type", "maturity", "description", "source", "sourceFiles", "asic", "fpga", "test", "flows"],
-    "recommended_for_automation": ["parameters", "dependencies", "toolRequirements", "performance", "reliability", "packaging", "community"],
-    "blocking_issues": []
-  },
-  "meta": {
-    "template": {
-      "generator": "vyges-cli",
-      "init_tool": "vyges-cli", 
-      "template_version": "1.0.0",
-      "generated_at": "2025-08-01T22:53:27Z"
+    "ci_cd": {
+      "github_actions": true,
+      "automated_testing": true,
+      "automated_building": true
     },
-    "generated_by": "vyges-cli",
-    "schema": {
-      "version": "1.0.0",
-      "compatible_versions": ["1.0.0", "1.1.0"],
-      "generated_with": "vyges-cli"
+    "code_quality": {
+      "linting": true,
+      "formatting": true,
+      "coverage": true
     }
   },
-  "performance": {
-    "clock_freq_mhz": 100,
-    "power_consumption": "low",
-    "area_efficiency": "medium"
-  },
-  "reliability": {
-    "fault_tolerance": "basic",
-    "error_detection": "none",
-    "recovery_mechanisms": "none"
-  },
-  "packaging": {
-    "format": "source",
-    "distribution": "git",
-    "versioning": "semantic"
-  },
-  "community": {
-    "support_level": "community",
-    "documentation_quality": "template",
-    "update_frequency": "as_needed"
-  },
-  "categories": ["Base Libraries", "Miscellaneous"],
-  "tags": ["template", "example", "cocotb", "verilator", "icarus", "ip-wrapper"],
-  "keywords": ["template", "example", "cocotb", "verilator", "icarus", "rtl", "testbench", "ip-wrapper", "glue-logic"]
+  "categories": [
+    "template",
+    "digital",
+    "configurable",
+    "verification-ready"
+  ],
+  "tags": [
+    "example",
+    "template",
+    "systemverilog",
+    "rtl",
+    "verification",
+    "synthesis",
+    "openlane",
+    "yosys"
+  ]
 }
   

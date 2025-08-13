@@ -13,121 +13,296 @@
 
 # Vyges IP Template
 
-A comprehensive template for developing hardware IP blocks in the Vyges ecosystem. Supports digital, analog, mixed-signal, and chiplet design flows.
+A comprehensive template repository for developing IP blocks following Vyges standards and best practices.
 
-## Template Information
+## 🎯 **Vyges Naming Convention**
 
-- **Template Name**: `vyges/vyges-ip-template`
-- **Version**: 1.0.0
-- **License**: Apache-2.0
-- **Type**: Template Repository
-- **Target**: ASIC, FPGA
-- **Design Types**: Digital, Analog, Mixed-Signal, Chiplets, Tapeout
+This template follows the correct Vyges naming convention to ensure consistency and ease of customization:
 
-## 📊 Template Reports & Documentation
+### **Repository vs Block vs Module vs File**
 
-- **[GitHub Pages](https://vyges.github.io/vyges-ip-template/)** - Live template documentation and reports
-- **[Test Harness Report](https://vyges.github.io/vyges-ip-template/test_harness_report.html)** - Template test results and analysis
-- **[Code KPIs](https://vyges.github.io/vyges-ip-template/code_kpis.txt)** - Template code quality metrics
-- **[Workflow Status](https://vyges.github.io/vyges-ip-template/)** - Template workflow execution status
-- **[Developer Guide](Developer_Guide.md)** - Template usage and customization guide
-- **[Installation Guide](install_tools.md)** - Tool installation and setup instructions
+| Level | Example | Description |
+|-------|---------|-------------|
+| **Repository Name** | `fast-fourier-transform-ip` | Descriptive repository name |
+| **Block Name** | `fft` | Short, unique identifier |
+| **Module Name** | `memory` | Specific functionality |
+| **RTL File Name** | `fft_memory.sv` | **MUST be `block-name_module-name.sv`** |
 
-## 🚀 Quick Start
-
-1. **Use this template**: Click "Use this template" button above
-2. **Clone your repository**: `git clone <your-repo-url>`
-3. **Initialize with Vyges CLI**: `vyges init --interactive`
-4. **Add your RTL and testbenches**
-5. **Enable CI/CD workflow** in your repository settings
-
-## 📁 Project Structure
-
+### **File Structure Example**
 ```
-project/
-├── rtl/                    # Digital RTL sources
-├── analog/                 # Analog design files
-│   ├── xschem/            # Schematic entry (Xschem)
-│   ├── magic/             # Layout database (Magic)
-│   ├── netlist/           # SPICE netlists
-│   ├── gds/               # Final GDS layout
-│   ├── lef/               # Abstract layout views
-│   └── macros/            # Reusable analog components
-├── simulation/             # Mixed-signal simulation
-├── layout/                 # Layout verification
-│   ├── constraints/        # Physical layout constraints (timing, power, thermal)
-│   ├── drc/               # Design Rule Check results
-│   └── lvs/               # Layout vs Schematic verification
-├── constraints/            # RTL synthesis constraints (SDC, XDC files)
-├── tb/                     # Testbenches
-├── flow/                   # Synthesis flows
-├── docs/                   # IP specifications & requirements
-├── integration/            # Integration examples
-└── packaging/              # IP packaging
+fast-fourier-transform-ip/          # Repository name
+├── rtl/
+│   └── fft_memory.sv              # fft_memory.sv (block-name_module-name)
+├── integration/
+│   └── fft_memory_wrapper.v       # fft_memory_wrapper.v
+├── tb/sv_tb/
+│   └── tb_fft_memory.sv           # tb_fft_memory.sv
+└── docs/
+    ├── fft-architecture.md         # fft-architecture.md
+    └── fft-design_spec.md          # fft-design_spec.md
 ```
 
-### 🔧 Constraints Directory Structure
+## 🚀 **Quick Start**
 
-The template uses two separate constraints directories for different design phases:
+### **1. Clone and Customize**
+```bash
+git clone https://github.com/vyges/vyges-ip-template.git my-ip-block
+cd my-ip-block
+```
 
-- **`constraints/`** (Root level): RTL synthesis and implementation constraints
-  - `constraints.sdc` - Synopsys Design Constraints for ASIC synthesis
-  - `constraints.xdc` - Xilinx Design Constraints for FPGA implementation
-  
-- **`layout/constraints/`**: Physical layout and manufacturing constraints
-  - Timing, power, thermal, and signal integrity constraints
-  - Foundry-specific design rules and manufacturing constraints
-  - Analog layout matching and symmetry requirements
+### **2. Update Configuration**
+Edit the `Makefile` to set your IP block details:
+```makefile
+# IP Block Configuration
+BLOCK_NAME := fft
+MODULE_NAME := memory
+TOP_MODULE := fft_memory
+```
 
-## 🛠️ Design Type Support
+### **3. Rename Files Following Vyges Convention**
+```bash
+# RTL file (MUST follow block-name_module-name.sv)
+mv rtl/example_core.sv rtl/fft_memory.sv
 
-The template supports different design types with modular tool installation:
+# Integration wrapper
+mv integration/example_wrapper.v integration/fft_memory_wrapper.v
 
-| Design Type | Tools Installed | Use Case |
-|-------------|----------------|----------|
-| `digital` | Verilator, Yosys, Icarus, GHDL | Digital IP development |
-| `analog` | Magic, Xschem, ngspice, Open PDKs | Analog IP development |
-| `mixed` | Digital + Analog tools | Mixed-signal IP development |
-| `chiplets` | Digital + Advanced tools | Chiplet integration |
-| `tapeout` | All tools | Full tapeout flow |
+# Testbench
+mv tb/sv_tb/tb_example.sv tb/sv_tb/tb_fft_memory.sv
 
-## 🔧 CI/CD Workflow
+# Documentation
+mv docs/example-architecture.md docs/fft-architecture.md
+mv docs/example-design_spec.md docs/fft-design_spec.md
+```
 
-- **Manual Trigger Only**: Runs only when manually triggered
-- **Modular Tool Installation**: Installs tools based on `design_type`
-- **Comprehensive Testing**: Validation, linting, simulation, synthesis
+### **4. Test Your Setup**
+```bash
+make check      # Check tool availability
+make info       # Show IP block information
+make build      # Test build process
+```
 
-### Workflow Inputs
-- `design_type`: Select design type and tool requirements
-- `test_simulation`: Run simulation tests
-- `test_synthesis`: Run synthesis tests
-- `test_linting`: Run linting checks
-- `test_validation`: Run validation checks
+## 🛠 **Customization Guide**
 
-## 📚 Documentation
+### **Configuration Variables**
+The `Makefile` uses these key variables for customization:
 
-- `docs/`: IP specifications, requirements, and design documents
-- `analog/README.md`: Analog design workflow
-- `simulation/README.md`: Mixed-signal simulation
-- `layout/README.md`: Layout verification
-- `flow/openlane/README.md`: ASIC synthesis
-- `flow/vivado/README.md`: FPGA synthesis
+| Variable | Purpose | Example |
+|----------|---------|---------|
+| `BLOCK_NAME` | IP block identifier | `fft` |
+| `MODULE_NAME` | RTL module name | `memory` |
+| `TOP_MODULE` | Top-level module | `fft_memory` |
+| `RTL_FILES` | RTL source files | `rtl/*.sv` |
+| `TB_FILES` | Testbench files | `tb/sv_tb/*.sv` |
 
-## 🔗 Related Projects
+### **File Patterns**
+The build system uses patterns for minimal customization:
 
-Learn from existing IP examples:
-- **Beginner**: [full-adder-ip](https://github.com/vyges/full-adder-ip)
-- **Intermediate**: [spi-controller](https://github.com/vyges/spi-controller)
-- **Advanced**: [programmable-adc](https://github.com/vyges/programmable-adc)
+```makefile
+# Generic file patterns (minimal changes needed)
+RTL_FILES := rtl/*.sv
+TB_FILES := tb/sv_tb/*.sv
+INTEGRATION_FILES := integration/*.v
+CONSTRAINT_FILES := constraints/*.sdc constraints/*.xdc
+```
 
-## 📄 License
+### **Documentation Templates**
+Documentation follows the `${block}-${type}.md` pattern:
 
-Apache-2.0 License - see [LICENSE](LICENSE) for details.
+- **Architecture**: `example-architecture.md` → `fft-architecture.md`
+- **Design Spec**: `example-design_spec.md` → `fft-design_spec.md`
 
-**Important**: The Apache-2.0 license applies to the **hardware IP content** (RTL, documentation, testbenches, etc.) that you create using this template. The template structure, build processes, tooling workflows, and AI context/processing engine are provided as-is for your use but are not themselves licensed under Apache-2.0.
+## 📋 **Available Makefile Targets**
 
-For detailed licensing information, see [LICENSE_SCOPE.md](LICENSE_SCOPE.md).
+### **Information and Setup**
+- `make help` - Show comprehensive help
+- `make info` - Display IP block information
+- `make check` - Check tool availability
+- `make customize` - Show customization guide
+
+### **Build System**
+- `make build` - Build all targets
+- `make clean` - Clean all build artifacts
+- `make create-dirs` - Create build directories
+
+### **Synthesis**
+- `make synth` - Run synthesis with Yosys
+- `make synth-clean` - Clean synthesis results
+
+### **Simulation**
+- `make sim` - Run simulation with Verilator
+- `make sim-fallback` - Run simulation with Icarus
+- `make sim-clean` - Clean simulation results
+
+### **Verification**
+- `make lint` - Run linting checks
+- `make coverage` - Run coverage analysis
+- `make formal` - Run formal verification
+
+### **Documentation**
+- `make docs` - Generate documentation
+- `make report` - Generate build reports
+
+### **Utility**
+- `make list-files` - List all source files
+- `make process-rtl` - Process RTL files (template)
+- `make process-tb` - Process testbench files (template)
+
+## 🔧 **Tool Requirements**
+
+### **Required Tools**
+- **Yosys**: Synthesis and linting
+- **Verilator**: Primary simulation (recommended)
+- **Icarus**: Fallback simulation
+
+### **Tool Installation**
+```bash
+# Ubuntu/Debian
+sudo apt install yosys verilator iverilog
+
+# macOS
+brew install yosys verilator icarus-verilog
+
+# CentOS/RHEL
+sudo yum install yosys verilator iverilog
+```
+
+### **Tool Detection**
+The Makefile automatically detects available tools and provides fallbacks:
+- **Timeout**: Uses `timeout` on Linux, `gtimeout` or Perl fallback on macOS
+- **Simulation**: Falls back from Verilator to Icarus if needed
+
+## 📚 **Documentation Structure**
+
+### **Architecture Documentation**
+- **Purpose**: High-level design overview
+- **Audience**: System architects and integrators
+- **Content**: Block diagram, interfaces, operational modes
+
+### **Design Specification**
+- **Purpose**: Detailed implementation specification
+- **Audience**: RTL developers and verification engineers
+- **Content**: Functional spec, timing requirements, verification strategy
+
+## 🎨 **Best Practices Applied**
+
+### **1. Consistent Naming**
+- **Inputs**: End with `_i` suffix
+- **Outputs**: End with `_o` suffix
+- **Active-low**: Use `_n` suffix (e.g., `reset_n_i`)
+
+### **2. Yosys Compatibility**
+- **Assertions**: Use `YOSYS` define for synthesis
+- **SystemVerilog**: Full IEEE 1800-2017 support
+- **Synthesis**: Optimized for Yosys flow
+
+### **3. Verification Ready**
+- **Coverage**: Comprehensive functional coverage
+- **Assertions**: Property-based verification
+- **Testbench**: Structured test methodology
+
+### **4. Integration Support**
+- **Wrappers**: Easy integration into larger designs
+- **Parameters**: Configurable for different use cases
+- **Interfaces**: Standard handshaking protocols
+
+## 🔄 **Workflow Integration**
+
+### **Development Workflow**
+1. **Design**: Implement RTL in `rtl/` directory
+2. **Verify**: Create testbench in `tb/sv_tb/` directory
+3. **Integrate**: Add wrapper in `integration/` directory
+4. **Document**: Update documentation in `docs/` directory
+5. **Test**: Use `make build` for comprehensive testing
+
+### **CI/CD Integration**
+The template includes GitHub Actions support:
+- **Automated Testing**: Runs on Ubuntu with multiple tools
+- **Build Verification**: Synthesis and simulation validation
+- **Quality Checks**: Linting and coverage analysis
+
+## 📖 **Examples and Templates**
+
+### **RTL Module Template**
+```systemverilog
+module example_core #(
+    parameter int DATA_WIDTH = 32,
+    parameter int ADDR_WIDTH = 8
+) (
+    input  logic clk_i,
+    input  logic reset_n_i,
+    // ... other signals
+);
+    // Implementation follows Vyges standards
+endmodule
+```
+
+### **Testbench Template**
+```systemverilog
+module tb_example;
+    // Clock and reset generation
+    // DUT instantiation
+    // Test stimulus and verification
+    // Coverage and assertions
+endmodule
+```
+
+### **Integration Wrapper**
+```verilog
+module example_wrapper #(
+    // Parameter forwarding
+) (
+    // Interface signals
+);
+    // Module instantiation
+    // Glue logic if needed
+endmodule
+```
+
+## 🤝 **Contributing**
+
+### **Template Improvements**
+1. **Fork** the template repository
+2. **Create** a feature branch
+3. **Implement** your improvements
+4. **Test** with multiple IP blocks
+5. **Submit** a pull request
+
+### **Best Practices**
+- **Maintain** backward compatibility
+- **Document** all changes
+- **Test** with real IP examples
+- **Follow** existing patterns
+
+## 📞 **Support and Resources**
+
+### **Documentation**
+- **Vyges Website**: [https://vyges.com](https://vyges.com)
+- **IP Catalog**: [https://vyges.com/products/vycatalog/](https://vyges.com/products/vycatalog/)
+- **Documentation**: [https://vyges.com/docs](https://vyges.com/docs)
+
+### **Community**
+- **GitHub Issues**: Report bugs and request features
+- **Discussions**: Join community discussions
+- **Examples**: Browse existing IP implementations
+
+### **Contact**
+- **Email**: team@vyges.com
+- **Support**: [https://vyges.com/support](https://vyges.com/support)
+
+## 📄 **License**
+
+This template is licensed under the Apache-2.0 License. See the [LICENSE](LICENSE) file for details.
+
+## 🙏 **Acknowledgments**
+
+- **Yosys Team**: For the excellent synthesis tool
+- **Verilator Team**: For fast simulation capabilities
+- **Icarus Team**: For open-source Verilog simulation
+- **Vyges Community**: For feedback and contributions
 
 ---
 
-**Note**: This is a template repository. Use "Use this template" to create your own IP repository.
+**Happy IP Development! 🚀**
+
+For questions or support, please refer to the documentation or contact the Vyges team.

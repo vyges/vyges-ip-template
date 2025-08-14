@@ -1,7 +1,7 @@
 {
     "vyges_version": "1.0.0",
     "ai_context_version": "1.0.0",
-    "description": "Defines structural, naming, and workflow conventions to guide AI-assisted hardware IP development within the Vyges platform. Enables consistent code generation, validation, and integration.",
+    "description": "Defines structural, naming, and workflow conventions to guide AI-assisted hardware IP development within the Vyges platform. Enables consistent code generation, validation, and integration. This file follows DRY principles with generic conventions in project_structure and IPXACT-specific logic in ipxact_conversion.",
     "copyright": "\u00a9 2025 Vyges. All Rights Reserved",
     "author": "shivaram@vyges.com",
     "date_guidance": "All new or updated metadata should use the actual current UTC date/time (in ISO 8601 format) for 'created', 'updated', and 'generated_at' fields. This includes metadata JSON files if they are updated. Avoid hardcoded dates from the past. Update copyright year annually.",
@@ -386,14 +386,20 @@
                 "files": "{block}_{module}.sv (e.g., fft_memory_interface.sv, fft_rescale_unit.sv)",
                 "testbenches": "tb_<module_name>.sv (e.g., tb_pwm_controller.sv)",
                 "parameters": "UPPER_SNAKE_CASE (e.g., CLOCK_FREQUENCY, DATA_WIDTH)",
-                "signals": "snake_case (e.g., clock_i, data_o, enable_n)"
+                "signals": "snake_case (e.g., clock_i, data_o, enable_n)",
+                "parameter_namespace_isolation": "All global scope parameters and defines must include IP block prefix (e.g., {BLOCK}_DATA_WIDTH, {BLOCK}_APB_ADDR_WIDTH) to prevent namespace collisions between different IP blocks",
+                "define_macro_prefixing": "All `define macros in global scope must include IP block prefix (e.g., `define {BLOCK}_DATA_WIDTH, `define {BLOCK}_STATUS_IDLE) to ensure namespace isolation",
+                "typedef_namespace_isolation": "All typedef declarations in global scope must include IP block prefix (e.g., {block}_data_t, {block}_twiddle_t) to prevent type name conflicts",
+                "module_parameter_consistency": "Module parameters must use the same prefixed names throughout the IP block for consistency and maintainability",
+                "namespace_collision_prevention": "Use IP block prefix (e.g., {BLOCK}_) for all global scope identifiers to prevent conflicts when integrating multiple IP blocks in the same design"
             },
             "naming_convention_benefits": {
                 "namespace_safety": "Prevents naming collisions when integrating IP blocks from multiple vendors",
                 "file_organization": "Clear identification of IP block ownership and module functionality",
                 "automation_friendly": "Enables automated tooling and CI/CD pipelines to identify and process files correctly",
                 "integration_support": "Facilitates safe integration of third-party IP without namespace conflicts",
-                "catalog_management": "Supports Vyges IP Catalog organization and discovery"
+                "catalog_management": "Supports Vyges IP Catalog organization and discovery",
+                "parameter_namespace_isolation": "Example: FFT_DATA_WIDTH vs UART_DATA_WIDTH prevents conflicts when both IP blocks are used in the same design"
             },
             "organization": {
                 "rtl_files": "Place all RTL modules in rtl/ directory with {block}_{module}.sv naming",
@@ -609,6 +615,64 @@
                     }
                 }
             }
+        },
+        "metadata_structure": {
+            "description": "Standard Vyges metadata structure for all IP blocks",
+            "required_fields": [
+                "name",
+                "version",
+                "description",
+                "license",
+                "target",
+                "design_type",
+                "maturity",
+                "template",
+                "created",
+                "updated"
+            ],
+            "optional_fields": [
+                "parameters",
+                "interfaces",
+                "source",
+                "sourceFiles",
+                "files",
+                "test",
+                "flows",
+                "meta"
+            ],
+            "default_values": {
+                "license": "MIT",
+                "target": [
+                    "asic"
+                ],
+                "design_type": [
+                    "digital"
+                ],
+                "maturity": "beta",
+                "template": "vyges-ip-template@1.0.0"
+            }
+        },
+                    "sourceFiles_structure": "Follows main Vyges project_structure.sourceFiles_structure conventions",
+        "validation_rules": {
+            "description": "Standard Vyges validation rules for all IP blocks",
+            "schema_compliance": "Ensure generated metadata complies with Vyges schema v1.0.0",
+            "sourceFiles_compliance": "Validate sourceFiles metadata structure, required fields, and vendor information completeness",
+            "naming_convention_compliance": "Verify one module per file, filename matches module name, proper block prefixes",
+            "header_pattern_compliance": "Validate include guards, common includes, and header file naming conventions",
+            "code_quality_compliance": "Ensure modules pass linting, no forbidden constructs, proper coding patterns",
+            "semantic_fix_compliance": "Verify casex→casez replacement, width mismatch resolution, unused signal handling",
+            "security_compliance": "Validate security requirements, protection features, and compliance standards are met",
+            "naming_compliance": "Verify all names follow Vyges naming conventions",
+            "interface_compliance": "Validate interfaces follow Vyges Standardized Interface Catalog",
+            "completeness_check": "Ensure all required fields are present and populated",
+            "quality_assessment": "Assess metadata quality for catalog readiness"
+        },
+        "error_handling": {
+            "description": "Standard Vyges error handling patterns for all IP blocks",
+            "parsing_errors": "Handle malformed input gracefully with clear error messages",
+            "mapping_errors": "Provide fallback mappings for unknown elements",
+            "validation_errors": "Report validation errors with suggestions for fixes",
+            "enhancement_warnings": "Warn about potential quality improvements"
         }
     },
     "code_generation_rules": {
@@ -4467,7 +4531,7 @@
         }
     },
     "ipxact_conversion": {
-        "description": "IP-XACT to Vyges metadata conversion functionality for AI-assisted migration",
+        "description": "IP-XACT to Vyges metadata conversion functionality for AI-assisted migration. This section contains IPXACT-specific conversion logic while following the main Vyges conventions defined in project_structure.",
         "conversion_mapping": {
             "component_info": {
                 "vendor": "Extract vendor name for IP identification",
@@ -4552,126 +4616,8 @@
                     ]
                 }
             },
-            "metadata_structure": {
-                "required_fields": [
-                    "name",
-                    "version",
-                    "description",
-                    "license",
-                    "target",
-                    "design_type",
-                    "maturity",
-                    "template",
-                    "created",
-                    "updated"
-                ],
-                "optional_fields": [
-                    "parameters",
-                    "interfaces",
-                    "source",
-                    "sourceFiles",
-                    "files",
-                    "test",
-                    "flows",
-                    "meta"
-                ],
-                "default_values": {
-                    "license": "MIT",
-                    "target": [
-                        "asic"
-                    ],
-                    "design_type": [
-                        "digital"
-                    ],
-                    "maturity": "beta",
-                    "template": "vyges-ip-template@1.0.0"
-                }
-            },
-            "sourceFiles_structure": {
-                "description": "Detailed metadata for individual source files to prevent namespace collisions and improve traceability",
-                "benefits": {
-                    "namespace_collision_prevention": "Prevents naming conflicts between different functional blocks within the same IP",
-                    "improved_traceability": "Clear ownership and versioning information for each source file",
-                    "vendor_integration": "Comprehensive metadata for third-party IP including documentation and contact information",
-                    "ai_automation_friendly": "Structured metadata enables AI engines to understand file relationships and dependencies",
-                    "licensing_clarity": "Individual file licensing prevents license conflicts in mixed-license projects"
-                },
-                "required_fields": [
-                    "path",
-                    "type",
-                    "owner",
-                    "version",
-                    "license"
-                ],
-                "optional_fields": [
-                    "vendor",
-                    "block"
-                ],
-                "file_types": {
-                    "rtl": "RTL source files (SystemVerilog, Verilog, VHDL)",
-                    "testbench": "Testbench and verification files",
-                    "constraint": "Synthesis and implementation constraints",
-                    "doc": "Documentation files",
-                    "header": "Header and include files"
-                },
-                "vendor_information": {
-                    "name": "Vendor or organization name",
-                    "docs": "Documentation links with types: datasheet, user_guide, api_ref, app_note, reference_manual, integration_guide, other",
-                    "contact": "Contact information with email, URL, and optional phone"
-                },
-                "block_field": "Logical block name or namespace to prevent naming conflicts between functional blocks within the same IP",
-                "file_naming_enforcement": {
-                    "one_module_per_file": "Each RTL file must contain exactly one module",
-                    "filename_module_match": "Filename must match module name exactly (e.g., module spi_controller must be in spi_controller.sv)",
-                    "naming_pattern": "Use {block}_{module}.sv for internal files, {vendor}_{block}_{module}.sv for third-party IP",
-                    "file_placement": "RTL files in rtl/, testbenches in tb/, headers in rtl/ or include/, constraints in constraints/"
-                },
-                "header_patterns": {
-                    "include_guards": "All header files must use include guards: `ifndef {MODULE}_SV, `define {MODULE}_SV, `endif",
-                    "common_includes": "Common include files: defines.vh, timescale.vh, parameters.vh",
-                    "header_naming": "Header files: {module}.vh or {module}_defs.vh",
-                    "include_order": "Standard include order: timescale, defines, parameters, module-specific headers"
-                },
-                "code_quality": {
-                    "lint_requirements": "All modules must pass linting with zero errors and minimal warnings",
-                    "forbidden_constructs": [
-                        "casex",
-                        "inout without direction",
-                        "unused signals",
-                        "implicit wire declarations"
-                    ],
-                    "required_constructs": [
-                        "always_ff for sequential logic",
-                        "always_comb for combinational logic",
-                        "explicit signal declarations"
-                    ],
-                    "naming_conventions": "Use snake_case for signals, UPPER_SNAKE_CASE for parameters, descriptive names for clarity"
-                },
-                "semantic_fixes": {
-                    "casex_replacement": "Replace casex with casez for better synthesis and simulation consistency",
-                    "width_mismatch": "Ensure all signal assignments have matching widths, use explicit width casting when needed",
-                    "unused_signal_handling": "Mark unused signals with _unused suffix or add // unused comment",
-                    "implicit_declaration_fix": "Always declare signals explicitly with proper types and widths",
-                    "port_direction_clarity": "Ensure all ports have clear direction and type specifications"
-                },
-                "automated_file_creation": {
-                    "naming_validation": "AI must validate file names follow conventions before creating files",
-                    "module_name_extraction": "Extract module name from RTL content to validate filename match",
-                    "block_prefix_assignment": "Automatically assign block prefixes based on IP context and functionality",
-                    "file_structure_validation": "Ensure files are placed in correct directories according to type",
-                    "naming_suggestions": "AI should suggest proper names when conventions are violated",
-                    "security_validation": "AI must automatically validate security requirements when creating RTL files",
-                    "protection_feature_check": "Verify declared protection features are properly implemented in generated RTL",
-                    "compliance_validation": "Ensure generated RTL meets specified compliance standards",
-                    "threat_model_check": "Verify RTL implementation aligns with threat model and attack vectors"
-                },
-                "usage_guidance": {
-                    "when_to_use_sourceFiles": "Use sourceFiles for detailed file-level metadata, vendor information, and namespace collision prevention",
-                    "when_to_use_files": "Use the legacy 'files' field for simple file listings without detailed metadata",
-                    "migration_path": "Existing IP can maintain 'files' field while adding 'sourceFiles' for enhanced metadata",
-                    "ai_context_engine": "AI engines should prioritize sourceFiles metadata when available for better understanding of file relationships"
-                }
-            }
+            "metadata_structure": "Follows main Vyges project_structure.metadata_structure conventions",
+            "sourceFiles_structure": "Follows main Vyges project_structure.sourceFiles_structure conventions"
         },
         "conversion_workflow": {
             "step1_parse": "Parse IP-XACT XML and extract component information",
@@ -4737,25 +4683,8 @@
                 "conversion_notes": "Protocol detection and standardization"
             }
         },
-        "validation_rules": {
-            "schema_compliance": "Ensure generated metadata complies with Vyges schema v1.0.0",
-            "sourceFiles_compliance": "Validate sourceFiles metadata structure, required fields, and vendor information completeness",
-            "naming_convention_compliance": "Verify one module per file, filename matches module name, proper block prefixes",
-            "header_pattern_compliance": "Validate include guards, common includes, and header file naming conventions",
-            "code_quality_compliance": "Ensure modules pass linting, no forbidden constructs, proper coding patterns",
-            "semantic_fix_compliance": "Verify casex\u2192casez replacement, width mismatch resolution, unused signal handling",
-            "security_compliance": "Validate security requirements, protection features, and compliance standards are met",
-            "naming_compliance": "Verify all names follow Vyges naming conventions",
-            "interface_compliance": "Validate interfaces follow Vyges Standardized Interface Catalog",
-            "completeness_check": "Ensure all required fields are present and populated",
-            "quality_assessment": "Assess metadata quality for catalog readiness"
-        },
-        "error_handling": {
-            "parsing_errors": "Handle malformed IP-XACT XML gracefully",
-            "mapping_errors": "Provide fallback mappings for unknown elements",
-            "validation_errors": "Report validation errors with suggestions for fixes",
-            "enhancement_warnings": "Warn about potential quality improvements"
-        },
+        "validation_rules": "Follows main Vyges project_structure.validation_rules conventions",
+        "error_handling": "Follows main Vyges project_structure.error_handling conventions",
         "integration_features": {
             "cli_integration": "Generate vyges CLI commands for the converted IP",
             "template_integration": "Suggest appropriate Vyges template expansion",

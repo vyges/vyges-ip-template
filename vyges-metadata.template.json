@@ -198,7 +198,7 @@
   "parameters": [
     {
       "name": "DATA_WIDTH",
-      "type": "integer",
+      "type": "int",
       "default": 32,
       "description": "Width of data input and output",
       "range": { "min": 8, "max": 64 },
@@ -207,7 +207,7 @@
     },
     {
       "name": "ADDR_WIDTH",
-      "type": "integer",
+      "type": "int",
       "default": 8,
       "description": "Width of configuration address",
       "range": { "min": 4, "max": 16 },
@@ -216,7 +216,7 @@
     },
     {
       "name": "BUFFER_DEPTH",
-      "type": "integer",
+      "type": "int",
       "default": 16,
       "description": "Depth of internal data buffer",
       "range": { "min": 4, "max": 256 },

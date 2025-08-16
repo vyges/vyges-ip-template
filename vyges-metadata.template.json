@@ -9,8 +9,8 @@
   "target": ["asic", "fpga"],
   "design_type": ["digital"],
   "maturity": "prototype",
-  "created": "2025-08-12T00:00:00Z",
-  "updated": "2025-08-12T00:00:00Z",
+  "created": "2025-08-15T00:00:00Z",
+  "updated": "2025-08-15T00:00:00Z",
   "source": {
     "type": "git",
     "url": "https://github.com/example.com/example-ip-repo",
@@ -108,89 +108,97 @@
     {
       "type": "clock",
       "direction": "input",
+      "protocol": "Single-ended",
       "signals": [
-        { "name": "clk_i", "direction": "input", "type": "clock", "description": "System clock input" }
+        { "name": "clk_i", "direction": "input", "width": 1, "description": "System clock input" }
       ]
     },
     {
       "type": "reset",
       "direction": "input",
+      "protocol": "Active-low",
       "signals": [
-        { "name": "reset_n_i", "direction": "input", "type": "reset", "active_level": "low", "description": "Active-low reset signal" }
+        { "name": "reset_n_i", "direction": "input", "width": 1, "description": "Active-low reset signal" }
       ]
     },
     {
       "type": "control",
       "direction": "input",
+      "protocol": "Standard",
       "signals": [
-        { "name": "enable_i", "direction": "input", "type": "control", "description": "Module enable signal" },
-        { "name": "start_i", "direction": "input", "type": "control", "description": "Start operation signal" },
-        { "name": "clear_i", "direction": "input", "type": "control", "description": "Clear/reset operation signal" }
+        { "name": "enable_i", "direction": "input", "width": 1, "description": "Module enable signal" },
+        { "name": "start_i", "direction": "input", "width": 1, "description": "Start operation signal" },
+        { "name": "clear_i", "direction": "input", "width": 1, "description": "Clear/reset operation signal" }
       ]
     },
     {
       "type": "control",
       "direction": "output",
+      "protocol": "Standard",
       "signals": [
-        { "name": "busy_o", "direction": "output", "type": "status", "description": "Module busy flag" },
-        { "name": "done_o", "direction": "output", "type": "status", "description": "Operation complete flag" },
-        { "name": "error_o", "direction": "output", "type": "status", "description": "Error flag" }
+        { "name": "busy_o", "direction": "output", "width": 1, "description": "Module busy flag" },
+        { "name": "done_o", "direction": "output", "width": 1, "description": "Operation complete flag" },
+        { "name": "error_o", "direction": "output", "width": 1, "description": "Error flag" }
       ]
     },
     {
       "type": "data",
       "direction": "input",
-      "width": 32,
+      "protocol": "Standard",
       "signals": [
-        { "name": "data_in_i", "direction": "input", "width": 32, "type": "data", "description": "Input data" },
-        { "name": "valid_in_i", "direction": "input", "type": "control", "description": "Input data valid flag" }
+        { "name": "data_in_i", "direction": "input", "width": 32, "description": "Input data" },
+        { "name": "valid_in_i", "direction": "input", "width": 1, "description": "Input data valid flag" }
       ]
     },
     {
       "type": "data",
       "direction": "output",
-      "width": 32,
+      "protocol": "Standard",
       "signals": [
-        { "name": "data_out_o", "direction": "output", "width": 32, "type": "data", "description": "Output data" },
-        { "name": "valid_out_o", "direction": "output", "type": "control", "description": "Output data valid flag" }
+        { "name": "data_out_o", "direction": "output", "width": 32, "description": "Output data" },
+        { "name": "valid_out_o", "direction": "output", "width": 1, "description": "Output data valid flag" }
       ]
     },
     {
       "type": "handshake",
       "direction": "input",
+      "protocol": "Standard",
       "signals": [
-        { "name": "ready_out_i", "direction": "input", "type": "control", "description": "Downstream ready signal" }
+        { "name": "ready_out_i", "direction": "input", "width": 1, "description": "Downstream ready signal" }
       ]
     },
     {
       "type": "handshake",
       "direction": "output",
+      "protocol": "Standard",
       "signals": [
-        { "name": "ready_in_o", "direction": "output", "type": "control", "description": "Ready for input data signal" }
+        { "name": "ready_in_o", "direction": "output", "width": 1, "description": "Ready for input data signal" }
       ]
     },
     {
       "type": "configuration",
       "direction": "input",
+      "protocol": "Standard",
       "signals": [
-        { "name": "config_addr_i", "direction": "input", "width": 8, "type": "address", "description": "Configuration address" },
-        { "name": "config_data_i", "direction": "input", "width": 32, "type": "data", "description": "Configuration data" },
-        { "name": "config_valid_i", "direction": "input", "type": "control", "description": "Configuration valid flag" }
+        { "name": "config_addr_i", "direction": "input", "width": 8, "description": "Configuration address" },
+        { "name": "config_data_i", "direction": "input", "width": 32, "description": "Configuration data" },
+        { "name": "config_valid_i", "direction": "input", "width": 1, "description": "Configuration valid flag" }
       ]
     },
     {
       "type": "configuration",
       "direction": "output",
+      "protocol": "Standard",
       "signals": [
-        { "name": "config_ready_o", "direction": "output", "type": "control", "description": "Configuration ready signal" },
-        { "name": "status_o", "direction": "output", "width": 32, "type": "data", "description": "Status information" }
+        { "name": "config_ready_o", "direction": "output", "width": 1, "description": "Configuration ready signal" },
+        { "name": "status_o", "direction": "output", "width": 32, "description": "Status information" }
       ]
     }
   ],
   "parameters": [
     {
       "name": "DATA_WIDTH",
-      "type": "int",
+      "type": "integer",
       "default": 32,
       "description": "Width of data input and output",
       "range": { "min": 8, "max": 64 },
@@ -199,7 +207,7 @@
     },
     {
       "name": "ADDR_WIDTH",
-      "type": "int",
+      "type": "integer",
       "default": 8,
       "description": "Width of configuration address",
       "range": { "min": 4, "max": 16 },
@@ -208,7 +216,7 @@
     },
     {
       "name": "BUFFER_DEPTH",
-      "type": "int",
+      "type": "integer",
       "default": 16,
       "description": "Depth of internal data buffer",
       "range": { "min": 4, "max": 256 },
@@ -293,21 +301,32 @@
       "coverage": true
     }
   },
-  "categories": [
-    "template",
-    "digital",
-    "configurable",
-    "verification-ready"
-  ],
-  "tags": [
-    "example",
-    "template",
-    "systemverilog",
-    "rtl",
-    "verification",
-    "synthesis",
-    "openlane",
-    "yosys"
-  ]
+  "categories": {
+    "primary": "template",
+    "secondary": ["digital", "configurable"],
+    "tags": ["example", "template", "systemverilog", "rtl", "verification", "synthesis", "openlane", "yosys"]
+  },
+  "community": {
+    "issues": "https://github.com/example.com/example-ip-repo/issues",
+    "contributions": true,
+    "chat": "https://discord.gg/example"
+  },
+  "performance": {
+    "clock_frequency": {
+      "value": 100,
+      "unit": "MHz",
+      "description": "Maximum operating frequency"
+    },
+    "area": {
+      "value": 1000,
+      "unit": "um²",
+      "description": "Estimated silicon area"
+    },
+    "power": {
+      "value": 5,
+      "unit": "mW",
+      "description": "Typical power consumption"
+    }
+  }
 }
   

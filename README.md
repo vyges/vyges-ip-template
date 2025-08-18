@@ -82,6 +82,32 @@ make info       # Show IP block information
 make build      # Test build process
 ```
 
+## ⚠️ Important Licensing Notice
+
+**Only hardware IP content is licensed under Apache-2.0.** 
+Template structure and AI context files are proprietary Vyges components.
+
+**What's Apache-2.0 Licensed:**
+- RTL files and hardware designs you create
+- IP documentation and specifications you write
+- Testbenches and verification code you develop
+- Design constraints and configurations you create
+
+**What's NOT Apache-2.0 Licensed:**
+- Template structure and directory organization
+- Build processes and CI/CD workflows
+- Pre-installed tools and tooling scripts
+- AI context files (`.vyges-ai-context.json`, `.copilot-chat-context.md`)
+- Template metadata and configuration templates
+
+**Usage Terms:**
+- You can use the template for IP development
+- You can create and modify hardware IP content
+- You cannot redistribute the template structure
+- AI context files are provided for use only within this template
+
+See [LICENSE_SCOPE.md](LICENSE_SCOPE.md) and [NOTICE](NOTICE) for complete details.
+
 ## 🛠 **Customization Guide**
 
 ### **Configuration Variables**

@@ -1,4 +1,4 @@
-Vyges IP Package
+Vyges IP Template
 Copyright (c) 2025 Vyges
 
 Licensed under the Apache License, Version 2.0 (the "License").
@@ -33,6 +33,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   - `.cursorrules` - Cursor editor AI rules and conventions
   - AI-generated code patterns and development workflows
   - AI prompt engineering and context management systems
+
+**Important:** All non-Apache-2.0 components are provided under a limited-use, non-commercial license solely for use within this repository's IP development framework.
 
 The template provides a framework for IP development but the licensing terms apply specifically to the hardware IP content you create using this framework. The AI context and processing engine are proprietary Vyges components provided as-is for enhanced development experience.
 

@@ -20,6 +20,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 - Testbenches and verification code
 - Design constraints and configuration files
 - Generated reports and analysis results
+- Standardized build process reports (test harness, synthesis, verification reports)
 
 **This license does NOT apply to:**
 - The template structure and directory organization
@@ -27,6 +28,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 - Tool installation and setup procedures
 - Template metadata and configuration templates
 - The Vyges CLI tool and related tooling
+- **Report Generation Framework**: Automated report templates, build scripts, and CI/CD integration
 - **AI context and processing engine components:**
   - `.vyges-ai-context.json` - AI development context and prompts
   - `.copilot-chat-context.md` - GitHub Copilot integration context

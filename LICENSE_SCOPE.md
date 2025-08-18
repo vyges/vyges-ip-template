@@ -17,6 +17,7 @@ The Apache-2.0 license applies to **hardware IP content** that you create using 
 - **Constraints**: Timing constraints, synthesis constraints, physical constraints
 - **Configuration**: IP configuration files, parameter definitions
 - **Generated Content**: Synthesis reports, simulation results, analysis outputs
+- **Standardized Reports**: Automated build process reports (test harness reports, synthesis reports, verification reports)
 - **Integration Examples**: Example integration code and usage demonstrations
 
 ### Example Licensed Files
@@ -33,7 +34,45 @@ docs/
 tb/
 ├── your_ip_tb.sv           # ✅ Licensed (your testbench)
 └── test_vectors/           # ✅ Licensed (your test data)
+
+reports/
+├── test_harness_report.md  # ✅ Licensed (generated from your IP)
+├── synthesis_report.txt    # ✅ Licensed (generated from your IP)
+└── verification_report.md  # ✅ Licensed (generated from your IP)
 ```
+
+## Build Process and Report Generation
+
+### Standardized Report Generation
+
+The `vyges-ip-template` includes automated build processes that generate standardized reports:
+
+#### ✅ Licensed Generated Reports
+- **Test Harness Reports**: Automated test coverage and verification reports
+- **Synthesis Reports**: Tool-generated synthesis results and timing analysis
+- **Verification Reports**: Formal verification and simulation results
+- **Coverage Reports**: Code coverage and functional coverage analysis
+- **Documentation Reports**: Auto-generated documentation and API references
+
+#### ❌ Not Licensed (Template Framework)
+- **Report Templates**: Standardized report formats and templates
+- **Build Scripts**: Automated report generation scripts and workflows
+- **Report Configuration**: Report formatting and output configuration
+- **CI/CD Integration**: Automated report generation in CI/CD pipelines
+
+### Report Generation Usage
+
+**✅ What You CAN Do:**
+- Use generated reports in your IP documentation
+- Distribute reports as part of your IP deliverables
+- Customize report content for your specific IP
+- Include reports in commercial products
+
+**❌ What You CANNOT Do:**
+- Redistribute the report generation framework
+- Extract and reuse report templates commercially
+- Modify and distribute the automated build scripts
+- Include report generation tools in derivative works
 
 ## What the Apache-2.0 License Does NOT Cover
 

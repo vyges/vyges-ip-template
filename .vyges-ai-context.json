@@ -271,6 +271,69 @@
         "benefit": "Enables safe integration of multiple IP blocks without naming conflicts"
       }
     },
+    "testing_tools": {
+      "description": "Testing and verification tools supported in Vyges IP development",
+      "cocotb": {
+        "description": "Python-based verification framework for hardware designs",
+        "official_documentation": "https://docs.cocotb.org/en/stable/",
+        "supported_simulators": [
+          "icarus_verilog",
+          "verilator",
+          "ghdl",
+          "synopsys_vcs",
+          "aldec_riviera_pro",
+          "aldec_active_hdl",
+          "questa_modelsim",
+          "cadence_xcelium",
+          "nvc",
+          "tachyon_cvc"
+        ],
+        "verification_capabilities": [
+          "Functional verification",
+          "Protocol compliance testing",
+          "Coverage collection",
+          "Waveform generation",
+          "Assertion verification",
+          "Performance testing"
+        ],
+        "integration_patterns": {
+          "makefile_based": "Standard Makefile integration with cocotb-config",
+          "python_runners": "Experimental Python test runners for pytest integration",
+          "custom_flows": "Extending existing build flows with minimum cocotb settings"
+        },
+        "file_structure": {
+          "test_files": "tb/cocotb/test_{module_name}.py",
+          "runner_files": "tb/cocotb/test_runner.py",
+          "makefiles": "tb/cocotb/Makefile",
+          "coverage_reports": "tb/cocotb/coverage/",
+          "waveform_files": "tb/cocotb/waveforms/"
+        },
+        "verification_workflow": {
+          "pre_synthesis": "Verify RTL functionality before synthesis",
+          "post_synthesis": "Verify synthesized netlist functionality",
+          "post_implementation": "Verify final implementation correctness",
+          "regression_testing": "Automated testing in CI/CD pipelines"
+        }
+      },
+      "systemverilog_testbenches": {
+        "description": "Traditional SystemVerilog testbench approach",
+        "file_naming": "tb_{module_name}.sv",
+        "capabilities": [
+          "Functional verification",
+          "Protocol testing",
+          "Coverage collection",
+          "Assertion verification"
+        ]
+      },
+      "mixed_verification": {
+        "description": "Combining multiple verification approaches",
+        "approaches": [
+          "SystemVerilog assertions with Cocotb verification",
+          "Cocotb testbenches with SystemVerilog coverage",
+          "Hybrid verification strategies"
+        ]
+      }
+    },
     "design_document_quality": {
       "completeness": {
         "required_sections": "All template sections must be present and populated",
@@ -347,7 +410,18 @@
     "backward_compatibility": "This modular approach maintains compatibility with the monolithic .vyges-ai-context.json while providing better organization and maintainability",
     "when_to_use": "Use when implementing AI-assisted workflows, advanced verification methodologies, or workflow automation",
     "dependencies": "Requires vyges-core-context.json for basic naming conventions and project structure",
-    "compliance_focus": "This context emphasizes standards compliance first, with vendor extensions as optional enhancements"
+    "schema_reference": "The actual chipletIntegration metadata schema is defined in vyges-metadata.schema.json - this file provides AI assistance for working with that schema",
+    "ai_assistance_focus": "This context focuses on AI-powered development workflows, prompts, and guidance for the new chipletIntegration structure rather than schema definition",
+    "new_framework_benefits": [
+      "Standards-first approach with CDXML/BoW compliance foundation",
+      "Modular chipletIntegration object for comprehensive metadata",
+      "UCIe migration paths without schema changes",
+      "Enhanced packaging and security lifecycle management",
+      "Machine-readable compatibility rules and composition engine"
+    ],
+    "compatibility_checking": "Provides automated compatibility checking between chiplets using chipletIntegration specifications",
+    "workflow_integration": "Combines schema knowledge with AI assistance for comprehensive chiplet development using the new framework",
+    "migration_support": "Supports migration between standards using chipletIntegration.migrationPath specifications"
   },
   "imports": [
     "vyges-core-context.json"
@@ -460,13 +534,11 @@
         ]
       },
       "chiplet_ready_ip": {
-        "description": "IP block designed for chiplet integration",
-        "key_characteristics": [
-          "Die-to-die interfaces",
-          "Packaging considerations",
-          "Thermal analysis",
-          "Multi-die testing"
-        ]
+        "description": "IP block designed for chiplet integration using the new chipletIntegration framework",
+        "standards_compliance": "Must include chipletIntegration.compliance specifications for CDXML, AIB, and UCIe",
+        "interface_specifications": "Must include chipletIntegration.phy and chipletIntegration.link specifications",
+        "packaging_requirements": "Must include chipletIntegration.packaging specifications for thermal and power delivery",
+        "migration_support": "Should include chipletIntegration.migrationPath for future standard transitions"
       },
       "analog_ip": {
         "description": "Analog IP block with comprehensive design flow",
@@ -670,21 +742,12 @@
       "cdxml": {
         "description": "OCP CDXML (Chiplet Design Exchange Format) for die-to-die interfaces",
         "version": "cdxml-v0.2",
-        "purpose": "Standardize chiplet interface definitions for cross-vendor interoperability",
-        "scope": "Die-to-die interfaces, electrical characteristics, mechanical constraints",
-        "compliance_areas": [
-          "Interface protocol definitions",
-          "Electrical specifications",
-          "Mechanical constraints",
-          "Power domain definitions",
-          "Thermal requirements"
-        ],
-        "validation_requirements": [
-          "Protocol compliance checking",
-          "Electrical validation",
-          "Mechanical validation",
-          "Power domain validation",
-          "Thermal analysis validation"
+        "purpose": "Standardize chiplet interface definitions for cross-vendor interoperability using chipletIntegration framework",
+        "compliance_requirements": [
+          "chipletIntegration.compliance.cdxml.version",
+          "chipletIntegration.compliance.cdxml.protocol_support",
+          "chipletIntegration.compliance.cdxml.electrical_validation",
+          "chipletIntegration.compliance.cdxml.mechanical_validation"
         ]
       },
       "bow": {
@@ -714,13 +777,13 @@
       },
       "ucie": {
         "description": "Universal Chiplet Interconnect Express for high-performance applications",
-        "purpose": "Provide high-bandwidth, low-latency die-to-die communication",
-        "compliance": "CDXML v0.2 compliant",
-        "key_features": [
-          "High bandwidth",
-          "Low latency",
-          "Advanced error handling",
-          "PCIe compatibility"
+        "version": "1.1",
+        "purpose": "Industry standard for high-bandwidth, low-latency chiplet communication",
+        "compliance_requirements": [
+          "chipletIntegration.compliance.ucie.enabled",
+          "chipletIntegration.compliance.ucie.spec_version",
+          "chipletIntegration.compliance.ucie.profile",
+          "chipletIntegration.compliance.ucie.protocol_modes"
         ]
       },
       "aib": {
@@ -851,10 +914,11 @@
       "debug": "Debug interface: jtag_tck, jtag_tdi, jtag_tdo, jtag_tms, trace_data",
       "security": "Security interface: fuse_data, fuse_addr, fuse_prog, fuse_done, trng_valid, trng_data",
       "chiplet_interfaces": {
-        "ucie": "UCIe interface signals: ucie_clk, ucie_rst_n, ucie_tx_data, ucie_rx_data, ucie_tx_valid, ucie_rx_valid, ucie_tx_ready, ucie_rx_ready",
-        "bow": "Bunch of Wires (BoW) interface: bow_clk, bow_rst_n, bow_tx_data, bow_rx_data, bow_tx_valid, bow_rx_valid",
-        "aib": "Advanced Interface Bus (AIB): aib_clk, aib_rst_n, aib_tx_data, aib_rx_data, aib_tx_valid, aib_rx_valid",
-        "emib": "Intel EMIB interface: emib_clk, emib_rst_n, emib_tx_data, emib_rx_data, emib_tx_valid, emib_rx_valid"
+        "description": "Chiplet interface design using the new chipletIntegration framework",
+        "phy_layer": "Implement chipletIntegration.phy specifications for die-to-die communication",
+        "link_layer": "Implement chipletIntegration.link protocol specifications for data transfer",
+        "management_layer": "Implement chipletIntegration.management for discovery and configuration",
+        "compliance_validation": "Validate against chipletIntegration.compliance specifications"
       },
       "standards_compliance": {
         "cdxml_compliance": "CDXML-compliant interface signals following OCP specification",
@@ -889,6 +953,110 @@
       "unused_signal_handling": "Mark unused signals with _unused suffix or add // unused comment",
       "implicit_declaration_fix": "Always declare signals explicitly with proper types and widths",
       "port_direction_clarity": "Ensure all ports have clear direction and type specifications"
+    },
+    "assertion_compatibility": {
+      "description": "SystemVerilog assertion compatibility considerations for different simulators",
+      "sva_support_variations": {
+        "description": "SystemVerilog Assertions (SVA) support varies significantly between simulators",
+        "full_support": [
+          "VCS (Synopsys)",
+          "QuestaSim / ModelSim (Mentor/Siemens)",
+          "Xcelium (Cadence)",
+          "Riviera-PRO (Aldec)",
+          "Active-HDL (Aldec)"
+        ],
+        "partial_support": [
+          "Verilator (with proper flags and VPI)",
+          "GHDL (VHDL with VPI integration)"
+        ],
+        "limited_support": [
+          "Icarus Verilog (iverilog) - NO SVA support",
+          "Basic Verilog simulators"
+        ]
+      },
+      "icarus_verilog_considerations": {
+        "description": "Critical limitations when targeting Icarus Verilog",
+        "sva_limitation": "Icarus Verilog does NOT support SystemVerilog assertions in RTL",
+        "compilation_errors": "SVA statements will cause 'unknown statement' or syntax errors",
+        "target_standard": "Primarily supports Verilog-2005/2001, not full SystemVerilog",
+        "verification_alternatives": [
+          "Use traditional Verilog checks with if/$display",
+          "Implement verification in Cocotb Python testbench",
+          "Use hybrid approach combining both methods"
+        ]
+      },
+      "assertion_implementation_strategies": {
+        "description": "Different strategies for implementing assertions based on simulator support",
+        "full_sva_approach": {
+          "description": "Use full SystemVerilog assertions when simulator supports them",
+          "constructs": [
+            "immediate assertions: assert (condition) else $error('message')",
+            "concurrent assertions: assert property (@(posedge clk) condition)",
+            "cover statements: cover property (@(posedge clk) condition)",
+            "assume statements: assume property (@(posedge clk) condition)"
+          ],
+          "benefits": [
+            "Rich assertion language",
+            "Built-in coverage collection",
+            "Advanced debugging capabilities",
+            "Formal verification support"
+          ]
+        },
+        "traditional_verilog_approach": {
+          "description": "Use classic Verilog constructs for basic verification",
+          "constructs": [
+            "if statements with $display: if (condition) $display('Check passed')",
+            "Error reporting: if (!condition) $error('Check failed')",
+            "Fatal conditions: if (critical_failure) $fatal('Critical error')",
+            "Warning conditions: if (warning_condition) $warning('Warning')"
+          ],
+          "benefits": [
+            "Universal compatibility",
+            "Simple implementation",
+            "Works with all Verilog simulators",
+            "Easy to understand and maintain"
+          ]
+        },
+        "cocotb_python_approach": {
+          "description": "Move verification logic to Python testbench via Cocotb",
+          "implementation": [
+            "Keep RTL clean and simulator-agnostic",
+            "Implement assertions in Python testbench",
+            "Use Python's rich assertion and testing libraries",
+            "Generate comprehensive reports and coverage"
+          ],
+          "benefits": [
+            "Works with any simulator including Icarus Verilog",
+            "More flexible verification logic",
+            "Better debugging and reporting",
+            "Integration with Python testing ecosystem"
+          ]
+        }
+      },
+      "recommended_practices": {
+        "description": "Best practices for assertion implementation across different simulators",
+        "simulator_agnostic_rtl": {
+          "description": "Keep RTL code compatible with multiple simulators",
+          "guidelines": [
+            "Avoid SVA in RTL when targeting Icarus Verilog",
+            "Use traditional Verilog constructs for basic checks",
+            "Implement complex verification in testbench layer",
+            "Document simulator-specific requirements clearly"
+          ]
+        },
+        "conditional_compilation": {
+          "description": "Use conditional compilation for simulator-specific features",
+          "approach": "Use `ifdef directives to include SVA only for supported simulators",
+          "example": "`ifdef SIMULATOR_SUPPORTS_SVA ... SVA code ... `endif",
+          "benefits": "Single codebase supporting multiple simulators"
+        },
+        "verification_layering": {
+          "description": "Layer verification approaches for maximum compatibility",
+          "rtl_layer": "Basic Verilog checks for simple validations",
+          "testbench_layer": "Cocotb Python verification for complex scenarios",
+          "coverage_layer": "Python-based coverage collection and reporting"
+        }
+      }
     }
   },
   "advanced_patterns": {
@@ -991,13 +1159,13 @@
       "mixed_signal_flow": "Provide mixed-signal synthesis guidance including digital/analog partitioning and co-simulation setup"
     },
     "standards_compliance": {
-      "cdxml_guidance": "Guide CDXML compliance for chiplet interfaces with {protocol} and {requirements}",
-      "bow_guidance": "Guide BoW compliance for chiplet interfaces with {signaling_class} and {timing_requirements}",
+      "cdxml_guidance": "Guide CDXML compliance for chiplet interfaces using chipletIntegration.compliance.cdxml with {protocol} and {requirements}",
+      "bow_guidance": "Guide BoW compliance for chiplet interfaces using chipletIntegration.compliance specifications with {signaling_class} and {timing_requirements}",
       "interface_validation": "Guide interface validation for {protocol} compliance with {test_requirements}",
       "standards_testing": "Guide standards compliance testing for {standard} with {validation_requirements}",
       "protocol_validation": "Guide protocol compliance validation for {protocol} with {compliance_requirements}",
-      "cdxml_validation": "Guide CDXML compliance validation for chiplet interfaces",
-      "bow_validation": "Guide BoW compliance validation for chiplet interfaces"
+      "cdxml_validation": "Guide CDXML compliance validation for chiplet interfaces using chipletIntegration.compliance.cdxml specifications",
+      "bow_validation": "Guide BoW compliance validation for chiplet interfaces using chipletIntegration.compliance specifications"
     },
     "code_generation": {
       "module_generation": "Generate SystemVerilog module for {functionality} with {interfaces} following Vyges conventions",
@@ -1024,41 +1192,66 @@
       "proprietary_integration": "Provide proprietary tool guidance for {tool} with {requirements}"
     }
   },
-  "testbench_patterns": {
-    "structure": "Testbenches must include clock generation, reset sequence, and test stimulus",
-    "naming": "Testbench files must be named tb_<module_name>.sv",
-    "coverage": "Include basic functional coverage for critical paths",
-    "test_categories": "Must include functional, performance, corner case, error, and coverage tests",
-    "verification_goals": "Must achieve 95% functional coverage, 90% code coverage, 100% toggle coverage",
-    "assertion_requirements": "Must include protocol compliance, safety, and performance assertions",
-    "regression_testing": "Must support automated regression testing with CI/CD integration"
-  },
-  "testbench_standards": {
-    "language": "SystemVerilog",
-    "framework": "Use standard SystemVerilog testbench patterns or cocotb for Python-based testing",
-    "structure": [
-      "Clock and reset generation",
-      "DUT instantiation",
-      "Test stimulus generation",
-      "Response checking",
-      "Coverage collection"
-    ],
-    "verification": "Include basic functional verification and coverage",
-    "test_categories": {
-      "functional_tests": "Basic functionality, protocol compliance, interface verification",
-      "performance_tests": "Maximum frequency, throughput measurement, latency analysis",
-      "corner_case_tests": "FIFO overflow/underflow, timeout conditions, reset behavior",
-      "error_tests": "Protocol violations, error injection, fault tolerance",
-      "coverage_tests": "Functional coverage, code coverage, toggle coverage, FSM coverage"
-    },
-    "verification_requirements": {
-      "coverage_goals": "95% functional coverage, 90% code coverage, 100% toggle coverage",
-      "assertion_requirements": "Protocol compliance assertions, safety assertions, performance assertions",
-      "waveform_requirements": "Comprehensive waveform generation for debugging and analysis",
-      "regression_requirements": "Automated regression testing with CI/CD integration"
-    }
-  },
   "cocotb_integration": {
+    "description": "Cocotb integration for verification during synthesis and implementation flows",
+    "testbench_generation": {
+      "description": "Generate Cocotb testbenches for RTL modules",
+      "file_structure": {
+        "test_file": "tb/cocotb/test_{module_name}.py",
+        "runner_file": "tb/cocotb/test_runner.py",
+        "makefile": "tb/cocotb/Makefile"
+      },
+      "test_structure": {
+        "imports": [
+          "import cocotb",
+          "from cocotb.triggers import Timer, RisingEdge, FallingEdge",
+          "from cocotb.clock import Clock"
+        ],
+        "test_decorator": "@cocotb.test()",
+        "clock_generation": "Use cocotb.clock.Clock for automatic clock generation",
+        "test_coroutines": "Create async test functions for concurrent operations"
+      },
+      "verification_patterns": {
+        "basic_functionality": "Test basic module functionality and port connections",
+        "protocol_compliance": "Verify protocol compliance for interface modules",
+        "edge_cases": "Test edge cases, reset behavior, and error conditions",
+        "coverage_collection": "Include functional coverage collection",
+        "assertion_verification": "Verify SystemVerilog assertions work correctly"
+      }
+    },
+    "makefile_integration": {
+      "description": "Generate Makefiles that integrate Cocotb with RTL verification",
+      "required_variables": {
+        "SIM": "Default simulator (icarus, verilator)",
+        "TOPLEVEL_LANG": "Language of top-level module (verilog, vhdl)",
+        "VERILOG_SOURCES": "List of RTL source files",
+        "TOPLEVEL": "Name of top-level module",
+        "MODULE": "Python test module name"
+      },
+      "cocotb_inclusion": "include $(shell cocotb-config --makefiles)/Makefile.sim",
+      "additional_targets": [
+        "test_rtl: Test RTL functionality",
+        "test_synthesis: Test synthesized netlist",
+        "coverage: Generate coverage reports",
+        "waveforms: Generate waveform files"
+      ]
+    },
+    "verification_workflow": {
+      "description": "Complete verification workflow for RTL modules",
+      "steps": [
+        "Generate RTL module with proper interface definitions",
+        "Create Cocotb testbench with comprehensive test cases",
+        "Generate Makefile with Cocotb integration",
+        "Run verification tests on RTL",
+        "Generate coverage reports and waveforms",
+        "Document verification results"
+      ],
+      "integration_points": {
+        "synthesis_flow": "Include verification in synthesis flow",
+        "ci_cd": "Integrate verification in CI/CD pipeline",
+        "documentation": "Include verification results in documentation"
+      }
+    },
     "language": "Python",
     "framework": "cocotb",
     "structure": [
@@ -1115,6 +1308,216 @@
         "linking": "Automatic linking with cocotb VPI library via -lcocotbvpi_verilator",
         "simulation": "Run with sim_build/Vtop executable"
       }
+    },
+    "custom_flows": {
+      "description": "Extending existing build flows for use with cocotb - minimum settings required",
+      "reference": "https://docs.cocotb.org/en/stable/custom_flows.html",
+      "environment_variables": {
+        "LIBPYTHON_LOC": "Define using $(cocotb-config --libpython)",
+        "MODULE": "Define with the name of the Python module containing testcases"
+      },
+      "simulator_specific": {
+        "icarus_verilog": {
+          "description": "Call vvp executable with specific options",
+          "command": "vvp -M $(cocotb-config --lib-dir) -m $(cocotb-config --lib-name vpi icarus)",
+          "options": [
+            "-M $(cocotb-config --lib-dir)",
+            "-m $(cocotb-config --lib-name vpi icarus)"
+          ]
+        },
+        "verilator": {
+          "description": "Extend verilator call with specific options",
+          "options": [
+            "--vpi",
+            "--public-flat-rw",
+            "--prefix Vtop",
+            "-LDFLAGS \"-Wl,-rpath,$(cocotb-config --lib-dir) -L$(cocotb-config --lib-dir) -lcocotbvpi_verilator\"",
+            "$(cocotb-config --share)/lib/verilator/verilator.cpp"
+          ],
+          "makefile_command": "CPPFLAGS=\"-std=c++11\" make -f Vtop.mk"
+        },
+        "synopsys_vcs": {
+          "description": "Create pli.tab file and extend vcs call",
+          "pli_tab_content": "acc+=rw,wn:*",
+          "options": [
+            "+vpi",
+            "-P pli.tab",
+            "-load $(cocotb-config --lib-name-path vpi vcs)"
+          ]
+        },
+        "aldec_riviera_pro": {
+          "description": "Set asim options for design access",
+          "asim_options": "+access +w_nets",
+          "vhdl_toplevel": "-loadvhpi $(cocotb-config --lib-name-path vhpi riviera):vhpi_startup_routines_bootstrap",
+          "verilog_toplevel": "-pli $(cocotb-config --lib-name-path vpi riviera)"
+        },
+        "aldec_active_hdl": {
+          "description": "Set asim options for design access",
+          "asim_options": "+access +w_nets",
+          "vhdl_toplevel": "-loadvhpi $(cocotb-config --lib-name-path vhpi activehdl):vhpi_startup_routines_bootstrap",
+          "verilog_toplevel": "-pli $(cocotb-config --lib-name-path vpi activehdl)"
+        },
+        "questa_modelsim": {
+          "description": "Set vsim options based on toplevel language",
+          "vhdl_toplevel": "-foreign \"cocotb_init $(cocotb-config --lib-name-path fli questa)\"",
+          "verilog_toplevel": "-pli $(cocotb-config --lib-name-path vpi questa)"
+        },
+        "cadence_xcelium": {
+          "description": "Set xrun options for design access",
+          "xrun_options": "-access +rwc",
+          "vhdl_toplevel": "-NEW_VHPI_PROPAGATE_DELAY -loadvpi $(cocotb-config --lib-name-path vpi xcelium):vlog_startup_routines_bootstrap",
+          "verilog_toplevel": "-loadvpi $(cocotb-config --lib-name-path vpi xcelium):vlog_startup_routines_bootstrap"
+        },
+        "ghdl": {
+          "description": "Extend ghdl -r call with VPI option",
+          "options": "--vpi=$(cocotb-config --lib-name-path vpi ghdl)"
+        },
+        "nvc": {
+          "description": "Extend nvc -r call with load option",
+          "options": "--load=$(cocotb-config --lib-name-path vhpi nvc)"
+        },
+        "tachyon_cvc": {
+          "description": "Extend cvc64 call with specific options",
+          "options": [
+            "+interp",
+            "+acc+2",
+            "+loadvpi=$(cocotb-config --lib-name-path vpi cvc):vlog_startup_routines_bootstrap"
+          ]
+        }
+      }
+    },
+    "test_runners": {
+      "description": "Python Test Runners as alternative to Makefiles - experimental feature",
+      "reference": "https://docs.cocotb.org/en/stable/quickstart.html#using-runners",
+      "warning": "Python runners and associated APIs are an experimental feature and subject to change",
+      "structure": {
+        "description": "Runner involves three steps: instantiation, building, and testing",
+        "steps": [
+          "Instantiate runner with get_runner based on default simulator",
+          "Build HDL using design sources and toplevel with runner.build",
+          "Pass module containing tests to runner.test"
+        ]
+      },
+      "implementation": {
+        "imports": [
+          "import os",
+          "from pathlib import Path",
+          "from cocotb.runner import get_runner"
+        ],
+        "runner_creation": "sim = os.getenv('SIM', 'icarus'); runner = get_runner(sim)",
+        "build_step": "runner.build(sources=sources, hdl_toplevel='module_name')",
+        "test_step": "runner.test(hdl_toplevel='module_name', test_module='test_module_name')"
+      },
+      "usage": {
+        "pytest": "pytest",
+        "direct": "python test_runner.py"
+      }
+    },
+    "standard_makefile_template": {
+      "description": "Standard cocotb Makefile template following official documentation",
+      "template": [
+        "# Makefile",
+        "# defaults",
+        "SIM ?= icarus",
+        "TOPLEVEL_LANG ?= verilog",
+        "",
+        "VERILOG_SOURCES += $(PWD)/{module_name}.sv",
+        "# use VHDL_SOURCES for VHDL files",
+        "",
+        "# TOPLEVEL is the name of the toplevel module in your Verilog or VHDL file",
+        "TOPLEVEL = {module_name}",
+        "",
+        "# MODULE is the basename of the Python test file",
+        "MODULE = test_{module_name}",
+        "",
+        "# include cocotb's make rules to take care of the simulator setup",
+        "include $(shell cocotb-config --makefiles)/Makefile.sim"
+      ],
+      "usage_examples": {
+        "default": "make",
+        "specific_simulator": "make SIM=questa",
+        "verilator": "make SIM=verilator"
+      }
+    },
+    "verification_during_synthesis": {
+      "description": "Use Cocotb for functional verification during synthesis flow",
+      "pre_synthesis_verification": "Run functional tests on RTL before synthesis to ensure correctness",
+      "post_synthesis_verification": "Run tests on synthesized netlist to verify synthesis preserved functionality",
+      "integration_points": [
+        "Before synthesis: Verify RTL functionality",
+        "After synthesis: Verify netlist functionality",
+        "After implementation: Verify final implementation"
+      ]
+    },
+    "synthesis_flow_integration": {
+      "makefile_integration": "Include Cocotb test targets in synthesis Makefiles",
+      "verification_targets": [
+        "test_pre_synthesis: Run tests on RTL",
+        "test_post_synthesis: Run tests on netlist",
+        "test_implementation: Run tests on final implementation"
+      ],
+      "coverage_integration": "Include coverage collection in synthesis verification flow",
+      "waveform_generation": "Generate waveforms for synthesis verification debugging"
+    },
+    "tool_specific_integration": {
+      "yosys": {
+        "description": "Integrate Cocotb verification with Yosys synthesis flow",
+        "verification_steps": [
+          "Pre-synthesis: test_rtl target",
+          "Post-synthesis: test_netlist target",
+          "Coverage: coverage_synthesis target"
+        ]
+      },
+      "verilator": {
+        "description": "Use Verilator with Cocotb for fast synthesis verification",
+        "advantages": [
+          "Fast compilation and simulation",
+          "Good SystemVerilog support",
+          "Integration with Cocotb VPI"
+        ]
+      },
+      "openlane": {
+        "description": "Integrate Cocotb verification in OpenLane ASIC flow",
+        "verification_points": [
+          "After synthesis: Verify synthesized netlist",
+          "After placement: Verify placed design",
+          "After routing: Verify final implementation"
+        ]
+      }
+    }
+  },
+  "testbench_patterns": {
+    "structure": "Testbenches must include clock generation, reset sequence, and test stimulus",
+    "naming": "Testbench files must be named tb_<module_name>.sv",
+    "coverage": "Include basic functional coverage for critical paths",
+    "test_categories": "Must include functional, performance, corner case, error, and coverage tests",
+    "verification_goals": "Must achieve 95% functional coverage, 90% code coverage, 100% toggle coverage",
+    "assertion_requirements": "Must include protocol compliance, safety, and performance assertions",
+    "regression_testing": "Must support automated regression testing with CI/CD integration"
+  },
+  "testbench_standards": {
+    "language": "SystemVerilog",
+    "framework": "Use standard SystemVerilog testbench patterns or cocotb for Python-based testing",
+    "structure": [
+      "Clock and reset generation",
+      "DUT instantiation",
+      "Test stimulus generation",
+      "Response checking",
+      "Coverage collection"
+    ],
+    "verification": "Include basic functional verification and coverage",
+    "test_categories": {
+      "functional_tests": "Basic functionality, protocol compliance, interface verification",
+      "performance_tests": "Maximum frequency, throughput measurement, latency analysis",
+      "corner_case_tests": "FIFO overflow/underflow, timeout conditions, reset behavior",
+      "error_tests": "Protocol violations, error injection, fault tolerance",
+      "coverage_tests": "Functional coverage, code coverage, toggle coverage, FSM coverage"
+    },
+    "verification_requirements": {
+      "coverage_goals": "95% functional coverage, 90% code coverage, 100% toggle coverage",
+      "assertion_requirements": "Protocol compliance assertions, safety assertions, performance assertions",
+      "waveform_requirements": "Comprehensive waveform generation for debugging and analysis",
+      "regression_requirements": "Automated regression testing with CI/CD integration"
     }
   },
   "verification_methodologies": {
@@ -1159,6 +1562,87 @@
         "Bus functional models",
         "Assertion-based verification"
       ]
+    }
+  },
+  "simulator_compatibility": {
+    "description": "Simulator-specific limitations and compatibility considerations for verification",
+    "assertion_support": {
+      "description": "SystemVerilog Assertions (SVA) support varies by simulator",
+      "sva_definition": "SystemVerilog Assertions (SVA) like `assert` statements are part of SystemVerilog, not standard Verilog-2001/1995",
+      "sva_example": "assert (signal == 1) else $error('Signal is not 1');",
+      "verilog_2001_1995": "Standard Verilog-2001/1995 does not support SVA or immediate assertions"
+    },
+    "icarus_verilog_limitations": {
+      "description": "Icarus Verilog (iverilog) has limited SystemVerilog support",
+      "target_standard": "Primarily targets Verilog-2005/2001",
+      "sva_support": "Immediate assertions (`assert`) in RTL are NOT supported",
+      "basic_sv_features": "Some basic SV features like logic types, interfaces, or always_comb are partially supported in recent versions",
+      "assertion_compilation": "Trying to compile SVA with Icarus Verilog typically gives 'unknown statement' or syntax error",
+      "verification_approach": "Use traditional Verilog checks or Python-based testbench assertions via Cocotb"
+    },
+    "sva_supported_simulators": {
+      "description": "Simulators that properly support SystemVerilog Assertions",
+      "commercial_tools": [
+        "VCS (Synopsys)",
+        "QuestaSim / ModelSim (Mentor/Siemens)",
+        "Xcelium (Cadence)",
+        "Riviera-PRO (Aldec)",
+        "Active-HDL (Aldec)"
+      ],
+      "open_source_tools": [
+        "Verilator (with proper flags)",
+        "GHDL (VHDL with VPI)",
+        "NVC (VHDL)"
+      ]
+    },
+    "workarounds_for_icarus": {
+      "description": "Alternative approaches when using Icarus Verilog without SVA support",
+      "traditional_verilog_checks": {
+        "description": "Use classic Verilog constructs for verification",
+        "example": "always @(posedge clk) begin if (signal != 1) $display('Assertion failed at time %0t', $time); end",
+        "constructs": [
+          "if statements with $display",
+          "$fatal for critical failures",
+          "$error for error reporting",
+          "$warning for warnings"
+        ]
+      },
+      "cocotb_python_assertions": {
+        "description": "Use Python-based testbench assertions via Cocotb",
+        "advantage": "Python assertions work even if RTL is plain Verilog",
+        "approach": "Move verification logic from RTL to Python testbench",
+        "benefits": [
+          "Full assertion capabilities in Python",
+          "Compatible with Icarus Verilog",
+          "More flexible verification logic",
+          "Better debugging and reporting"
+        ]
+      },
+      "hybrid_approach": {
+        "description": "Combine traditional Verilog checks with Cocotb verification",
+        "rtl_level": "Use basic Verilog checks for simple validations",
+        "testbench_level": "Use Cocotb for complex verification scenarios",
+        "coverage": "Implement coverage collection in Python testbench"
+      }
+    },
+    "verification_strategy_recommendations": {
+      "description": "Recommended verification approaches based on simulator choice",
+      "icarus_verilog": {
+        "primary": "Use Cocotb with Python-based verification",
+        "fallback": "Traditional Verilog checks for simple validations",
+        "avoid": "SystemVerilog assertions in RTL",
+        "benefits": "Open-source, widely available, good Cocotb integration"
+      },
+      "verilator": {
+        "primary": "SystemVerilog assertions with proper flags",
+        "secondary": "Cocotb integration for complex verification",
+        "benefits": "Fast compilation, good SV support, excellent Cocotb integration"
+      },
+      "commercial_simulators": {
+        "primary": "Full SystemVerilog assertions and coverage",
+        "secondary": "Cocotb integration for Python-based verification",
+        "benefits": "Complete SV support, advanced debugging, comprehensive coverage"
+      }
     }
   },
   "fpga_flow_configuration": {
@@ -1375,6 +1859,101 @@
     "area_constraints": "Specify area constraints when needed",
     "power_constraints": "Define power constraints for low-power designs"
   },
+  "assertion_synthesis_considerations": {
+    "description": "Handling assertions during synthesis and their impact on different flows",
+    "sva_synthesis_behavior": {
+      "description": "How SystemVerilog Assertions behave during synthesis",
+      "synthesis_tools": [
+        "Yosys: Generally ignores SVA statements",
+        "Design Compiler: Processes SVA for formal verification",
+        "Genus: Handles SVA for synthesis and verification",
+        "Vivado: Processes SVA for synthesis and verification",
+        "Quartus: Handles SVA for synthesis and verification"
+      ],
+      "sva_removal": "Most synthesis tools remove SVA statements from synthesized netlist",
+      "verification_impact": "SVA removed during synthesis cannot be used for post-synthesis verification"
+    },
+    "simulator_compatibility_impact": {
+      "description": "How simulator limitations affect synthesis verification",
+      "icarus_verilog_workflow": {
+        "description": "Synthesis verification workflow when using Icarus Verilog",
+        "pre_synthesis": "RTL verification limited to traditional Verilog checks",
+        "post_synthesis": "Netlist verification via Cocotb Python testbench",
+        "challenges": "Cannot verify SVA behavior in synthesized netlist",
+        "solutions": [
+          "Use Cocotb for comprehensive post-synthesis verification",
+          "Implement verification checks in Python testbench",
+          "Use traditional Verilog checks compatible with Icarus Verilog"
+        ]
+      },
+      "verilator_workflow": {
+        "description": "Synthesis verification workflow when using Verilator",
+        "pre_synthesis": "Full SVA support in RTL verification",
+        "post_synthesis": "SVA verification possible with proper flags",
+        "advantages": "Consistent SVA support across RTL and synthesis verification"
+      },
+      "commercial_simulator_workflow": {
+        "description": "Synthesis verification workflow with commercial simulators",
+        "pre_synthesis": "Full SVA support with advanced debugging",
+        "post_synthesis": "Complete SVA verification capabilities",
+        "benefits": "End-to-end assertion verification from RTL to netlist"
+      }
+    },
+    "synthesis_verification_strategies": {
+      "description": "Strategies for verification during synthesis flow",
+      "universal_compatibility": {
+        "description": "Approach that works with all simulators",
+        "rtl_level": "Use traditional Verilog checks for basic validation",
+        "testbench_level": "Implement comprehensive verification via Cocotb",
+        "synthesis_verification": "Use Cocotb for post-synthesis verification",
+        "benefits": "Works with Icarus Verilog, Verilator, and commercial tools"
+      },
+      "sva_enhanced": {
+        "description": "Approach leveraging full SVA capabilities",
+        "rtl_level": "Use SystemVerilog assertions for rich verification",
+        "testbench_level": "Combine SVA with Cocotb for comprehensive coverage",
+        "synthesis_verification": "Verify SVA behavior in synthesized netlist",
+        "requirements": "Requires simulator with full SVA support"
+      },
+      "hybrid_approach": {
+        "description": "Combine multiple verification approaches",
+        "rtl_level": "Basic Verilog checks for universal compatibility",
+        "testbench_level": "Cocotb Python verification for complex scenarios",
+        "synthesis_verification": "Cocotb-based verification of synthesized netlist",
+        "conditional_sva": "Use `ifdef for SVA when simulator supports it"
+      }
+    },
+    "best_practices": {
+      "description": "Best practices for assertion handling in synthesis flows",
+      "simulator_agnostic_design": {
+        "description": "Design RTL to work with multiple simulators",
+        "guidelines": [
+          "Use traditional Verilog checks for basic validation",
+          "Implement complex verification in testbench layer",
+          "Use conditional compilation for simulator-specific features",
+          "Document simulator requirements clearly"
+        ]
+      },
+      "synthesis_verification_planning": {
+        "description": "Plan verification strategy considering synthesis and simulator limitations",
+        "considerations": [
+          "Identify target simulators early in design phase",
+          "Plan verification approach based on simulator capabilities",
+          "Design verification to work with synthesized netlist",
+          "Use Cocotb for simulator-agnostic verification"
+        ]
+      },
+      "coverage_strategy": {
+        "description": "Implement coverage collection that works across synthesis flow",
+        "approaches": [
+          "Use Cocotb for functional coverage collection",
+          "Implement coverage in Python testbench for portability",
+          "Generate coverage reports compatible with synthesis tools",
+          "Track coverage across RTL, synthesis, and implementation phases"
+        ]
+      }
+    }
+  },
   "implementation_patterns": {
     "description": "Implementation and optimization patterns",
     "floorplanning": "Define chip floorplan and power domains",
@@ -1558,148 +2137,197 @@
       "power_analysis": "Power consumption analysis"
     }
   },
-  "chiplet_schema_structure": {
-    "description": "New chiplet schema architecture with standards-first approach",
-    "compliance": {
-      "description": "Required standards foundation for interoperability",
-      "cdxml": "OCP CDXML compliance for die-to-die interfaces",
-      "bow_specification": "BoW protocol compliance with signaling and timing",
-      "required": true,
-      "purpose": "Ensure industry standard compliance and cross-vendor interoperability"
+  "schema_reference": {
+    "description": "Reference to the comprehensive chiplet metadata schema with new chipletIntegration structure",
+    "metadata_spec_file": "vyges-metadata.schema.json",
+    "new_structure": "chipletIntegration top-level object",
+    "key_sections": [
+      "phy",
+      "link",
+      "management",
+      "packaging",
+      "compliance",
+      "migrationPath"
+    ],
+    "schema_purpose": "Defines the complete chiplet metadata structure including core context, chipletIntegration, interfaces, artifacts, and tools",
+    "ai_context_purpose": "This file provides AI assistance capabilities and workflows for working with the new chipletIntegration schema",
+    "core_context_included": "The schema includes the core Vyges context and conventions that are fundamental to all IP development"
+  },
+  "ai_context_usage": {
+    "description": "How to use this AI context file with the new chipletIntegration metadata schema",
+    "schema_first": "Always reference vyges-metadata.schema.json for the authoritative chipletIntegration schema definition",
+    "ai_assistance": "Use this context for AI-powered development workflows, prompts, and guidance with the new chipletIntegration structure",
+    "workflow_integration": "Combine schema knowledge with AI assistance for comprehensive chiplet development using the new framework",
+    "separation_of_concerns": {
+      "schema_file": "Contains the actual chipletIntegration metadata structure and validation rules",
+      "ai_context_file": "Contains AI assistance capabilities and development workflows for the new structure"
     },
-    "extensions": {
-      "description": "Optional vendor-specific customizations beyond standards",
-      "meta": "Chiplet metadata and configuration",
-      "testing": "Multi-die testing and validation",
-      "lifecycle": "Supply chain and lifecycle management",
-      "custom_electrical": "Vendor-specific electrical characteristics",
-      "custom_physical": "Vendor-specific physical constraints",
-      "required": false,
-      "purpose": "Enable competitive differentiation while maintaining standards compliance"
+    "new_framework_benefits": [
+      "Standards-first approach with CDXML/BoW compliance foundation",
+      "Modular chipletIntegration object for comprehensive metadata",
+      "UCIe migration paths without schema changes",
+      "Enhanced packaging and security lifecycle management",
+      "Machine-readable compatibility rules and composition engine"
+    ]
+  },
+  "chiplet_integration_framework": {
+    "description": "Comprehensive chiplet integration framework using the new chipletIntegration structure",
+    "framework_overview": {
+      "new_approach": "chipletIntegration as top-level object in main schema",
+      "standards_foundation": "CDXML/BoW compliance as required foundation",
+      "vendor_extensions": "Optional vendor-specific customizations beyond standards",
+      "migration_ready": "Support for transitioning between standards without schema surgery"
+    },
+    "core_sections": {
+      "phy": {
+        "description": "Physical layer interface specifications for die-to-die communication",
+        "key_fields": [
+          "standard (AIB, BoW, UCIe, EMIB)",
+          "version, mode, lanes, data_rate_gbps_per_lane",
+          "io_voltage, termination, training, loopback",
+          "error_detection, power_pJ_per_bit, reach_mm"
+        ],
+        "ai_prompts": [
+          "Generate PHY specification for {standard} with {lanes} lanes at {data_rate} Gbps",
+          "Design {mode} interface with {training} and {error_detection}",
+          "Plan power budget with {power_pJ_per_bit} pJ/bit and {reach_mm}mm reach"
+        ]
+      },
+      "link": {
+        "description": "Link layer protocol specifications for data transfer",
+        "key_fields": [
+          "protocol (PCIe, CXL, STREAMING, CUSTOM)",
+          "width_bits, flow_control, replay, fec",
+          "max_payload_bytes"
+        ],
+        "ai_prompts": [
+          "Create {protocol} link layer with {width_bits} bits and {flow_control}",
+          "Design {protocol} interface with {fec} and {replay} support"
+        ]
+      },
+      "management": {
+        "description": "System management and discovery specifications",
+        "key_fields": [
+          "discovery (CDXML, custom), endpoint_id, config_bus",
+          "firmware_update (method, format, secure_boot, rot_block)",
+          "telemetry (temperature, lane_error_counters, power, performance)"
+        ],
+        "ai_prompts": [
+          "Design {discovery} discovery with {endpoint_id} and {config_bus}",
+          "Create firmware update system with {secure_boot} and {rot_block}",
+          "Implement telemetry for {telemetry_metrics}"
+        ]
+      },
+      "packaging": {
+        "description": "Packaging and assembly specifications",
+        "key_fields": [
+          "assembly (organic_substrate, 2.5D_interposer, fanout, 3D_stacked)",
+          "substrate_stackup, thermal (theta_ja, max_tj)",
+          "power_delivery (rails, decap_guidance)"
+        ],
+        "ai_prompts": [
+          "Design {assembly} packaging with {substrate_stackup}",
+          "Plan thermal management with {theta_ja}°C/W and {max_tj}°C",
+          "Create power delivery with {power_rails} and {decap_guidance}"
+        ]
+      },
+      "compliance": {
+        "description": "Standards compliance and validation tracking",
+        "key_fields": [
+          "cdxml (version, protocol_support, electrical_validation, mechanical_validation)",
+          "aib (enabled, spec_version, features)",
+          "ucie (enabled, spec_version, profile, protocol_modes)"
+        ],
+        "ai_prompts": [
+          "Validate CDXML {version} compliance with {protocol_support}",
+          "Check AIB {spec_version} compliance with {features}",
+          "Verify UCIe {profile} compliance for {protocol_modes}"
+        ]
+      },
+      "migrationPath": {
+        "description": "Migration path information for transitioning between standards",
+        "key_fields": [
+          "prepareForUCIe, targetStandard",
+          "migrationSteps, compatibilityLayer"
+        ],
+        "ai_prompts": [
+          "Plan migration from {current_standard} to {target_standard}",
+          "Create {compatibility_layer} for {migration_steps}"
+        ]
+      }
     }
   },
-  "cdxml_compliance": {
-    "description": "OCP CDXML (Chiplet Design Exchange Format) compliance requirements",
-    "version": "cdxml-v0.2",
-    "interface_validation": {
-      "description": "Die-to-die interface characteristics validation",
-      "protocol_support": [
-        "UCIe",
-        "BoW",
-        "AIB",
-        "EMIB"
-      ],
-      "electrical_validation": "Power and electrical specifications per OCP",
-      "mechanical_validation": "Physical and packaging specifications per OCP"
-    },
-    "compliance_checklist": {
-      "description": "CDXML compliance validation checklist",
-      "interface_definitions": "Standardized interface definitions for die-to-die communication",
-      "electrical_characteristics": "Power and electrical specs per OCP specifications",
-      "mechanical_constraints": "Physical and packaging constraints per OCP",
-      "validation_tracking": "Compliance validation with tools and dates"
-    }
-  },
-  "bow_specification": {
-    "description": "BoW (Bunch of Wires) protocol compliance requirements",
-    "spec_version": "2.0d.1",
-    "signaling_validation": {
-      "description": "BoW signaling characteristics validation",
-      "voltage_classes": [
-        "Class A",
-        "Class B",
-        "Class C"
-      ],
-      "signaling_protocol": "Simple, low-overhead protocol for cost-effective applications",
-      "bump_configuration": "Physical bump configuration and connectivity"
-    },
-    "timing_validation": {
-      "description": "BoW timing constraints validation",
-      "clock_training": "Clock training and synchronization requirements",
-      "signal_integrity": "Signal integrity and timing margins",
-      "compliance_features": "Loopback, PRBS, error detection capabilities"
-    }
-  },
-  "chiplet_workflow_configuration": {
-    "description": "Comprehensive chiplet development workflow with standards compliance focus",
-    "chiplet_development_phases": {
+  "chiplet_development_workflow": {
+    "description": "Comprehensive chiplet development workflow using the new chipletIntegration framework",
+    "workflow_phases": {
       "phase1_standards_compliance": {
-        "description": "Standards compliance foundation and validation",
+        "description": "Standards compliance foundation using chipletIntegration.compliance",
         "activities": [
-          "Validate CDXML compliance for target OCP version",
-          "Verify BoW specification compliance for target version",
-          "Check interface protocol support (UCIe, BoW, AIB, EMIB)",
+          "Define chipletIntegration.compliance.cdxml with target OCP version",
+          "Set chipletIntegration.compliance.aib for AIB compliance",
+          "Configure chipletIntegration.compliance.ucie for future migration",
           "Establish compliance baseline and validation plan"
         ],
         "deliverables": [
-          "CDXML compliance validation report",
-          "BoW specification compliance report",
-          "Interface protocol compliance matrix",
-          "Compliance validation plan"
+          "chipletIntegration.compliance specification",
+          "CDXML compliance validation plan",
+          "AIB/UCIe compliance matrix"
         ]
       },
-      "phase2_design": {
-        "description": "Chiplet architecture and interface design with standards compliance",
+      "phase2_interface_design": {
+        "description": "Interface design using chipletIntegration.phy and chipletIntegration.link",
         "activities": [
-          "Define chiplet boundaries and interfaces per CDXML",
-          "Select die-to-die interface protocols per BoW spec",
-          "Design chiplet wrapper with compliance validation",
-          "Plan power domain partitioning per standards",
-          "Define thermal and packaging requirements"
+          "Design chipletIntegration.phy for target standard (AIB, BoW, UCIe)",
+          "Configure chipletIntegration.link for protocol requirements",
+          "Plan chipletIntegration.management for discovery and configuration",
+          "Define interface boundaries and connectivity"
         ],
         "deliverables": [
-          "Standards-compliant chiplet architecture specification",
-          "CDXML-compliant interface protocol definitions",
-          "BoW-compliant power domain specifications",
-          "Thermal analysis requirements per standards"
+          "chipletIntegration.phy specification",
+          "chipletIntegration.link protocol definition",
+          "chipletIntegration.management configuration"
         ]
       },
       "phase3_implementation": {
-        "description": "RTL implementation and verification with compliance focus",
+        "description": "RTL implementation using chipletIntegration specifications",
         "activities": [
-          "Implement CDXML-compliant chiplet wrapper modules",
-          "Develop BoW-compliant die-to-die interface logic",
-          "Create power management logic per standards",
-          "Implement test access mechanisms for compliance",
-          "Develop chiplet-specific testbenches with validation"
+          "Implement PHY layer per chipletIntegration.phy specifications",
+          "Develop link layer per chipletIntegration.link requirements",
+          "Create management layer per chipletIntegration.management",
+          "Implement compliance validation per chipletIntegration.compliance"
         ],
         "deliverables": [
           "Standards-compliant chiplet RTL implementation",
-          "CDXML-compliant interface verification testbenches",
-          "BoW-compliant power domain verification",
-          "Multi-die communication tests per standards"
+          "Interface verification testbenches",
+          "Compliance validation tests"
         ]
       },
       "phase4_packaging": {
-        "description": "Packaging design and constraints with standards compliance",
+        "description": "Packaging design using chipletIntegration.packaging",
         "activities": [
-          "Design interposer layout per CDXML mechanical specs",
-          "Define bump map per BoW physical requirements",
-          "Specify thermal management per standards",
-          "Plan power delivery network per CDXML electrical",
-          "Design test access infrastructure for compliance"
+          "Design packaging per chipletIntegration.packaging.assembly",
+          "Plan thermal management per chipletIntegration.packaging.thermal",
+          "Configure power delivery per chipletIntegration.packaging.power_delivery",
+          "Create bump map and interposer specifications"
         ],
         "deliverables": [
-          "CDXML-compliant interposer design constraints",
-          "BoW-compliant bump map specifications",
-          "Standards-compliant thermal analysis results",
-          "CDXML-compliant power delivery specifications"
+          "Packaging design constraints",
+          "Thermal analysis results",
+          "Power delivery specifications"
         ]
       },
       "phase5_integration": {
-        "description": "Multi-die system integration with compliance validation",
+        "description": "Multi-die system integration with chipletIntegration validation",
         "activities": [
-          "Integrate multiple chiplets with standards compliance",
-          "Verify system-level functionality per CDXML",
-          "Perform thermal and power analysis per standards",
-          "Validate signal integrity per BoW requirements",
-          "Execute system-level testing with compliance checks"
+          "Integrate multiple chiplets using chipletIntegration specifications",
+          "Validate system-level compliance per chipletIntegration.compliance",
+          "Perform thermal and power analysis per chipletIntegration.packaging",
+          "Execute system-level testing with compliance validation"
         ],
         "deliverables": [
-          "Standards-compliant integrated system design",
-          "CDXML-compliant system-level verification results",
-          "Standards-compliant thermal and power analysis reports",
-          "BoW-compliant signal integrity analysis"
+          "Integrated system design",
+          "System-level verification results",
+          "Compliance validation reports"
         ]
       }
     },
@@ -1734,146 +2362,36 @@
         ],
         "compliance_validation": [
           "CDXML validation tools",
-          "BoW compliance checkers",
-          "Protocol validation tools"
+          "AIB compliance checkers",
+          "UCIe protocol validation tools"
         ]
-      }
-    },
-    "interface_protocols": {
-      "description": "Supported die-to-die interface protocols with compliance status",
-      "ucie": {
-        "description": "Universal Chiplet Interconnect Express",
-        "features": [
-          "Industry standard",
-          "High bandwidth",
-          "Low latency",
-          "Advanced features"
-        ],
-        "use_cases": [
-          "High-performance computing",
-          "Data center applications",
-          "AI/ML accelerators"
-        ],
-        "compliance": "CDXML v0.2 compliant"
-      },
-      "bow": {
-        "description": "Bunch of Wires",
-        "features": [
-          "Simple protocol",
-          "Low overhead",
-          "Easy implementation",
-          "Cost-effective"
-        ],
-        "use_cases": [
-          "Consumer electronics",
-          "IoT devices",
-          "Cost-sensitive applications"
-        ],
-        "compliance": "BoW 2.0d.1 compliant"
-      },
-      "aib": {
-        "description": "Advanced Interface Bus",
-        "features": [
-          "Intel proprietary",
-          "High bandwidth",
-          "Low power",
-          "Advanced features"
-        ],
-        "use_cases": [
-          "Intel-based systems",
-          "FPGA integration",
-          "High-performance applications"
-        ],
-        "compliance": "CDXML v0.2 compliant"
-      },
-      "emib": {
-        "description": "Embedded Multi-die Interconnect Bridge",
-        "features": [
-          "Intel technology",
-          "High density",
-          "Low latency",
-          "Advanced packaging"
-        ],
-        "use_cases": [
-          "Intel advanced packaging",
-          "High-density integration",
-          "Performance-critical applications"
-        ],
-        "compliance": "CDXML v0.2 compliant"
-      }
-    },
-    "packaging_considerations": {
-      "interposer_technology": {
-        "silicon_interposer": {
-          "description": "Silicon-based interposer with high routing density",
-          "advantages": [
-            "High routing density",
-            "Fine pitch connections",
-            "Excellent electrical performance"
-          ],
-          "challenges": [
-            "Higher cost",
-            "Thermal management",
-            "Design complexity"
-          ]
-        },
-        "organic_interposer": {
-          "description": "Organic substrate-based interposer",
-          "advantages": [
-            "Lower cost",
-            "Easier thermal management",
-            "Simpler design"
-          ],
-          "challenges": [
-            "Lower routing density",
-            "Limited electrical performance",
-            "Coarser pitch"
-          ]
-        }
-      },
-      "bump_technology": {
-        "micro_bumps": {
-          "description": "Fine-pitch micro-bumps for high-density connections",
-          "pitch_range": "40-100 μm",
-          "applications": "High-density die-to-die connections"
-        },
-        "c4_bumps": {
-          "description": "Controlled collapse chip connection bumps",
-          "pitch_range": "150-200 μm",
-          "applications": "Die-to-package connections"
-        }
       }
     }
   },
   "ai_prompts": {
     "description": "AI assistance prompts for IP development across all flows with enhanced standards compliance and verification",
-    "compliance_validation": {
-      "validate_cdxml": "Validate chiplet against CDXML {version} with compliance checklist, interface validation, and electrical validation",
-      "check_bow_compliance": "Check BoW {spec_version} compliance for {signaling_class} signaling, timing constraints, and bump configuration",
-      "verify_interface_protocol": "Verify {protocol} compliance with {lane_configuration} and {training_requirements}",
-      "validate_standards": "Validate chiplet compliance with {industry_standards} and {certification_requirements}"
+    "framework_generation": {
+      "generate_chiplet_integration": "Generate complete chipletIntegration object for {standard} with {lanes} lanes, {protocol} link, and {assembly} packaging",
+      "create_phy_spec": "Create chipletIntegration.phy specification for {standard} {version} with {mode} mode and {lanes} lanes",
+      "design_link_layer": "Design chipletIntegration.link for {protocol} with {width_bits} bits and {flow_control}",
+      "plan_management": "Plan chipletIntegration.management with {discovery} discovery and {firmware_update} capabilities",
+      "configure_packaging": "Configure chipletIntegration.packaging for {assembly} with {thermal_management} and {power_delivery}",
+      "set_compliance": "Set chipletIntegration.compliance for {cdxml_version}, {aib_version}, and {ucie_profile}",
+      "plan_migration": "Plan chipletIntegration.migrationPath from {current_standard} to {target_standard}"
     },
-    "design_generation": {
-      "generate_cdxml_compliant": "Generate CDXML-compliant chiplet interface for {protocol} with {interface_width} lanes",
-      "create_bow_compliant": "Create BoW-compliant signaling for {class} with {timing} and {bump_config}",
-      "design_compliance_wrapper": "Design compliance wrapper for {protocol} with {compliance_features}",
-      "generate_standards_interface": "Generate standards-compliant interface using {protocol} specifications"
+    "validation_and_testing": {
+      "validate_phy_compliance": "Validate chipletIntegration.phy against {standard} {version} specifications",
+      "test_link_protocol": "Test chipletIntegration.link {protocol} compliance with {validation_requirements}",
+      "verify_management": "Verify chipletIntegration.management discovery and firmware update capabilities",
+      "validate_packaging": "Validate chipletIntegration.packaging thermal and power delivery specifications",
+      "check_compliance": "Check chipletIntegration.compliance against {standards} requirements",
+      "test_migration": "Test chipletIntegration.migrationPath compatibility and transition readiness"
     },
-    "packaging_design": {
-      "generate_interposer": "Generate interposer design constraints for {interposer_tech} with {routing_layers} and {die_spacing}",
-      "create_bump_map": "Create bump map constraints with {bump_pitch}, {bump_size}, and {power_signal_ratio}",
-      "design_thermal": "Design thermal management for {power_dissipation} with {junction_temp} and {thermal_resistance}",
-      "generate_packaging": "Generate packaging constraints for {package_type} with {pin_count} and thermal considerations"
-    },
-    "verification": {
-      "create_compliance_test": "Create compliance test for {protocol} with {validation_requirements}",
-      "generate_standards_testbench": "Generate standards-compliant testbench for {protocol} validation",
-      "validate_signal_conformance": "Validate signal conformance against {protocol} specifications",
-      "test_multi_die": "Create multi-die testbench with chiplet-to-chiplet communication testing",
-      "formal_verification": "Create formal verification properties for {verification_target}",
-      "assertion_generation": "Generate assertions for {specific_behavior} in this design",
-      "coverage_analysis": "Analyze coverage gaps in this verification plan",
-      "regression_testing": "Set up automated regression testing for {test_suite}"
+    "integration_guidance": {
+      "integrate_chiplets": "Integrate multiple chiplets using chipletIntegration specifications for {system_type}",
+      "validate_system": "Validate system-level compliance using chipletIntegration.compliance specifications",
+      "optimize_packaging": "Optimize chipletIntegration.packaging for {performance_requirements} and {cost_constraints}",
+      "plan_migration": "Plan migration strategy using chipletIntegration.migrationPath specifications"
     },
     "rtl_generation": {
       "generate_module": "Generate a SystemVerilog module for {functionality} with {interfaces}",
@@ -1953,6 +2471,12 @@
         "chiplet_flows": "Use digital testbenches with chiplet-specific interface testing"
       }
     },
+    "verification": {
+      "formal_verification": "Create formal verification properties for {verification_target}",
+      "assertion_generation": "Generate assertions for {specific_behavior} in this design",
+      "coverage_analysis": "Analyze coverage gaps in this verification plan",
+      "regression_testing": "Set up automated regression testing for {test_suite}"
+    },
     "documentation": {
       "create_documentation": "Generate documentation for {component} following Vyges standards",
       "update_metadata": "Update metadata for {ip_block} with latest information",
@@ -2010,11 +2534,11 @@
     "validate_design_document": "Validate design document for completeness, consistency, traceability, and visual documentation quality",
     "enhance_design_document": "Improve existing design document by adding missing sections, enhancing visual aids, and ensuring quality compliance",
     "improve_documentation_readability": "Convert JSON code blocks and technical jargon to clear English text for better accessibility and readability",
-    "create_chiplet_ready_ip": "Create a chiplet-ready IP block with die-to-die interface support, packaging considerations, and multi-die integration capabilities",
-    "validate_chiplet_compatibility": "Validate IP block for chiplet integration readiness: interface compatibility, packaging requirements, and die-to-die connectivity",
-    "generate_chiplet_interface": "Generate die-to-die interface wrapper using UCIe, BoW, AIB, or EMIB protocols for chiplet integration",
-    "create_multi_die_testbench": "Create testbench for multi-die system simulation with chiplet-to-chiplet communication testing",
-    "generate_chiplet_documentation": "Generate chiplet-specific documentation including packaging requirements, die-to-die interface specifications, and integration guidelines",
+    "create_chiplet_ready_ip": "Create a chiplet-ready IP block with chipletIntegration specifications including PHY, Link, Management, Packaging, Compliance, and Migration Path",
+    "validate_chiplet_compatibility": "Validate IP block for chiplet integration readiness using chipletIntegration framework: interface compatibility, packaging requirements, and die-to-die connectivity",
+    "generate_chiplet_interface": "Generate die-to-die interface wrapper using chipletIntegration.phy and chipletIntegration.link specifications for UCIe, BoW, AIB, or EMIB protocols",
+    "create_multi_die_testbench": "Create testbench for multi-die system simulation with chiplet-to-chiplet communication testing using chipletIntegration specifications",
+    "generate_chiplet_documentation": "Generate chiplet-specific documentation including chipletIntegration specifications, packaging requirements, die-to-die interface specifications, and integration guidelines",
     "generate_interposer_constraints": "Generate interposer design constraints including technology, routing layers, pitch, and die spacing requirements",
     "create_bump_constraints": "Create bump map constraints with pitch, size, array configuration, and power/signal bump counts",
     "analyze_thermal_constraints": "Analyze and specify thermal constraints including power limits, junction temperature, thermal resistance, and cooling requirements",
@@ -2456,11 +2980,11 @@
         "asic_flow": "Provide ASIC-specific catalog guidance including synthesis support, timing analysis, and power management",
         "fpga_flow": "Provide FPGA-specific catalog guidance including pin constraints, resource utilization, and implementation support",
         "analog_flow": "Provide analog-specific catalog guidance including behavioral modeling, circuit design, and mixed-signal support",
-        "chiplet_flow": "Provide chiplet-specific catalog guidance including CDXML/BoW compliance and packaging considerations"
+        "chiplet_flow": "Provide chiplet-specific catalog guidance including chipletIntegration specifications, CDXML/BoW compliance, and packaging considerations"
       },
       "standards_compliance": {
-        "cdxml_validation": "Guide CDXML compliance validation for chiplet catalog entries",
-        "bow_validation": "Guide BoW compliance validation for chiplet catalog entries",
+        "cdxml_validation": "Guide CDXML compliance validation for chiplet catalog entries using chipletIntegration.compliance.cdxml",
+        "bow_validation": "Guide BoW compliance validation for chiplet catalog entries using chipletIntegration.compliance specifications",
         "standards_cataloging": "Guide standards-compliant catalog entry creation and validation",
         "compliance_reporting": "Guide compliance reporting and validation for catalog entries"
       },
@@ -2619,12 +3143,13 @@
       "security_validation": 10
     },
     "chiplet_specific_weighting": {
+      "description": "Scoring weights for chiplet-specific IP blocks using chipletIntegration framework",
+      "standards_compliance": 35,
       "interface_compliance": 25,
-      "thermal_analysis": 20,
-      "power_integrity": 20,
-      "signal_integrity": 15,
-      "reliability_validation": 10,
-      "ecosystem_integration": 10
+      "packaging_considerations": 20,
+      "migration_readiness": 10,
+      "vendor_differentiation": 10,
+      "notes": "Standards compliance now has higher weight reflecting the new chipletIntegration framework's emphasis on interoperability"
     },
     "ai_prompt": "Improve this IP block to raise its catalog quality score"
   },

@@ -59,7 +59,31 @@ MODULE_NAME := memory
 TOP_MODULE := fft_memory
 ```
 
-### **3. Rename Files Following Vyges Convention**
+### **3. Install Vyges Extension (Recommended)**
+Install the Vyges VyContext extension for AI-powered development:
+
+**For VS Code (Marketplace):**
+```bash
+# Install from VSCode Marketplace
+code --install-extension vyges.vycontext
+```
+
+**For Cursor IDE (Bundled):**
+```bash
+# Install bundled extension (no marketplace available)
+cursor --install-extension extensions/cursor/vycontext-0.1.0.vsix
+```
+
+**Benefits:**
+- 🧠 **AI Context**: Automatic hardware IP context injection
+- 🔧 **Tool Integration**: Synthesis and verification tool guidance  
+- 📋 **Standards**: Enforced naming conventions and patterns
+- 🔐 **Authentication**: Secure access to Vyges services
+- 📊 **Tier-Based**: Features based on your subscription tier
+
+**Status Check:** `Ctrl+Shift+P` → "Vyges VyContext: Show Status"
+
+### **4. Rename Files Following Vyges Convention**
 ```bash
 # RTL file (MUST follow block-name_module-name.sv)
 mv rtl/example_core.sv rtl/fft_memory.sv
@@ -75,7 +99,7 @@ mv docs/example-architecture.md docs/fft-architecture.md
 mv docs/example-design_spec.md docs/fft-design_spec.md
 ```
 
-### **4. Test Your Setup**
+### **5. Test Your Setup**
 ```bash
 make check      # Check tool availability
 make info       # Show IP block information

@@ -1,6 +1,12 @@
 # Vyges IP Development Rules
 
-This project follows Vyges conventions for hardware IP development. Always refer to .vyges-ai-context.json for:
+This project follows Vyges conventions for hardware IP development. Context is provided via the **vyges.vycontext** extension:
+
+## Extension-Based Context
+- **Extension**: `vyges.vycontext` (install from Cursor Marketplace)
+- **Context Source**: MCP server at `agent.services.vyges.com`
+- **Authentication**: OAuth via Keycloak (auto-detected in Codespaces)
+- **Status Check**: `Ctrl+Shift+P` → "Vyges VyContext: Show Status"
 
 ## Code Generation Rules
 - Use SystemVerilog for RTL
@@ -34,4 +40,13 @@ This project follows Vyges conventions for hardware IP development. Always refer
 - Use vyges validate for checking compliance
 - Use vyges generate for code generation
 
-Always check .vyges-ai-context.json for complete context and specific AI prompts. 
+## Context Access
+The **vyges.vycontext** extension automatically provides:
+- RTL design patterns and coding standards
+- Synthesis and testbench guidance
+- Tool-specific flags and configurations
+- DFT/JTAG implementation patterns
+- Pin/pad consistency validation
+- Metadata generation workflows
+
+**No local context files needed** - all context is loaded from the extension's MCP server.

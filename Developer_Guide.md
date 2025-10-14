@@ -19,9 +19,38 @@ Whether you are a new user looking for a quickstart or an advanced developer see
 - Git installed
 - Python 3.8+ (for cocotb testing)
 - Verilator (for simulation)
-- Vyges CLI tool (for project initialization and metadata generation)
 - Basic knowledge of SystemVerilog
 - AI-enabled editor (Cursor, VSCode with Copilot, or similar)
+- **Note**: Vyges CLI tool is planned for future release (currently use manual setup)
+
+## Quick Setup
+
+### Tool Installation
+```bash
+# Show tool installation guide
+make install-tools
+
+# Install Vyges extension for your IDE
+make install-ext
+
+# Show directory structure overview
+make structure
+```
+
+### Build System
+```bash
+# Check tool availability
+make check
+
+# Run synthesis
+make synth
+
+# Run simulation
+make sim
+
+# Generate documentation
+make docs
+```
 
 ## AI-Assisted Development Mode
 
@@ -29,18 +58,18 @@ The Vyges IP Template includes comprehensive AI context to accelerate developmen
 
 ### AI Context Structure
 
-The template includes several AI context files designed for different environments:
+The template now uses **VyContext** extensions for AI-assisted development:
 
-- **`.vyges-ai-context.json`** — Comprehensive development context with conventions, patterns, and AI prompts
-- **`.cursorrules`** — Cursor-specific development rules and conventions
-- **`.copilot-chat-context.md`** — GitHub Copilot chat context for VSCode
+- **VyContext VSCode Extension** — Comprehensive development context with conventions, patterns, and AI prompts
+- **VyContext Cursor Extension** — Cursor-specific development rules and conventions
+- **`.vyges-ip-template.yml`** — Role-based configuration that drives VyContext behavior
 - **`Developer_Guide.md`** — This comprehensive guide with AI prompts and workflows
 
 ### Using AI Mode in Different Environments
 
 #### 1. Cursor Editor
-- Open the repository in Cursor. Cursor will automatically detect `.cursorrules` and load Vyges conventions.
-- The AI context from `.vyges-ai-context.json` is available for reference.
+- Install the **VyContext Cursor Extension** from the extensions marketplace
+- Open the repository in Cursor. VyContext will automatically detect `.vyges-ip-template.yml` and load role-based context
 - Use prompts like:
   - "Create a SystemVerilog UART transmitter module following Vyges conventions"
   - "What vyges expand command should I use to add FPGA support to this project?"
@@ -48,29 +77,29 @@ The template includes several AI context files designed for different environmen
   - "Check if this module follows Vyges conventions and suggest improvements"
   - "Generate README.md following Vyges documentation structure"
 - Best practices:
-  - Reference `.vyges-ai-context.json` explicitly in complex prompts
-  - Use the specific AI prompts listed in the context file
+  - VyContext automatically provides relevant context based on your role (ip_dev, verification, etc.)
+  - Use the specific AI prompts that appear in VyContext suggestions
   - Verify generated code follows Vyges naming conventions
   - Ask for validation and improvement suggestions
 
-#### 2. VSCode with GitHub Copilot
-- Install GitHub Copilot extension in VSCode.
-- Open the repository and reference `.copilot-chat-context.md` for Vyges conventions.
-- Use Copilot Chat for guided development:
+#### 2. VSCode with VyContext
+- Install the **VyContext VSCode Extension** from the extensions marketplace
+- Open the repository in VSCode. VyContext will automatically detect `.vyges-ip-template.yml` and load role-based context
+- Use prompts for guided development:
   - "Generate SystemVerilog module following Vyges conventions"
   - "What CLI commands should I use to initialize this UART controller project?"
   - "Create README.md following Vyges documentation structure"
   - "Validate this code for Vyges Catalog readiness"
 - Best practices:
-  - Use Copilot Chat for complex queries
-  - Reference the context file in your prompts
+  - VyContext automatically provides relevant context based on your role
+  - Use the AI prompts that appear in VyContext suggestions
   - Verify generated code matches Vyges patterns
   - Ask for explanations of generated code
 
 #### 3. GitHub Copilot (Standalone)
 - Ensure you have GitHub Copilot access.
 - Open the repository in any supported editor.
-- Reference `.vyges-ai-context.json` for conventions.
+- Reference `.vyges-ip-template.yml` for role-based context and conventions.
 - Use comments to guide generation:
   - `// Create UART controller following Vyges conventions`
 - Best practices:
@@ -80,41 +109,41 @@ The template includes several AI context files designed for different environmen
 
 #### 4. Windsurf (JetBrains AI Assistant)
 - Install Windsurf in your JetBrains IDE.
-- Open the repository and reference `.vyges-ai-context.json` for context.
+- Open the repository and reference `.vyges-ip-template.yml` for role-based context.
 - Use prompts like:
-  - "Generate SystemVerilog module following Vyges conventions from .vyges-ai-context.json"
+  - "Generate SystemVerilog module following Vyges conventions from .vyges-ip-template.yml"
   - "Analyze this project structure and suggest Vyges compliance improvements"
   - "Refactor this module to follow Vyges naming and structure conventions"
 - Best practices:
-  - Explicitly reference the AI context file
+  - Explicitly reference the `.vyges-ip-template.yml` configuration file
   - Use Windsurf's project-aware features
   - Leverage JetBrains IDE integration for better code generation
 
 #### 5. Custom LLM Integration
-- Copy relevant sections from `.vyges-ai-context.json`.
+- Copy relevant sections from `.vyges-ip-template.yml` and this Developer Guide.
 - Include Vyges conventions in your LLM system prompt.
-- Use the AI prompts from the context file.
+- Use the AI prompts from the documentation.
 - Example system prompt:
-  - "You are an AI assistant for Vyges IP development. Follow these conventions: Use SystemVerilog for RTL, snake_case naming, required module headers, place RTL in rtl/, testbenches in tb/, use vyges CLI commands, follow metadata-driven generation from vyges-metadata.json."
+  - "You are an AI assistant for Vyges IP development. Follow these conventions: Use SystemVerilog for RTL, snake_case naming, required module headers, place RTL in rtl/, testbenches in verification/, use VyContext for development, follow metadata-driven generation from vyges-metadata.json, use role-based context from .vyges-ip-template.yml."
 - Best practices:
   - Include complete context in system prompts
-  - Use specific AI prompts from the context file
+  - Use specific AI prompts from this Developer Guide
   - Validate generated code against Vyges conventions
   - Iterate and improve prompts based on results
 
 ### AI-Assisted Development Workflow
 
 1. **Project Initialization**
-   - Use CLI for initial setup: `vyges init --interactive`
-   - Use AI to customize and expand: "Customize this project for a UART controller with APB interface"
+   - Use VyContext AI assistant: "Initialize this project as a UART controller IP following Vyges conventions"
+   - VyContext automatically handles metadata, directory structure, and initial files
 2. **RTL Development**
-   - Generate RTL with AI assistance: "Create UART controller RTL following Vyges conventions"
+   - VyContext generates RTL: "Create UART controller RTL following Vyges conventions"
    - Add features: "Add FIFO support to the UART controller"
 3. **Testbench Development**
-   - Generate testbenches: "Create SystemVerilog testbench for UART controller"
+   - VyContext creates testbenches: "Create SystemVerilog testbench for UART controller"
    - Advanced: "Generate cocotb testbench with coverage and assertions"
 4. **Documentation Generation**
-   - Generate documentation: "Generate README.md following Vyges documentation structure"
+   - VyContext generates documentation: "Generate README.md following Vyges documentation structure"
    - Architecture: "Create architecture documentation for UART controller"
    - Pinout: "Generate pinout table from interface definitions"
 5. **Validation and Quality Assurance**
@@ -122,26 +151,34 @@ The template includes several AI context files designed for different environmen
    - Improve: "Suggest improvements to raise catalog quality score"
    - Interface: "Validate interface compliance with Vyges standards"
 
-### AI Context File Details
+### VyContext Integration Details
 
-- `.vyges-ai-context.json` includes:
-  - Code generation rules (RTL, testbench, documentation)
-  - Project structure and naming conventions
-  - CLI integration and workflow suggestions
-  - Validation rules and catalog readiness criteria
-  - Specific AI prompts for common tasks
+- **`.vyges-ip-template.yml`** provides:
+  - Role-based directory visibility (ip_dev, verification, integrator, etc.)
+  - Tool requirements and versions for each role
+  - File extensions and documentation paths
+  - MCP hints for AI context management
+  - Schema versioning for future compatibility
+
+- **VyContext Extensions** provide:
+  - **Natural language project setup**: "Initialize this as a UART controller IP"
+  - **Automatic file generation**: Creates metadata, RTL, testbenches from instructions
+  - **Directory management**: Creates/updates structure based on role requirements
+  - **Intelligent context switching**: Adapts to your current role and focus area
+  - **Convention enforcement**: Ensures all generated code follows Vyges standards
 
 ### Best Practices for AI-Assisted Development
-- Always reference the Vyges context in your prompts
-- Use specific AI prompts from `.vyges-ai-context.json`
+- Install and configure VyContext extensions for your IDE
+- Let VyContext automatically provide role-based context from `.vyges-ip-template.yml`
+- Use specific AI prompts that appear in VyContext suggestions
 - Verify generated code follows Vyges conventions
-- Start with CLI initialization, then use AI for customization and expansion
+- Start with VyContext initialization, then use natural language for customization
 - Use AI for validation and improvement suggestions
 - Test AI-generated components thoroughly
 - Refine AI prompts based on results
 - Adapt prompts for your specific AI environment
 
-This AI-assisted development approach transforms the Vyges IP Template from a structural skeleton into an intelligent development environment that guides developers through every aspect of IP creation while maintaining consistency and quality standards.
+This AI-assisted development approach with VyContext transforms the Vyges IP Template from a structural skeleton into an intelligent development environment that guides developers through every aspect of IP creation while maintaining consistency and quality standards through role-based context management.
 
 ## Step 1: Repository Creation and Setup
 
@@ -251,7 +288,7 @@ git push -u origin main
 git push -u origin main --force
 ```
 
-**Important:** You must create the new repository on GitHub before pushing your code. The Vyges CLI will warn you if the remote points to the template repository.
+**Important:** You must create the new repository on GitHub before pushing your code.
 
 ### 1.4 Troubleshooting Repository Setup
 
@@ -277,8 +314,10 @@ git remote set-url origin https://github.com/your-username/your-repo.git
 **Issue 3: "Template references in metadata"**
 ```bash
 # If vyges-metadata.json still references template
-# Regenerate metadata with correct repository info:
-vyges init --fix-metadata
+# Manually edit vyges-metadata.json to update repository info:
+# - Change "name" field to your repository name
+# - Update "source.url" to your repository URL
+# - Update "maintainers" with your information
 ```
 
 **Issue 4: "Branch name conflicts"**
@@ -300,7 +339,7 @@ git push -u origin main
 ```console
 {repository-name}/
 ├── rtl/
-├── tb/
+├── verification/
 │   ├── sv_tb/
 │   └── cocotb/
 ├── flow/
@@ -309,8 +348,12 @@ git push -u origin main
 ├── test/
 │   └── vectors/
 ├── docs/
-├── integration/
+├── soc_integration/
+├── extensions/
+│   ├── install_tools.md
+│   └── install-vyges-extension.sh
 ├── vyges-metadata.template.json
+├── .vyges-ip-template.yml          # Role-based configuration (VyContext)
 ├── .vyges-ai-context.json
 ├── README.md
 ├── Developer_Guide.md
@@ -318,10 +361,12 @@ git push -u origin main
 └── LICENSE
 ```
 
-> **Note:** For advanced projects (ASIC+FPGA, analog/mixed-signal, or multi-IP), use the Vyges CLI to expand the directory structure:
+> **Note:** For advanced projects (ASIC+FPGA, analog/mixed-signal, or multi-IP), manually create additional directories as needed:
 >
 > ```bash
-> vyges expand --platform asic,fpga --add-analog
+> mkdir -p rtl/asic/digital rtl/asic/analog rtl/fpga/digital
+> mkdir -p constraints/asic constraints/fpga
+> mkdir -p flow/asic flow/fpga
 > ```
 > This will create:
 > ```plaintext
@@ -346,7 +391,33 @@ git push -u origin main
 - `janedoe/uart-16550` (specific implementation - one functional IP)
 - `vyges/custom-uart` (custom name - one functional IP)
 
-**✅ DESIGN CHOICE:** The template includes `vyges-metadata.template.json` to prevent developers from accidentally committing generic metadata. The Vyges CLI will generate the correct `vyges-metadata.json` dynamically.
+**✅ DESIGN CHOICE:** Instruct AI agent to use "Vyges conventions and update `vyges-metadata.json`" - the simplest way to update Vyges Metadata.
+
+### 1.4 Role-Based Development Structure
+
+The template now includes `.vyges-ip-template.yml` for role-based configuration:
+
+```bash
+# Show directory structure for your role
+make structure
+
+# The vyges-ip.yml defines different developer roles:
+# - ip_dev: Core IP developer
+# - verification: Verification engineer  
+# - integrator: SoC integration specialist
+# - fpga_prototyper: FPGA prototyping
+# - mixed_signal: Mixed-signal designer
+# - ci_cd: CI/CD and automation
+```
+
+Each role has:
+- **Visible directories**: What directories are relevant to your work
+- **Hidden directories**: Directories that can be ignored for your role
+- **Required tools**: Tools and versions needed for your role
+- **File extensions**: File types relevant to your work
+- **Documentation**: Role-specific guides
+
+This reduces cognitive load by showing only relevant directories and files for your specific role.
 
 ## Licensing & Attribution
 
@@ -365,10 +436,9 @@ The `vyges-ip-template` uses the Apache License, Version 2.0 for licensing. **Im
 - **Build Processes**: Makefiles, build scripts, CI/CD workflows
 - **Tool Integration**: Tool installation scripts and configuration
 - **Template Metadata**: Template JSON files and configuration templates
-- **AI Context and Processing Engine**:
-  - `.vyges-ai-context.json` - AI development context and prompts
-  - `.copilot-chat-context.md` - GitHub Copilot integration context
-  - `.cursorrules` - Cursor editor AI rules and conventions
+- **VyContext Integration**:
+  - `.vyges-ip-template.yml` - Role-based configuration and MCP hints
+  - VyContext VSCode/Cursor extensions - AI development context and prompts
   - AI-generated code patterns and development workflows
 
 ### Attribution Requirements
@@ -726,51 +796,42 @@ cat README_FIRST.md
 
 **✅ IMPROVED:** `README_FIRST.md` now provides clear next steps and explains the minimal structure approach with progressive expansion.
 
-### 3.4.2 Initialize Project with Vyges CLI (Recommended)
-**Design:** Use the Vyges CLI for guided project initialization.
+### 3.4.2 Initialize Project with VyContext (Recommended)
+**Design:** Use VyContext AI assistant for intelligent project setup.
 
-**✅ RECOMMENDED APPROACH:** Use Vyges CLI for automated setup:
+**✅ RECOMMENDED APPROACH:** AI-driven setup using VyContext:
 
 ```bash
-# Interactive initialization (recommended)
-vyges init --interactive
+# 1. Initialize with VyContext AI assistant
+# "Initialize this project as a UART controller IP following Vyges conventions"
 
-# Expected CLI interaction:
-# Welcome to Vyges IP Development!
-# Build IP, Not Boilerplate
-# 
-# Let's set up your functional IP project:
-# IP name: uart-controller (auto-detected from Git Repo name: github.com/janedoe/uart-controller)
-# Author: John Doe (auto-detected from Git: github.com/janedoe)
-# License: [MIT] Apache-2.0 BSD-3-Clause GPL-3.0 CERN-OHL-S Proprietary
-# Target platforms: [ASIC] FPGA (space to select, enter to confirm)
-# Design type: [digital] analog mixed-signal
-# 
-# Tool configuration (auto-selected based on choices):
-# - Simulation: Verilator ✓
-# - Synthesis: OpenLane (ASIC) ✓
-# - Testbench: SystemVerilog + cocotb ✓
-# 
-# Change tools? [y/N]: n
-# 
-# Creating project structure in current directory...
-# ✓ Generated vyges-metadata.json
-# ✓ Created basic RTL template
-# ✓ Set up testbench structure
-# ✓ Configured build system
-# ✓ Added license files (MIT)
+# 2. VyContext automatically:
+# - Updates vyges-metadata.json with your IP details
+# - Customizes .vyges-ip-template.yml for your project
+# - Creates directory structure based on role requirements
+# - Generates initial RTL and verification files
 
-# Alternative: Quick setup from template
-vyges setup --from-template uart-controller --name my-uart --baud-rate 230400
+# 3. Natural language commands:
+# "Add APB interface to the UART controller"
+# "Create SystemVerilog testbench with coverage"
+# "Set up FPGA flow for Xilinx Zynq"
+# "Generate documentation from metadata"
 ```
 
-### 3.4.3 Manual Setup (Alternative)
-If CLI is not available, manually create metadata:
+**🔄 FUTURE:** Vyges CLI will provide automated setup:
+```bash
+# Planned CLI commands (not yet implemented):
+# vyges init --interactive
+# vyges setup --from-template uart-controller --name my-uart
+```
+
+### 3.4.3 VyContext-Only Development
+VyContext is the primary and recommended development mode:
 
 ```bash
-# Copy template and customize
-cp vyges-metadata.template.json vyges-metadata.json
-# Edit vyges-metadata.json with UART Controller details
+# VyContext handles all setup automatically
+# Simply describe what you want to build:
+"Initialize this project as a UART controller IP following Vyges conventions"
 ```
 
 **Minimal UART Controller Metadata (Schema v1.0.0) - STEP-BY-STEP Example (Based on Design):**
@@ -835,12 +896,10 @@ cp vyges-metadata.template.json vyges-metadata.json
 - Basic functionality structure
 - Comments and documentation
 
-### 4.2 Manual RTL Creation (Alternative)
+### 4.2 VyContext RTL Generation
 **File:** `rtl/uart_controller.sv`
 
-**✅ IMPROVED:** AI context provides comprehensive guidance for RTL development.
-
-**Developer creates with Vyges conventions:**
+**✅ VyContext automatically generates RTL following Vyges conventions:**
 
 ```systemverilog
 //=============================================================================
@@ -902,18 +961,16 @@ endmodule
 ### 5.1 AI-Assisted Testbench Generation (Recommended)
 **Design:** Use AI to generate comprehensive testbenches.
 
-**✅ RECOMMENDED APPROACH:** Use AI to generate testbenches from metadata:
+**✅ RECOMMENDED APPROACH:** Use AI to generate testbenches:
 
 ```bash
-# Generate SystemVerilog testbench
-vyges generate testbench --lang systemverilog
-
-# Generate cocotb testbench
-vyges generate testbench --lang cocotb
-
-# AI can also generate testbenches directly:
+# AI can generate testbenches directly:
 # "Create a SystemVerilog testbench for the UART controller"
 # "Generate a cocotb testbench with coverage and assertions"
+
+# 🔄 FUTURE: CLI commands (not yet implemented):
+# vyges generate testbench --lang systemverilog
+# vyges generate testbench --lang cocotb
 ```
 
 **AI will generate:**
@@ -923,12 +980,10 @@ vyges generate testbench --lang cocotb
 - Response checking
 - Coverage collection
 
-### 5.2 Manual Testbench Creation (Alternative)
-**File:** `tb/sv_tb/tb_uart_controller.sv`
+### 5.2 VyContext Testbench Generation
+**File:** `verification/sv_tb/tb_uart_controller.sv`
 
-**✅ IMPROVED:** AI context provides comprehensive testbench guidance.
-
-**Developer creates with Vyges conventions:**
+**✅ VyContext automatically generates testbenches following Vyges conventions:**
 
 ```systemverilog
 module tb_uart_controller;
@@ -956,15 +1011,12 @@ endmodule
 ```
 
 ### 5.3 Cocotb Testbench
-**File:** `tb/cocotb/test_uart_controller.py`
+**File:** `verification/cocotb/test_uart_controller.py`
 
-**✅ IMPROVED:** AI can generate comprehensive cocotb testbenches:
+**✅ VyContext automatically generates comprehensive cocotb testbenches:**
 
 ```bash
-# Generate cocotb testbench with advanced features
-vyges cocotb generate --ip uart-controller
-
-# AI can generate cocotb testbenches with:
+# VyContext generates cocotb testbenches with:
 # - Coverage collection and assertions
 # - Waveform generation and analysis
 # - Python ecosystem integration (pytest, numpy, pandas)
@@ -972,7 +1024,7 @@ vyges cocotb generate --ip uart-controller
 # - AI-driven test generation
 ```
 
-**Developer creates with Vyges conventions:**
+**VyContext generates with Vyges conventions:**
 
 ```python
 import cocotb
@@ -986,7 +1038,7 @@ async def test_uart_basic_transmission(dut):
 ```
 
 ### 5.4 Test Makefile
-**File:** `tb/Makefile`
+**File:** `verification/Makefile`
 
 **✅ IMPROVED:** CLI auto-generates build system and test infrastructure:
 
@@ -1006,16 +1058,14 @@ async def test_uart_basic_transmission(dut):
 **✅ RECOMMENDED APPROACH:** Use AI to generate flow configurations:
 
 ```bash
-# Generate OpenLane configuration
-vyges generate flow --tool openlane
-
-# Generate Vivado configuration
-vyges generate flow --tool vivado
-
 # AI can generate configurations based on:
 # - IP metadata specifications
 # - Target platform requirements
 # - Tool requirements from metadata
+
+# 🔄 FUTURE: CLI commands (not yet implemented):
+# vyges generate flow --tool openlane
+# vyges generate flow --tool vivado
 ```
 
 **AI will generate:**
@@ -1025,12 +1075,10 @@ vyges generate flow --tool vivado
 - Constraint files
 - Build automation
 
-### 6.2 Manual Flow Configuration (Alternative)
+### 6.2 VyContext Flow Configuration
 **File:** `flow/openlane/config.json`
 
-**✅ IMPROVED:** AI context provides comprehensive flow configuration guidance.
-
-**Developer configures with Vyges conventions:**
+**✅ VyContext automatically generates flow configurations following Vyges conventions:**
 
 ```json
 {
@@ -1062,17 +1110,15 @@ vyges generate flow --tool vivado
 **✅ RECOMMENDED APPROACH:** Use AI to generate documentation:
 
 ```bash
-# Generate specification document
-vyges generate spec
-
-# Generate comprehensive README
-vyges generate readme
-
 # AI can generate documentation from:
 # - IP metadata specifications
 # - RTL code analysis
 # - Interface definitions
 # - Test specifications
+
+# 🔄 FUTURE: CLI commands (not yet implemented):
+# vyges generate spec
+# vyges generate readme
 ```
 
 **AI will generate:**
@@ -1082,12 +1128,10 @@ vyges generate readme
 - Integration guides
 - README with proper structure
 
-### 7.2 Manual Documentation Creation (Alternative)
+### 7.2 VyContext Documentation Generation
 **File:** `docs/architecture.md`
 
-**✅ IMPROVED:** AI context provides comprehensive documentation guidance.
-
-**Developer creates with Vyges conventions:**
+**✅ VyContext automatically generates documentation following Vyges conventions:**
 
 ```markdown
 # UART Controller Architecture
@@ -1109,17 +1153,15 @@ This document describes the architecture of the UART Controller IP block.
 **✅ NEW FEATURE:** Generate visual block diagrams:
 
 ```bash
-# Generate single IP block diagram
-vyges diagram block --ip uart-controller
-
-# Generate connection diagram between IPs
-vyges diagram connections --ip1 cpu --ip2 uart-controller
-
 # AI can generate ASCII diagrams showing:
 # - All pins grouped by interface type
 # - Signal directions and descriptions
 # - Pin-to-pin connections between IPs
 # - Interface compatibility validation
+
+# 🔄 FUTURE: CLI commands (not yet implemented):
+# vyges diagram block --ip uart-controller
+# vyges diagram connections --ip1 cpu --ip2 uart-controller
 ```
 
 ### 7.4 API Documentation
@@ -1127,36 +1169,32 @@ vyges diagram connections --ip1 cpu --ip2 uart-controller
 
 ## Step 8: Testing and Validation
 
-### 8.1 CLI-Driven Testing (Recommended)
-**Design:** Use Vyges CLI for comprehensive testing and validation.
+### 8.1 VyContext Testing and Validation
+**Design:** Use VyContext for intelligent testing and validation.
 
-**✅ RECOMMENDED APPROACH:** Use CLI for automated testing:
+**✅ VyContext-powered testing setup:**
 
 ```bash
-# Run basic tests and validation
-vyges test --simulation
+# VyContext automatically sets up testing:
+# "Set up comprehensive testing for the UART controller"
 
-# Run synthesis checks
-vyges test --synthesis
+# VyContext generates:
+# - Testbenches with coverage collection
+# - Performance benchmarks
+# - Integration tests
+# - Validation scripts
 
-# Run linting checks
-vyges test --lint
-
-# Validate project structure and metadata
-vyges validate --strict
+# Use make commands for execution:
+make check          # Check tool availability
+make sim            # Run simulation
+make synth          # Run synthesis
+make lint           # Run linting
 ```
 
-**CLI automatically handles:**
-- Simulation setup and execution
-- Test vector generation
-- Validation and linting
-- Coverage collection
-- Build automation
+### 8.2 VyContext Testing Infrastructure
+**✅ VyContext provides comprehensive testing infrastructure:**
 
-### 8.2 Manual Testing Setup (Alternative)
-**✅ IMPROVED:** CLI provides comprehensive testing infrastructure.
-
-**Developer can create custom tests:**
+**VyContext automatically creates:**
 - `test/vectors/uart_tests.json`
 - `sim/run_simulation.sh`
 - `sim/Makefile`
@@ -1237,50 +1275,54 @@ vyges publish
 
 ## Step 10: CI/CD Setup
 
-### 10.1 CLI-Generated CI/CD (Recommended)
-**Design:** Use Vyges CLI to generate CI/CD configuration.
+### 10.1 VyContext CI/CD Setup
+**Design:** Use VyContext for intelligent CI/CD configuration.
 
-**✅ RECOMMENDED APPROACH:** Use CLI for automated CI/CD setup:
+**✅ VyContext-powered CI/CD setup:**
 
 ```bash
-# CLI automatically generates:
-# - GitHub Actions workflows
-# - CI/CD configuration
-# - Automated testing pipelines
-# - Synthesis and validation workflows
-```
+# VyContext automatically sets up CI/CD:
+# "Set up GitHub Actions workflows for continuous integration"
 
-**CLI generates:**
-- `.github/workflows/test.yml`
-- `.github/workflows/synthesis.yml`
-- Automated testing and validation
-- Coverage reporting
-- Artifact generation
+# VyContext generates:
+# - .github/workflows/test.yml (simulation testing)
+# - .github/workflows/synthesis.yml (synthesis validation)
+# - .github/workflows/lint.yml (code linting)
+# - .github/workflows/validate.yml (metadata validation)
+
+# VyContext configures make commands in workflows:
+# - make check (tool availability)
+# - make sim (simulation)
+# - make synth (synthesis)
+# - make lint (code quality)
+```
 
 ## Step 11: Catalog Publication
 
-### 11.1 CLI-Driven Validation (Recommended)
-**Design:** Use Vyges CLI for comprehensive validation and publication.
+### 11.1 VyContext Validation
+**Design:** Use VyContext for intelligent catalog readiness validation.
 
-**✅ RECOMMENDED APPROACH:** Use CLI for validation and publication:
+**✅ VyContext-powered validation:**
 
 ```bash
-# Validate IP for catalog readiness
-vyges validate --strict
+# VyContext automatically validates for catalog readiness:
+# "Validate this IP for Vyges catalog publication"
 
-# Check catalog readiness
-vyges publish --dry-run
+# VyContext checks:
+# - Metadata JSON syntax and completeness
+# - Project structure matches template
+# - All make targets work (check, sim, synth, lint)
+# - Documentation completeness
+# - License and attribution files
+# - Interface compliance
+# - Test coverage adequacy
 
-# Publish to Vyges catalog
-vyges publish
+# VyContext runs validation:
+make check          # Verify tool availability
+make sim            # Test simulation
+make synth          # Test synthesis
+make lint           # Test linting
 ```
-
-**CLI handles:**
-- Metadata validation
-- Structure validation
-- Code quality checks
-- Catalog compatibility validation
-- Publication workflow
 
 ### 11.2 AI-Assisted Quality Improvement
 **✅ NEW FEATURE:** Use AI to improve catalog quality:
@@ -1296,51 +1338,49 @@ vyges publish
 
 ## Summary of Current Capabilities
 
-### ✅ Implemented Features (CLI-Driven Development)
-1. **Vyges CLI tool** - Automated project initialization and metadata generation
-2. **AI-assisted development** - Comprehensive AI context with guided prompts
-3. **Template system** - Pre-built templates for common IP types
-4. **Automated build system** - CLI-generated Makefiles and scripts
-5. **Documentation generation** - AI-generated documentation from metadata
+### ✅ Implemented Features (Current State)
+1. **Template system** - Pre-built templates for common IP types
+2. **AI-assisted development** - VyContext extensions with role-based AI context
+3. **Automated build system** - Makefile-based build system
+4. **Role-based structure** - `vyges-ip.yml` for developer role management
+5. **Documentation generation** - AI-assisted documentation creation
 
 ### ✅ Implemented Features (Quality Assurance)
-6. **CI/CD automation** - CLI-generated GitHub Actions workflows
-7. **Validation tools** - Comprehensive validation with `vyges validate`
-8. **Integration support** - AI-generated integration examples
-9. **Testing infrastructure** - CLI-generated simulation and test scripts
-10. **Flow configuration** - AI-generated tool configurations
-11. **Code KPIs analysis** - Comprehensive project quality assessment with `scripts/code_kpis.py`
+6. **Testing infrastructure** - Makefile-based simulation and test scripts
+7. **Flow configuration** - Manual tool configurations with AI assistance
+8. **Code KPIs analysis** - Comprehensive project quality assessment with `scripts/code_kpis.py`
+9. **Manual validation** - Project structure and metadata validation
+10. **Integration support** - AI-generated integration examples
 
 ### ✅ Implemented Features (Developer Experience)
-11. **Interactive setup** - Guided initialization with `vyges init --interactive`
-12. **Progressive complexity** - `vyges expand` commands for structure evolution
-13. **ASCII diagrams** - Visual block diagrams with `vyges diagram`
+11. **Manual setup** - Template-based project initialization
+12. **Progressive complexity** - Manual directory structure expansion
+13. **ASCII diagrams** - AI-generated visual block diagrams
 14. **Cocotb integration** - Advanced Python-based verification
-15. **Catalog integration** - Automated publication with `vyges publish`
+15. **Extension integration** - VyContext VSCode/Cursor extensions
 
-### 🔄 Remaining Gaps (Future Enhancements)
-16. **Web interface** - Web-based template selection and customization
-17. **Template marketplace** - Community-contributed templates
-18. **Advanced analytics** - Detailed project analytics and insights
-19. **Collaboration features** - Multi-user development support
-20. **Performance profiling** - Performance analysis and optimization
+### 🔄 Planned Features (Future Enhancements)
+16. **Vyges CLI tool** - Automated project initialization and metadata generation
+17. **CI/CD automation** - CLI-generated GitHub Actions workflows
+18. **Validation tools** - Comprehensive validation with `vyges validate`
+19. **Catalog integration** - Automated publication with `vyges publish`
+20. **Web interface** - Web-based template selection and customization
 
 ## Implementation Status
 
 ### ✅ Completed Features
-1. **Vyges CLI tool** - Core CLI with init, setup, generate, validate, and publish commands
-2. **AI context system** - Comprehensive `.vyges-ai-context.json` with development guidance
-3. **Template system** - Template-based project generation with customization
-4. **Build automation** - CLI-generated Makefiles and build scripts
-5. **Documentation generation** - AI-assisted documentation creation
+1. **VyContext integration** - Role-based AI context through `vyges-ip.yml` and extensions
+2. **Template system** - Template-based project generation with customization
+3. **Build automation** - Makefile-based build system
+4. **Documentation generation** - AI-assisted documentation creation
+5. **Role-based structure** - Developer role management and directory visibility
 
 ### ✅ Completed Features (Quality Assurance)
-6. **CI/CD automation** - GitHub Actions workflow generation
-7. **Validation framework** - Comprehensive project validation
+6. **Testing infrastructure** - Makefile-based simulation and verification setup
+7. **Flow configuration** - Manual tool configuration with AI assistance
 8. **Integration support** - AI-generated integration examples
-9. **Testing infrastructure** - Simulation and verification setup
-10. **Flow configuration** - Tool-specific configuration generation
-11. **Code KPIs analysis** - Project quality assessment and metadata validation
+9. **Code KPIs analysis** - Project quality assessment and metadata validation
+10. **Manual validation** - Project structure and metadata validation
 
 ### 🔄 In Progress Features
 11. **Interactive CLI** - Enhanced interactive mode with guided setup
@@ -1362,7 +1402,7 @@ The Vyges IP template has evolved from a basic structural skeleton into a compre
 
 ### ✅ What's Working Well
 - **CLI-driven development** - Automated project initialization and setup
-- **AI-assisted development** - Comprehensive guidance through `.vyges-ai-context.json`
+- **AI-assisted development** - VyContext extensions with role-based guidance through `vyges-ip.yml`
 - **Template system** - Pre-built templates for common IP types
 - **Progressive complexity** - Start minimal, expand as needed
 - **Quality assurance** - Automated validation, testing, and CI/CD
@@ -1371,18 +1411,18 @@ The Vyges IP template has evolved from a basic structural skeleton into a compre
 - **Developer productivity** - Focus on IP logic, not infrastructure
 - **Consistency** - Standardized conventions and interfaces
 - **Automation** - CLI handles repetitive tasks
-- **Guidance** - AI provides context-aware assistance
+- **Guidance** - VyContext provides role-based, context-aware assistance
 - **Quality** - Built-in validation and testing
 
 ### 🚀 Impact
 The template now enables developers to:
-1. **Start immediately** - `vyges init --interactive` gets you coding
+1. **Start immediately** - VyContext AI assistant gets you coding with natural language
 2. **Focus on design** - Infrastructure is handled automatically
 3. **Maintain quality** - Built-in validation and testing
 4. **Scale complexity** - Progressive structure expansion
 5. **Publish easily** - Automated catalog integration
 
-This transformation from a structural template to a comprehensive development environment demonstrates the power of combining CLI automation with AI assistance to create a truly productive IP development experience.
+This transformation from a structural template to a comprehensive development environment demonstrates the power of combining CLI automation with VyContext's role-based AI assistance to create a truly productive IP development experience.
 
 ## Section 12: Full AI Automation (GOD-MODE)
 
@@ -1737,10 +1777,10 @@ vyges validate --complete --from-metadata vyges-metadata.json
 - `rtl/fifo.sv` - Configurable FIFO module
 
 **Testbench Files:**
-- `tb/sv_tb/tb_uart_controller.sv` - SystemVerilog testbench
-- `tb/cocotb/test_uart_controller.py` - Cocotb testbench
-- `tb/cocotb/test_uart_advanced.py` - Advanced test scenarios
-- `tb/cocotb/test_uart_performance.py` - Performance tests
+- `verification/sv_tb/tb_uart_controller.sv` - SystemVerilog testbench
+- `verification/cocotb/test_uart_controller.py` - Cocotb testbench
+- `verification/cocotb/test_uart_advanced.py` - Advanced test scenarios
+- `verification/cocotb/test_uart_performance.py` - Performance tests
 - `test/vectors/uart_tests.json` - Test vectors
 
 **Documentation:**
@@ -1752,7 +1792,7 @@ vyges validate --complete --from-metadata vyges-metadata.json
 
 **Build System:**
 - `Makefile` - Main build system
-- `tb/Makefile` - Testbench build system
+- `verification/Makefile` - Testbench build system
 - `scripts/build.sh` - Build scripts
 - `scripts/simulate.sh` - Simulation scripts
 

@@ -1,0 +1,226 @@
+# Copyright © 2025 Vyges. All Rights Reserved. Use subject to LICENSE terms.
+# This file is part of the Vyges IP Template and is subject to the same licensing terms
+# as specified in the LICENSE file. See LICENSE file for details.
+
+# Schema versioning for future compatibility
+schema_version: 1.0
+schema_url: https://vyges.com/schema/ip-metadata.schema.json
+
+ip_name: example_core
+version: 0.1.0
+language: systemverilog
+rtl_root: rtl/
+metadata_root: metadata/
+verification_root: verification/
+dependencies_file: dependencies/ip-deps.json
+
+# MCP server integration hints
+mcp_hints:
+  exposed_contexts:
+    - rtl
+    - verification
+    - metadata
+    - docs
+    - config
+  default_context_scope: role
+  allow_dynamic_role_switch: true
+  auto_refresh_on_save: true
+  validate_structure: false              # Set to true when schema is deployed
+
+# Default role configuration
+defaults:
+  default_role: ip_dev
+
+# Role summary for documentation and onboarding UIs
+role_summary:
+  ip_dev: "Implements and maintains RTL for the IP block"
+  verification: "Develops testbenches and formal properties"
+  integrator: "Integrates IP into SoC or subsystem level"
+  fpga_prototyper: "Builds FPGA prototypes for early validation"
+  mixed_signal: "Designs analog or AMS components of the IP"
+  ci_cd: "Maintains automation, build, and release pipelines"
+
+# Layered Visibility - Tag Directories by Developer Role
+roles:
+  ip_dev:                    # Core IP developer (base role)
+    inherits_from: null      # Base role - no inheritance
+    visible_dirs:
+      - rtl/
+      - verification/
+      - config/
+      - data/
+      - docs/
+    hidden_dirs:              # Explicitly hide irrelevant directories
+      - flow/asic/
+      - soc_integration/
+      - integration_ready/
+    primary_focus: ["docs/", "rtl/", "verification/"]
+    tools_required:
+      - name: verilator
+        version: "5.018"
+        license: "LGPL-3.0"
+      - name: yosys
+        version: "0.46"
+        license: "ISC"
+      - name: abc
+        version: "1.01"
+        license: "MIT"
+    file_extensions: [".sv", ".v", ".vh", ".svh"]
+    documentation: "docs/ip_dev_guide.md"
+    
+  integrator:                # SoC integration specialist
+    inherits_from: ip_dev    # Inherits base IP developer permissions
+    visible_dirs:
+      - soc_integration/
+      - integration_ready/
+      - metadata/
+      - dependencies/
+    hidden_dirs:
+      - flow/fpga/
+      - analog/
+      - verification/formal/
+    primary_focus: ["soc_integration/", "metadata/"]
+    tools_required:
+      - name: topgen
+        version: "0.1.0"
+      - name: crossbar
+        version: "0.1.0"
+    file_extensions: [".json", ".yaml", ".yml"]
+    documentation: "docs/soc_integration_guide.md"
+    
+  verification:              # Verification engineer
+    inherits_from: ip_dev    # Inherits base IP developer permissions
+    visible_dirs:
+      - verification/
+      - coverage/
+      - formal/
+      - stimulus/
+      - results/
+    hidden_dirs:
+      - soc_integration/
+      - flow/asic/
+      - analog/
+    primary_focus: ["verification/"]
+    tools_required:
+      - name: verilator
+        version: "5.018"
+        license: "LGPL-3.0"
+      - name: yosys
+        version: "0.46"
+        license: "ISC"
+      - name: symbiyosys
+        version: "1.8"
+        license: "ISC"
+      - name: z3
+        version: "4.12.2"
+        license: "MIT"
+    file_extensions: [".sv", ".svh", ".sva", ".py"]
+    documentation: "docs/verification_guide.md"
+    
+  fpga_prototyper:          # FPGA prototyping specialist
+    inherits_from: ip_dev    # Inherits base IP developer permissions
+    visible_dirs:
+      - flow/fpga/
+      - rtl/
+      - config/
+      - constraints/
+    hidden_dirs:
+      - soc_integration/
+      - analog/
+      - verification/formal/
+    primary_focus: ["flow/fpga/", "rtl/"]
+    tools_required:
+      - name: yosys
+        version: "0.46"
+        license: "ISC"
+      - name: nextpnr
+        version: "0.6"
+        license: "ISC"
+      - name: prjtrellis
+        version: "1.0"
+        license: "Apache-2.0"
+      - name: icestorm
+        version: "0.0"
+        license: "ISC"
+      - name: vivado
+        version: "2025.1"
+        license: "Commercial"
+    file_extensions: [".xdc", ".sdc", ".vhd", ".tcl", ".pcf"]
+    documentation: "docs/fpga_proto_guide.md"
+    flow_config:
+      synthesis_tool: yosys
+      place_route_tool: nextpnr
+      board: ice40hx8k-ct256
+      build_script: flow/fpga/run_fpga_build.sh
+      bitstream_output: build/fpga/example_core.bin
+    flow_config_vivado:
+      synthesis_tool: vivado
+      place_route_tool: vivado
+      board: xc7z020clg484-1
+      build_script: flow/fpga/run_vivado_build.tcl
+      bitstream_output: build/fpga/example_core.bit
+    
+  mixed_signal:             # Mixed-signal designer
+    inherits_from: ip_dev    # Inherits base IP developer permissions
+    visible_dirs:
+      - analog/
+      - rtl/
+      - verification/
+      - models/
+    hidden_dirs:
+      - soc_integration/
+      - flow/asic/
+    primary_focus: ["analog/", "rtl/"]
+    tools_required:
+      - name: ngspice
+        version: "42"
+        license: "BSD-3-Clause"
+      - name: magic
+        version: "8.3"
+        license: "BSD-3-Clause"
+      - name: klayout
+        version: "0.28"
+        license: "GPL-2.0"
+      - name: xschem
+        version: "3.1.0"
+        license: "GPL-2.0"
+    file_extensions: [".sp", ".scs", ".va", ".vams", ".gds", ".lef"]
+    documentation: "docs/mixed_signal_guide.md"
+    
+  ci_cd:                    # CI/CD and automation
+    inherits_from: ip_dev    # Inherits base IP developer permissions
+    visible_dirs:
+      - scripts/
+      - reports/
+      - templates/
+      - dependencies/
+    hidden_dirs:
+      - rtl/
+      - verification/
+      - analog/
+    primary_focus: ["scripts/", "reports/"]
+    tools_required:
+      - name: make
+        version: "4.3"
+        license: "GPL-3.0"
+      - name: python
+        version: "3.11"
+        license: "PSF-2.0"
+      - name: opensta
+        version: "2.5"
+        license: "BSD-3-Clause"
+      - name: openroad
+        version: "2.0"
+        license: "BSD-3-Clause"
+    file_extensions: [".py", ".sh", ".yml", ".yaml", ".tcl"]
+    documentation: "docs/ci_cd_guide.md"
+
+# Context-aware navigation
+navigation:
+  entry_points:
+    rtl: "RTL source files and modules"
+    verification: "Testbenches, coverage, and formal verification"
+    soc_integration: "SoC-level wrappers and integration manifests"
+    flow: "Build and synthesis flows (FPGA, ASIC, simulation)"
+    analog: "Mixed-signal design files (SPICE, Verilog-AMS)"
+    integration_ready: "Performance and compliance readiness data"

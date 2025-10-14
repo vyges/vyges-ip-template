@@ -24,9 +24,9 @@ FALLBACK_SIM := icarus
 
 # File Patterns (use * for generic matching)
 RTL_FILES := rtl/*.sv
-TB_FILES := tb/sv_tb/*.sv
-INTEGRATION_FILES := integration/*.v
-CONSTRAINT_FILES := constraints/*.sdc constraints/*.xdc
+TB_FILES := verification/sv_tb/*.sv
+INTEGRATION_FILES := soc_integration/*.v integration/*.v
+CONSTRAINT_FILES := soc_integration/constraints/*.sdc soc_integration/constraints/*.xdc
 
 # Build Directories
 BUILD_DIR := build
@@ -110,6 +110,13 @@ help:
 	@echo ""
 	@echo "Customization:"
 	@echo "  customize     - Show customization guide"
+	@echo ""
+	@echo "Installation:"
+	@echo "  install-tools - Show tool installation guide"
+	@echo "  install-ext   - Install Vyges extension"
+	@echo ""
+	@echo "Information:"
+	@echo "  structure     - Show directory structure overview"
 	@echo ""
 
 .PHONY: info
@@ -296,8 +303,8 @@ customize:
 	@echo ""
 	@echo "2. Rename Files Following Vyges Convention:"
 	@echo "   - RTL: rtl/example_core.sv → rtl/fft_memory.sv"
-	@echo "   - Wrapper: integration/example_wrapper.v → integration/fft_memory_wrapper.v"
-	@echo "   - Testbench: tb/sv_tb/tb_example.sv → tb/sv_tb/tb_fft_memory.sv"
+	@echo "   - Wrapper: soc_integration/example_wrapper.v → soc_integration/fft_memory_wrapper.v"
+	@echo "   - Testbench: verification/sv_tb/tb_example.sv → verification/sv_tb/tb_fft_memory.sv"
 	@echo ""
 	@echo "3. Update File Patterns:"
 	@echo "   - RTL_FILES: Pattern for your RTL source files"
@@ -307,6 +314,7 @@ customize:
 	@echo "4. Update Documentation:"
 	@echo "   - Modify docs/*.md files for your IP"
 	@echo "   - Update metadata in vyges-metadata.template.json"
+	@echo "   - Update vyges-ip.yml for role-based configuration"
 	@echo "   - Use generic examples like 'example.com' in metadata"
 	@echo ""
 	@echo "5. Test Your Changes:"
@@ -347,6 +355,33 @@ check-tools-sim-fallback:
 	fi
 
 #==============================================================================
+# Installation Targets
+#==============================================================================
+
+.PHONY: install-tools
+install-tools:
+	@echo "Tool Installation Guide:"
+	@echo "======================="
+	@echo ""
+	@if [ -f "extensions/install_tools.md" ]; then \
+		cat extensions/install_tools.md; \
+	else \
+		echo "Installation guide not found in extensions/install_tools.md"; \
+		echo "Please check the extensions/ directory for installation scripts."; \
+	fi
+
+.PHONY: install-ext
+install-ext:
+	@echo "Installing Vyges Extension..."
+	@if [ -f "extensions/install-vyges-extension.sh" ]; then \
+		chmod +x extensions/install-vyges-extension.sh; \
+		./extensions/install-vyges-extension.sh; \
+	else \
+		echo "Extension installer not found in extensions/install-vyges-extension.sh"; \
+		echo "Please check the extensions/ directory for installation scripts."; \
+	fi
+
+#==============================================================================
 # Utility Targets
 #==============================================================================
 
@@ -370,6 +405,29 @@ list-files:
 create-dirs:
 	@mkdir -p $(BUILD_DIR) $(SYNTH_DIR) $(SIM_DIR) $(WAVEFORM_DIR) $(LOG_DIR)
 	@echo "Build directories created."
+
+.PHONY: structure
+structure:
+	@echo "Vyges IP Template Structure:"
+	@echo "============================"
+	@echo ""
+	@echo "Core Directories:"
+	@echo "  rtl/           - RTL source code (.sv, .v files)"
+	@echo "  verification/  - Testbenches, coverage, formal verification"
+	@echo "  soc_integration/ - SoC integration contracts and wrappers"
+	@echo "  analog/        - Mixed-signal design files (SPICE, Verilog-AMS)"
+	@echo ""
+	@echo "Support Directories:"
+	@echo "  docs/          - Documentation and architecture specs"
+	@echo "  scripts/       - Automation scripts and build flows"
+	@echo "  reports/       - Generated reports and public documentation"
+	@echo "  extensions/    - IDE extensions and installation scripts"
+	@echo ""
+	@echo "Configuration Files:"
+	@echo "  vyges-ip.yml   - Role-based configuration (VyContext)"
+	@echo "  vyges-metadata.json - IP metadata and specifications"
+	@echo ""
+	@echo "Each directory contains a _README.md with purpose and usage info."
 
 #==============================================================================
 # Pattern-Based File Processing

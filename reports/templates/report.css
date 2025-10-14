@@ -1,0 +1,816 @@
+/* Vyges IP Report Styles */
+:root {
+    --vyges-primary: #18A7C4;
+    --vyges-secondary: #E81A89;
+    --vyges-dark: #1A1A1A;
+    --vyges-light: #F8F9FA;
+    --vyges-gray: #6C757D;
+    --vyges-success: #28A745;
+    --vyges-warning: #FFC107;
+    --vyges-danger: #DC3545;
+    --vyges-info: #17A2B8;
+    
+    --border-radius: 8px;
+    --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    color: var(--vyges-dark);
+    background-color: var(--vyges-light);
+}
+
+/* Header Styles */
+.report-header {
+    background: #132534;
+    color: white;
+    padding: 2rem 0;
+    box-shadow: var(--box-shadow);
+    position: relative;
+}
+
+.header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.repo-logo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: var(--box-shadow);
+}
+
+.vyges-branding {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.vyges-logo {
+    height: 32px;
+}
+
+.generated-by {
+    font-size: 0.875rem;
+    opacity: 0.9;
+    font-style: italic;
+}
+
+.ip-info {
+    text-align: right;
+}
+
+.ip-name {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.ip-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+/* Repository Statistics */
+.repo-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+.stat-item {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    backdrop-filter: blur(10px);
+}
+
+.stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+
+
+/* Summary Cards */
+.summary-cards {
+    max-width: 1200px;
+    margin: -2rem auto 3rem;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.75rem;
+    position: relative;
+    z-index: 10;
+}
+
+.card {
+    background: white;
+    padding: 0.75rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    text-align: center;
+    transition: var(--transition);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.card-content h3 {
+    color: var(--vyges-gray);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+}
+
+.card-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--vyges-primary);
+    margin-bottom: 0;
+}
+
+/* Section Styles */
+section {
+    max-width: 1200px;
+    margin: 0 auto 3rem;
+    padding: 0 2rem;
+}
+
+section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--vyges-dark);
+    margin-bottom: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--vyges-primary);
+    display: inline-block;
+}
+
+section h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--vyges-dark);
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+}
+
+/* Reports Section */
+.reports-section {
+    margin-bottom: 3rem;
+}
+
+.reports-table {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow-x: auto;
+}
+
+.reports-table-content {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.reports-table-content th,
+.reports-table-content td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #E9ECEF;
+}
+
+.reports-table-content th {
+    background: #F8F9FA;
+    font-weight: 600;
+    color: var(--vyges-dark);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.reports-table-content tr:nth-child(odd) {
+    background-color: #E6F3FF;
+}
+
+.reports-table-content tr:nth-child(even) {
+    background-color: #F0E6F0;
+}
+
+.reports-table-content tr:hover {
+    background-color: #E6F7E6;
+}
+
+/* Report Link Buttons */
+.report-link { 
+    display: inline-block; 
+    background: #0366d6; 
+    color: white !important; 
+    padding: 6px 12px; 
+    text-decoration: none; 
+    border-radius: 4px; 
+    margin: 2px 4px 2px 0;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.report-link:hover { 
+    background: #0256cc; 
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.report-link.html { 
+    background: #28a745; 
+}
+
+.report-link.html:hover { 
+    background: #218838; 
+}
+
+.report-link.md { 
+    background: #6f42c1; 
+}
+
+.report-link.md:hover { 
+    background: #5a32a3; 
+}
+
+.report-link.txt { 
+    background: #6c757d; 
+}
+
+.report-link.txt:hover { 
+    background: #5a6268; 
+}
+
+.report-link.json { 
+    background: #fd7e14; 
+}
+
+.report-link.json:hover { 
+    background: #e8690b; 
+}
+
+.reports-table-content td a {
+    color: var(--vyges-primary);
+    text-decoration: none;
+    font-weight: 500;
+    margin: 0 0.25rem;
+}
+
+.reports-table-content td a:hover {
+    text-decoration: underline;
+}
+
+/* Test Summary Section */
+.test-summary-section {
+    margin-bottom: 3rem;
+}
+
+.test-summary {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.test-stats {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+}
+
+.test-stats .stat-item {
+    text-align: center;
+    background: var(--vyges-light);
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    min-width: 120px;
+}
+
+.test-stats .stat-value {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--vyges-primary);
+    margin-bottom: 0.5rem;
+}
+
+.test-stats .stat-label {
+    font-size: 0.875rem;
+    color: var(--vyges-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Design Section */
+.block-diagram {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.diagram-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--border-radius);
+}
+
+.diagram-placeholder {
+    padding: 3rem;
+    background: #F8F9FA;
+    border: 2px dashed #DEE2E6;
+    border-radius: var(--border-radius);
+    color: var(--vyges-gray);
+}
+
+.interfaces,
+.parameters {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 1rem;
+}
+
+.interfaces ul,
+.parameters ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.interfaces li,
+.parameters li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #E9ECEF;
+    position: relative;
+}
+
+.parameters code {
+    background: #F8F9FA;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    color: var(--vyges-primary);
+    position: relative;
+}
+
+/* Copy Button */
+.copy-button {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--vyges-primary);
+    color: white;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: var(--transition);
+    opacity: 0;
+}
+
+.parameters li:hover .copy-button {
+    opacity: 1;
+}
+
+.copy-button:hover {
+    background: var(--vyges-secondary);
+}
+
+/* Verification Section */
+.test-results {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+    overflow-x: auto;
+}
+
+.test-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.test-table th,
+.test-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #E9ECEF;
+}
+
+.test-table th {
+    background: #F8F9FA;
+    font-weight: 600;
+    color: var(--vyges-dark);
+}
+
+.test-row:hover {
+    background: #F8F9FA;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-badge.pass {
+    background: rgba(40, 167, 69, 0.1);
+    color: var(--vyges-success);
+}
+
+.status-badge.fail {
+    background: rgba(220, 53, 69, 0.1);
+    color: var(--vyges-danger);
+}
+
+.status-badge.partial {
+    background: rgba(255, 193, 7, 0.1);
+    color: var(--vyges-warning);
+}
+
+.status-badge.not-run {
+    background: rgba(108, 117, 125, 0.1);
+    color: var(--vyges-gray);
+}
+
+/* Waveforms */
+.waveforms {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.waveform-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+.waveform-item {
+    text-align: center;
+}
+
+.waveform-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 1rem;
+}
+
+.waveform-caption {
+    font-size: 0.875rem;
+    color: var(--vyges-gray);
+    font-style: italic;
+}
+
+/* Coverage Section */
+.coverage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.coverage-item {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.coverage-item ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.coverage-item li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #E9ECEF;
+}
+
+.roadmap {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.roadmap ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.roadmap li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #E9ECEF;
+}
+
+/* Resources Section */
+.resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.resource-category {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.resource-category ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.resource-category li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #E9ECEF;
+    display: flex;
+    justify-content: space-between;
+}
+
+.resource-category li:last-child {
+    border-bottom: none;
+}
+
+/* Packaging Section */
+.packaging-content {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.packaging-content > div {
+    margin-bottom: 2rem;
+}
+
+.packaging-content > div:last-child {
+    margin-bottom: 0;
+}
+
+.packaging-content ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.packaging-content li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #E9ECEF;
+}
+
+.packaging-content a {
+    color: var(--vyges-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.packaging-content a:hover {
+    text-decoration: underline;
+}
+
+/* Issues Section */
+.issues-content {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.known-issues,
+.planned-features {
+    margin-bottom: 2rem;
+}
+
+.known-issues ul,
+.planned-features ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.known-issues li,
+.planned-features li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #E9ECEF;
+}
+
+/* Contact Section */
+.contact-content {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.support-links ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.support-links li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #E9ECEF;
+}
+
+.support-links a {
+    color: var(--vyges-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.support-links a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+.report-footer {
+    background: var(--vyges-dark);
+    color: white;
+    padding: 3rem 0;
+    margin-top: 4rem;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    text-align: center;
+}
+
+.footer-content p {
+    margin-bottom: 1rem;
+    opacity: 0.9;
+}
+
+.footer-content a {
+    color: var(--vyges-primary);
+    text-decoration: none;
+}
+
+.footer-content a:hover {
+    text-decoration: underline;
+}
+
+/* Loading States */
+.loading-placeholder {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 4px;
+    height: 1em;
+    margin: 0.5rem 0;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .ip-info {
+        text-align: center;
+    }
+    
+    .ip-name {
+        font-size: 2rem;
+    }
+    
+    .summary-cards {
+        grid-template-columns: 1fr;
+        margin-top: -1rem;
+    }
+    
+    .coverage-grid,
+    .resource-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .waveform-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    section {
+        padding: 0 1rem;
+    }
+    
+    .test-table {
+        font-size: 0.875rem;
+    }
+    
+    .test-table th,
+    .test-table td {
+        padding: 0.5rem;
+    }
+    
+    .search-container {
+        position: static;
+        margin-top: 1rem;
+        justify-content: center;
+    }
+    
+    .repo-stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 1rem;
+    }
+    
+    .overview-content,
+    .interfaces,
+    .parameters,
+    .test-results,
+    .waveforms,
+    .coverage-item,
+    .roadmap,
+    .resource-category,
+    .packaging-content,
+    .issues-content,
+    .contact-content {
+        padding: 1rem;
+    }
+    
+    .ip-name {
+        font-size: 1.75rem;
+    }
+    
+    section h2 {
+        font-size: 1.5rem;
+    }
+    
+    .search-input {
+        min-width: 150px;
+    }
+}

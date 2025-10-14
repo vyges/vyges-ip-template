@@ -13,7 +13,7 @@
 
 # Vyges IP Template
 
-A comprehensive template repository for developing IP blocks following Vyges standards and best practices.
+A comprehensive template repository for developing IP blocks following Vyges standards and best practices. **Powered by VyContext AI assistant for intelligent development.**
 
 ## 🎯 **Vyges Naming Convention**
 
@@ -50,16 +50,20 @@ git clone https://github.com/vyges/vyges-ip-template.git my-ip-block
 cd my-ip-block
 ```
 
-### **2. Update Configuration**
-Edit the `Makefile` to set your IP block details:
-```makefile
-# IP Block Configuration
-BLOCK_NAME := fft
-MODULE_NAME := memory
-TOP_MODULE := fft_memory
+### **2. AI-Powered Setup with VyContext**
+Simply tell the AI assistant what you want to build:
+```bash
+# In your AI-powered IDE (Cursor/VSCode with VyContext):
+"Initialize this project as an FFT memory controller IP following Vyges conventions"
+
+# VyContext automatically:
+# - Updates vyges-metadata.json with your IP details
+# - Customizes .vyges-ip-template.yml for your project  
+# - Creates directory structure based on role requirements
+# - Generates initial RTL and verification files
 ```
 
-### **3. Install Vyges Extension (Recommended)**
+### **3. Install VyContext Extension (Required)**
 Install the Vyges VyContext extension for AI-powered development:
 
 **For VS Code (Marketplace):**
@@ -78,25 +82,29 @@ cursor --install-extension extensions/cursor/vycontext-0.1.0.vsix
 - 🧠 **AI Context**: Automatic hardware IP context injection
 - 🔧 **Tool Integration**: Synthesis and verification tool guidance  
 - 📋 **Standards**: Enforced naming conventions and patterns
+- 🚀 **Natural Language**: "Create UART controller RTL following Vyges conventions"
+- 📁 **Auto Structure**: Creates directories and files based on `vyges-ip.yml`
 - 🔐 **Authentication**: Secure access to Vyges services
 - 📊 **Tier-Based**: Features based on your subscription tier
 
 **Status Check:** `Ctrl+Shift+P` → "Vyges VyContext: Show Status"
 
-### **4. Rename Files Following Vyges Convention**
+### **4. Natural Language Development**
+Use natural language commands with VyContext:
+
 ```bash
-# RTL file (MUST follow block-name_module-name.sv)
-mv rtl/example_core.sv rtl/fft_memory.sv
+# AI commands for development:
+"Add APB interface to the FFT memory controller"
+"Create SystemVerilog testbench with coverage"  
+"Set up FPGA flow for Xilinx Zynq"
+"Generate documentation from metadata"
+"Add FIFO support with configurable depth"
 
-# Integration wrapper
-mv integration/example_wrapper.v integration/fft_memory_wrapper.v
-
-# Testbench
-mv tb/sv_tb/tb_example.sv tb/sv_tb/tb_fft_memory.sv
-
-# Documentation
-mv docs/example-architecture.md docs/fft-architecture.md
-mv docs/example-design_spec.md docs/fft-design_spec.md
+# VyContext automatically:
+# - Creates/modifies RTL files following naming conventions
+# - Generates testbenches and verification code
+# - Updates metadata and configuration files
+# - Creates directory structure as needed
 ```
 
 ### **5. Test Your Setup**
@@ -121,29 +129,38 @@ Template structure and AI context files are proprietary Vyges components.
 - Template structure and directory organization
 - Build processes and CI/CD workflows
 - Pre-installed tools and tooling scripts
-- AI context files (`.vyges-ai-context.json`, `.copilot-chat-context.md`)
+- VyContext Integration and `vyges-ip.yml` configuration
 - Template metadata and configuration templates
 
 **Usage Terms:**
 - You can use the template for IP development
 - You can create and modify hardware IP content
 - You cannot redistribute the template structure
-- AI context files are provided for use only within this template
+- VyContext integration is provided for use only within this template
 
 See [LICENSE_SCOPE.md](LICENSE_SCOPE.md) and [NOTICE](NOTICE) for complete details.
 
 ## 🛠 **Customization Guide**
 
-### **Configuration Variables**
-The `Makefile` uses these key variables for customization:
+### **AI-Powered Customization with VyContext**
+The easiest way to customize your IP is through natural language commands:
 
-| Variable | Purpose | Example |
-|----------|---------|---------|
-| `BLOCK_NAME` | IP block identifier | `fft` |
-| `MODULE_NAME` | RTL module name | `memory` |
-| `TOP_MODULE` | Top-level module | `fft_memory` |
-| `RTL_FILES` | RTL source files | `rtl/*.sv` |
-| `TB_FILES` | Testbench files | `tb/sv_tb/*.sv` |
+```bash
+# Tell VyContext what you want:
+"Customize this project for an AES encryption IP with 128-bit data width"
+"Add AXI4-Lite interface to the UART controller"
+"Create mixed-signal ADC controller with SPICE models"
+"Set up dual-clock domain crossing for the FIFO"
+```
+
+### **VyContext Configuration**
+VyContext manages all configuration through natural language:
+
+| File | Purpose | VyContext Commands |
+|------|---------|-------------------|
+| `vyges-metadata.json` | IP metadata and specifications | "Update metadata with AES encryption IP details" |
+| `.vyges-ip-template.yml` | Role-based configuration | "Configure for mixed-signal designer role" |
+| `Makefile` | Build system configuration | "Set up build system for FPGA synthesis" |
 
 ### **File Patterns**
 The build system uses patterns for minimal customization:
@@ -258,18 +275,71 @@ The Makefile automatically detects available tools and provides fallbacks:
 
 ## 🔄 **Workflow Integration**
 
-### **Development Workflow**
-1. **Design**: Implement RTL in `rtl/` directory
-2. **Verify**: Create testbench in `tb/sv_tb/` directory
-3. **Integrate**: Add wrapper in `integration/` directory
-4. **Document**: Update documentation in `docs/` directory
+### **AI-Powered Development Workflow**
+1. **Initialize**: "Initialize this project as [IP type] following Vyges conventions"
+2. **Design**: "Create RTL for [specific functionality] with [interface type]"
+3. **Verify**: "Generate SystemVerilog testbench with coverage and assertions"
+4. **Integrate**: "Create SoC integration wrapper with [bus protocol]"
+5. **Document**: "Generate documentation from metadata and RTL analysis"
+6. **Test**: Use `make build` for comprehensive testing
+
+### **VyContext Development Workflow**
+1. **Design**: "Create UART controller RTL with APB interface"
+2. **Verify**: "Generate SystemVerilog testbench with coverage"
+3. **Integrate**: "Create SoC integration wrapper with AXI4"
+4. **Document**: "Generate documentation from metadata and RTL analysis"
 5. **Test**: Use `make build` for comprehensive testing
+
+### **Role-Based Development Structure**
+The template uses `.vyges-ip-template.yml` for intelligent role-based development:
+
+| Role | Focus Area | VyContext Commands |
+|------|------------|-------------------|
+| **ip_dev** | Core RTL development | "Create UART controller RTL with APB interface" |
+| **verification** | Testbench and validation | "Generate UVM testbench with functional coverage" |
+| **integrator** | SoC integration | "Create AXI4 wrapper for the UART controller" |
+| **fpga_prototyper** | FPGA implementation | "Set up Vivado flow for Zynq-7000" |
+| **mixed_signal** | Analog/mixed-signal | "Add PLL and ADC interface to the controller" |
 
 ### **CI/CD Integration**
 The template includes GitHub Actions support:
 - **Automated Testing**: Runs on Ubuntu with multiple tools
 - **Build Verification**: Synthesis and simulation validation
 - **Quality Checks**: Linting and coverage analysis
+
+## 🧠 **VyContext AI Assistant Benefits**
+
+### **Natural Language Development**
+- **No Manual File Editing**: Just describe what you want
+- **Automatic Convention Compliance**: All generated code follows Vyges standards
+- **Intelligent Context**: Understands your role and project requirements
+- **Progressive Enhancement**: Build complexity incrementally
+
+### **Example VyContext Commands**
+```bash
+# Project Setup
+"Initialize this as a CAN bus controller IP following Vyges conventions"
+
+# RTL Development  
+"Create CAN controller RTL with 8 TX/RX buffers and error handling"
+"Add DMA interface for high-speed data transfer"
+"Implement configurable baud rate with fractional divider"
+
+# Verification
+"Generate SystemVerilog testbench with protocol compliance tests"
+"Add functional coverage for all CAN frame types"
+"Create formal properties for timing constraints"
+
+# Integration
+"Create AXI4-Lite wrapper for register access"
+"Generate SoC integration manifest with address map"
+"Add interrupt controller interface"
+
+# Documentation
+"Generate comprehensive README from metadata and RTL analysis"
+"Create timing diagrams for all interfaces"
+"Document power and area characteristics"
+```
 
 ## 📖 **Examples and Templates**
 

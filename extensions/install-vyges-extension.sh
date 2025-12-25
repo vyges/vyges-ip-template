@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Vyges Extension Installation Script
-# Installs the bundled vycontext-0.1.0.vsix extension
+# Installs the VyContext extension from marketplace
 
 set -e
 
@@ -9,19 +9,20 @@ echo "🚀 Installing Vyges VyContext Extension..."
 
 # Detect IDE and install appropriate extension
 if command -v cursor &> /dev/null; then
-    echo "📦 Installing for Cursor IDE (bundled extension)..."
-    CURSOR_EXTENSION="extensions/cursor/vycontext-0.1.0.vsix"
-    if [ ! -f "$CURSOR_EXTENSION" ]; then
-        echo "❌ Error: Cursor extension file not found at $CURSOR_EXTENSION"
-        echo "   Make sure you're running this from the repository root"
-        exit 1
+    echo "📦 Installing for Cursor IDE (from Open VSX Registry)..."
+    # Try Open VSX CLI first, fallback to Cursor CLI
+    if command -v ovsx &> /dev/null; then
+        ovsx install vyges.vycontext
+    else
+        cursor --install-extension vyges.vycontext
     fi
-    cursor --install-extension "$CURSOR_EXTENSION"
     echo "✅ Extension installed for Cursor IDE"
+    echo "   Extension URL: https://open-vsx.org/extension/vyges/vycontext"
 elif command -v code &> /dev/null; then
-    echo "📦 Installing for VS Code (from marketplace)..."
+    echo "📦 Installing for VS Code (from VS Code Marketplace)..."
     code --install-extension vyges.vycontext
     echo "✅ Extension installed for VS Code"
+    echo "   Extension URL: https://marketplace.visualstudio.com/items?itemName=vyges.vycontext"
 else
     echo "❌ Error: Neither Cursor nor VS Code found in PATH"
     echo "   Please install Cursor (cursor.sh) or VS Code first"

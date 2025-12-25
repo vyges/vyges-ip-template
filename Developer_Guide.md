@@ -68,7 +68,10 @@ The template now uses **VyContext** extensions for AI-assisted development:
 ### Using AI Mode in Different Environments
 
 #### 1. Cursor Editor
-- Install the **VyContext Cursor Extension** from the extensions marketplace
+- Install the **VyContext Cursor Extension** from Open VSX Registry:
+  - Extension URL: https://open-vsx.org/extension/vyges/vycontext
+  - Install via: `ovsx install vyges.vycontext` or `cursor --install-extension vyges.vycontext`
+  - Or use the auto-install script: `./extensions/install-vyges-extension.sh`
 - Open the repository in Cursor. VyContext will automatically detect `.vyges-ip-template.yml` and load role-based context
 - Use prompts like:
   - "Create a SystemVerilog UART transmitter module following Vyges conventions"

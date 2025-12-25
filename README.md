@@ -72,10 +72,15 @@ Install the Vyges VyContext extension for AI-powered development:
 code --install-extension vyges.vycontext
 ```
 
-**For Cursor IDE (Bundled):**
+**For Cursor IDE:**
 ```bash
-# Install bundled extension (no marketplace available)
-cursor --install-extension extensions/cursor/vycontext-0.1.0.vsix
+# Install from Open VSX Registry (recommended)
+ovsx install vyges.vycontext
+
+# Or using Cursor CLI directly
+cursor --install-extension vyges.vycontext
+
+# Extension URL: https://open-vsx.org/extension/vyges/vycontext
 ```
 
 **Benefits:**

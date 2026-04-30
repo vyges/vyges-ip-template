@@ -1,19 +1,20 @@
-[![Vyges IP Template](https://img.shields.io/badge/Vyges-IP%20Template-blue?style=flat&logo=github)](https://vyges.com)
-[![Use This Template](https://img.shields.io/badge/Use%20This%20Template-vyges--ip--template-brightgreen?style=for-the-badge)](https://github.com/vyges/vyges-ip-template/generate)
+> ## ⚠️ Deprecated — use VyContext instead
+>
+> Vyges IP Template has been **superseded by [VyContext](https://vyges.com/products/vycontext/)**, an IDE extension for VS Code and Cursor that enforces the Vyges Metadata Standard, scaffolds IP blocks, and onboards new contributors directly inside the editor.
+>
+> - **New IP development:** install VyContext — [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=Vyges.vycontext) · [Open VSX (Cursor)](https://open-vsx.org/extension/vyges/vycontext)
+> - **Existing IP repos based on this template:** continue to work; VyContext recognises the structure and improves the workflow on top of it
+> - **Why retired:** VyContext covers the same standards-aligned scaffolding job as the template, plus live validation, AI-assisted authoring, and editor-integrated catalog awareness — without forcing a new repo to be generated
+>
+> This repository is kept publicly available for historical reference and so that existing forks continue to resolve. New work should start from VyContext.
+
+[![Deprecated](https://img.shields.io/badge/Status-Deprecated-red?style=for-the-badge)](https://vyges.com/products/vycontext/)
+[![Use VyContext Instead](https://img.shields.io/badge/Use%20VyContext%20Instead-vycontext-brightgreen?style=for-the-badge)](https://vyges.com/products/vycontext/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
-[![Template](https://img.shields.io/badge/Template-Repository-orange)](https://github.com/vyges/vyges-ip-template)
-[![Design Types](https://img.shields.io/badge/Design%20Types-Digital%20%7C%20Analog%20%7C%20Mixed%20%7C%20Chiplets-purple)](https://vyges.com/docs/design-types)
-[![Tools](https://img.shields.io/badge/Tools-Verilator%20%7C%20Yosys%20%7C%20Magic%20%7C%20OpenROAD-blue)](https://vyges.com/docs/tools)
-[![Target](https://img.shields.io/badge/Target-ASIC%20%7C%20FPGA-orange)](https://vyges.com/docs/target-platforms)
-[![Verification](https://img.shields.io/badge/Verification-Cocotb%20%7C%20SystemVerilog-purple)](https://vyges.com/docs/verification)
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-blue?style=flat&logo=github)](https://vyges.github.io/vyges-ip-template/)
-[![Repository](https://img.shields.io/badge/Repository-GitHub-black?style=flat&logo=github)](https://github.com/vyges/vyges-ip-template)
-[![Issues](https://img.shields.io/badge/Issues-GitHub-orange?style=flat&logo=github)](https://github.com/vyges/vyges-ip-template/issues)
-[![Pull Requests](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat&logo=github)](https://github.com/vyges/vyges-ip-template/pulls)
 
-# Vyges IP Template
+# Vyges IP Template (deprecated)
 
-A comprehensive template repository for developing IP blocks following Vyges standards and best practices. **Powered by VyContext AI assistant for intelligent development.**
+A comprehensive template repository for developing IP blocks following Vyges standards and best practices. **Superseded by [VyContext](https://vyges.com/products/vycontext/) on 2026-04-29.**
 
 ## 🎯 **Vyges Naming Convention**
 
